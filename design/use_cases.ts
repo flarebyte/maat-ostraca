@@ -7,6 +7,16 @@ export const useCases: Record<string, UseCase> = {
     title: 'Count all IO calls',
     note: '',
   },
+  ioReadCallsCount: {
+    name: 'io.read.calls.count',
+    title: 'Count all Read IO calls',
+    note: '',
+  },
+  ioWriteCallsCount: {
+    name: 'io.write.calls.count',
+    title: 'Count all Write IO calls',
+    note: '',
+  },
   ImportFileList: {
     name: 'import.file.list',
     title: 'list all imports files',
@@ -40,22 +50,22 @@ export const useCases: Record<string, UseCase> = {
   functionSignatureList: {
     name: 'function.signature.list',
     title: 'list all functions signatures',
-    note: '',
+    note: 'Parameters / return signature',
   },
   functionMetricList: {
     name: 'function.metric.list',
     title: 'list all functions metrics',
-    note: 'Metrics includes LOC, complexity, tokens',
+    note: 'Metrics includes LOC, complexity, tokens, number of loops, number of conditions, number of returns',
   },
   methodSignatureList: {
     name: 'method.signature.list',
     title: 'list all method signatures',
-    note: '',
+    note: 'Parameters / return signature',
   },
   methodMetricList: {
     name: 'method.metric.list',
     title: 'list all methods metrics',
-    note: 'Metrics includes LOC, complexity, tokens',
+    note: 'Metrics includes LOC, complexity, tokens, number of loops, number of conditions, number of returns',
   },
   interfaceList: {
     name: 'interface.list',
@@ -70,7 +80,7 @@ export const useCases: Record<string, UseCase> = {
   classMetricList: {
     name: 'class.metric.list',
     title: 'list all classes metrics',
-    note: 'Metrics includes LOC, complexity, tokens',
+    note: 'Metrics includes LOC, complexity, tokens, number of methods',
   },
   interfaceCodeList: {
     name: 'interface.code.list',
@@ -92,10 +102,30 @@ export const useCases: Record<string, UseCase> = {
     title: 'list all environment names',
     note: '',
   },
-  fileRefPathList: {
-    name: 'fileref.list.path',
-    title: 'list all file paths refs',
+  dartSupport: {
+    name: 'dart.support',
+    title: 'Support semantic parsing of Dart/Flutter file',
     note: '',
+  },
+  tsSupport: {
+    name: 'typescript.support',
+    title: 'Support semantic parsing of Typescript file',
+    note: '',
+  },
+  goSupport: {
+    name: 'go.support',
+    title: 'Support semantic parsing of go file',
+    note: '',
+  },
+  predifinedRuleBasedAnalysis: {
+    name: 'analysis.rule.base',
+    title: 'Predefined rules based analysis',
+    note: 'Output will be composed based on the selected rules',
+  },
+  singleFileAnalysis: {
+    name: 'analysis.single',
+    title: 'Sementic analysis should be performed a single source file',
+    note: 'This is the reduce the scope of the implementation for v1',
   },
 };
 
