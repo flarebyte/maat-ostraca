@@ -43,19 +43,75 @@ export const analyseRule = (context: FlowContext) => {
   };
   calls.push(call);
   semgrepSearch(incrContext(context));
+  semgrepSearchCount(incrContext(context));
+  calculateMetrics(incrContext(context));
 };
 
 export const semgrepSearch = (context: FlowContext) => {
   const call: ComponentCall = {
     name: 'semgrep.search',
     title: 'Search content using a pattern using semgrep',
-    directory:
-      'semgrep requires login to return lines, but we should be able to extract the lines using start/end line/col or possibly offset',
+    directory: '',
+    note: `semgrep requires login to return lines, but we should be able to extract the lines
+    using start/end line/col or possibly offset.
+    cat semgrep --lang ts --pattern "appendToReport(...)" --json -
+    The approach is slightly hacky and performance may suffer by reading the file multiple times.
+    Unclear if there are any gain by passing the filename vs passing the content
+    `,
+    level: context.level,
+    signature: {
+      input: '{filename, source, language, pattern}',
+      success: '{lines}[]',
+    },
+    useCases: [],
+  };
+  calls.push(call);
+  runShell(incrContext(context));
+};
+
+export const semgrepSearchCount = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'semgrep.search.count',
+    title: 'Count patterns using semgrep',
+    directory: '',
+    note: ``,
+    level: context.level,
+    signature: {
+      input: '{filename, source, language, pattern}',
+      success: '{count}[]',
+    },
+    useCases: [],
+  };
+  calls.push(call);
+  runShell(incrContext(context));
+};
+
+export const runShell = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'shell.run',
+    title: 'Run a command in shell',
+    directory: '',
     note: '',
     level: context.level,
     signature: {
-      input: '{source, language, pattern}',
-      success: '{lines}[]',
+      input: '{command, expectJson}',
+      success: '{result}',
+    },
+    useCases: [],
+  };
+  calls.push(call);
+};
+
+export const calculateMetrics = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'metrics.calculate',
+    title: 'Calculate code metrics',
+    directory: '',
+    note: '',
+    level: context.level,
+    signature: {
+      input: '{filename, source, language, metrics}',
+      success: '{loc, tokens}',
     },
     useCases: [],
   };
