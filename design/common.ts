@@ -158,6 +158,15 @@ export const displayCallsDetailed = async (calls: ComponentCall[]) => {
     if (call.suggest?.func) {
       await appendToReport(`${base}  - func: ${call.suggest.func}`);
     }
+    if (call.signature?.input) {
+      await appendToReport(`${base}  - input: ${call.signature.input}`);
+    }
+    if (call.signature?.success) {
+      await appendToReport(`${base}  - success: ${call.signature.success}`);
+    }
+    if (call.signature?.failure) {
+      await appendToReport(`${base}  - failure: ${call.signature.failure}`);
+    }
     if (call.suggest?.file) {
       await appendToReport(`${base}  - file: ${call.suggest.file}`);
     }

@@ -3,8 +3,25 @@
 ## Function calls tree
 
 ```
-maat CLI root command
-  Parse args for analysing the source code
+maat CLI root command [cli.root]
+  - pkg: cmd/maat
+  Parse args for analysing the source code [cli.analyse]
+    - note: flags: --in filename.go --rules io.calls.count,import.file.list --language go --json
+    - pkg: cmd/maat
+    Read the content of source file and analyse the source file [file.read]
+      - input: {filename, rules, language}
+      Analyse a single rule [analyse.rule]
+        - note: Dispatch to right rule analyser than may use different hardcoded approach (ex: semgrep, ...)
+        - input: {filename, source, rulename, language}
+        Search content using a pattern using astgrep [astgrep.search]
+          - input: {filename, source, language, pattern}
+          - success: {lines}[]
+        Count patterns using astgrep [astgrep.search.count]
+          - input: {filename, source, language, pattern}
+          - success: {count}[]
+        Calculate code metrics [metrics.calculate]
+          - input: {filename, source, language, metrics}
+          - success: {loc, tokens}
 ```
 
 Supported use cases:
@@ -41,12 +58,6 @@ Unsupported use cases (yet):
   - Sementic analysis should be performed a single source file — This is the reduce the scope of the implementation for v1
 
 
-
-## Exit Codes
-  - 0: success (no errors)
-  - 1: fatal setup/validation error (no output)
-  - 2: partial failures (some per-item errors present)
-  - 3: script/reduce failure (pipeline aborted)
 
 ## title
   - todo

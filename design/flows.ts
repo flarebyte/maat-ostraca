@@ -25,6 +25,7 @@ export const cliArgsAnalyse = (context: FlowContext) => {
     useCases: [],
   };
   calls.push(call);
+  analyseSourceContent(incrContext(context));
 };
 
 export const analyseSourceContent = (context: FlowContext) => {
@@ -56,22 +57,17 @@ export const analyseRule = (context: FlowContext) => {
     useCases: [],
   };
   calls.push(call);
-  semgrepSearch(incrContext(context));
-  semgrepSearchCount(incrContext(context));
+  astgrepSearch(incrContext(context));
+  astgrepSearchCount(incrContext(context));
   calculateMetrics(incrContext(context));
 };
 
-export const semgrepSearch = (context: FlowContext) => {
+export const astgrepSearch = (context: FlowContext) => {
   const call: ComponentCall = {
-    name: 'semgrep.search',
-    title: 'Search content using a pattern using semgrep',
+    name: 'astgrep.search',
+    title: 'Search content using a pattern using astgrep',
     directory: '',
-    note: `semgrep requires login to return lines, but we should be able to extract the lines
-    using start/end line/col or possibly offset.
-    cat semgrep --lang ts --pattern "appendToReport(...)" --json -
-    The approach is slightly hacky and performance may suffer by reading the file multiple times.
-    Unclear if there are any gain by passing the filename vs passing the content
-    `,
+    note: '',
     level: context.level,
     signature: {
       input: '{filename, source, language, pattern}',
@@ -80,36 +76,18 @@ export const semgrepSearch = (context: FlowContext) => {
     useCases: [],
   };
   calls.push(call);
-  runShell(incrContext(context));
 };
 
-export const semgrepSearchCount = (context: FlowContext) => {
+export const astgrepSearchCount = (context: FlowContext) => {
   const call: ComponentCall = {
-    name: 'semgrep.search.count',
-    title: 'Count patterns using semgrep',
+    name: 'astgrep.search.count',
+    title: 'Count patterns using astgrep',
     directory: '',
     note: ``,
     level: context.level,
     signature: {
       input: '{filename, source, language, pattern}',
       success: '{count}[]',
-    },
-    useCases: [],
-  };
-  calls.push(call);
-  runShell(incrContext(context));
-};
-
-export const runShell = (context: FlowContext) => {
-  const call: ComponentCall = {
-    name: 'shell.run',
-    title: 'Run a command in shell',
-    directory: '',
-    note: '',
-    level: context.level,
-    signature: {
-      input: '{command, expectJson}',
-      success: '{result}',
     },
     useCases: [],
   };
