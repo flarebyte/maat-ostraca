@@ -28,14 +28,11 @@ MAAT CLI root command [cli.root]
 
 Supported use cases:
 
-
-
-
-Unsupported use cases (yet):
-
-  - Count all I/O calls
-  - Count all I/O read calls
-  - Count all I/O write calls
+  - Run semantic analysis on a single source file — This reduces implementation scope for v1.
+  - Support semantic parsing of Go files
+  - Support semantic parsing of TypeScript files
+  - Support semantic parsing of Dart and Flutter files
+  - Run predefined rule-based analysis — Output is generated from the selected rules.
   - List all imported files
   - List all imported functions
   - List all imported types
@@ -43,21 +40,19 @@ Unsupported use cases (yet):
   - List all exception messages
   - List all error messages
   - List all function signatures — Includes parameter and return signatures.
-  - List all function metrics — Includes LOC, complexity, tokens, loop count, condition count, and return count.
   - List all method signatures — Includes parameter and return signatures.
-  - List all method metrics — Includes LOC, complexity, tokens, loop count, condition count, and return count.
   - List all interfaces
   - List all classes
-  - List all class metrics — Includes LOC, complexity, tokens, and method count.
   - List code for all interfaces
-  - List file-level metrics — Includes LOC, complexity, tokens, loop count, and condition count.
   - List all test case titles — May include unit and end-to-end tests.
   - List all environment variable names
-  - Support semantic parsing of Dart and Flutter files
-  - Support semantic parsing of TypeScript files
-  - Support semantic parsing of Go files
-  - Run predefined rule-based analysis — Output is generated from the selected rules.
-  - Run semantic analysis on a single source file — This reduces implementation scope for v1.
+  - Count all I/O calls
+  - Count all I/O read calls
+  - Count all I/O write calls
+  - List all function metrics — Includes LOC, complexity, tokens, loop count, condition count, and return count.
+  - List all method metrics — Includes LOC, complexity, tokens, loop count, condition count, and return count.
+  - List all class metrics — Includes LOC, complexity, tokens, and method count.
+  - List file-level metrics — Includes LOC, complexity, tokens, loop count, and condition count.
   - Provide AI-friendly output — A `--json` output mode can support this.
   - Provide human-friendly output — Use readable formatting, such as colors.
 

@@ -1,5 +1,6 @@
 import { calls } from './calls';
 import { type ComponentCall, type FlowContext, incrContext } from './common';
+import { useCases } from './use_cases.ts';
 
 export const cliRoot = (context: FlowContext) => {
   const call: ComponentCall = {
@@ -8,7 +9,7 @@ export const cliRoot = (context: FlowContext) => {
     directory: 'cmd/maat',
     note: '',
     level: context.level,
-    useCases: [],
+    useCases: [useCases.singleFileAnalysis.name],
   };
   calls.push(call);
   // Register commands under the root.
@@ -22,7 +23,11 @@ export const cliArgsAnalyse = (context: FlowContext) => {
     directory: 'cmd/maat',
     note: 'Flags: --in filename.go --rules io.calls.count,import.files.list --language go --json. Implemented with commander.js.',
     level: context.level,
-    useCases: [],
+    useCases: [
+      useCases.goSupport.name,
+      useCases.tsSupport.name,
+      useCases.dartSupport.name,
+    ],
   };
   calls.push(call);
   analyseSourceContent(incrContext(context));
@@ -39,7 +44,7 @@ export const analyseSourceContent = (context: FlowContext) => {
     signature: {
       input: '{filename, rules, language}',
     },
-    useCases: [],
+    useCases: [useCases.singleFileAnalysis.name],
   };
   calls.push(call);
   analyseRule(incrContext(context));
@@ -55,7 +60,7 @@ export const analyseRule = (context: FlowContext) => {
     signature: {
       input: '{filename, source, rulename, language}',
     },
-    useCases: [],
+    useCases: [useCases.predefinedRuleBasedAnalysis.name],
   };
   calls.push(call);
   astgrepSearch(incrContext(context));
@@ -74,7 +79,21 @@ export const astgrepSearch = (context: FlowContext) => {
       input: '{filename, source, language, pattern}',
       success: '{lines}[]',
     },
-    useCases: [],
+    useCases: [
+      useCases.importFileList.name,
+      useCases.importFunctionList.name,
+      useCases.importTypeList.name,
+      useCases.packageImportList.name,
+      useCases.exceptionMessageList.name,
+      useCases.errorMessageList.name,
+      useCases.functionSignatureList.name,
+      useCases.methodSignatureList.name,
+      useCases.interfaceList.name,
+      useCases.classList.name,
+      useCases.interfaceCodeList.name,
+      useCases.testCaseTitleList.name,
+      useCases.envNamesList.name,
+    ],
   };
   calls.push(call);
 };
@@ -90,7 +109,11 @@ export const astgrepSearchCount = (context: FlowContext) => {
       input: '{filename, source, language, pattern}',
       success: '{count}[]',
     },
-    useCases: [],
+    useCases: [
+      useCases.ioCallsCount.name,
+      useCases.ioReadCallsCount.name,
+      useCases.ioWriteCallsCount.name,
+    ],
   };
   calls.push(call);
 };
@@ -106,7 +129,12 @@ export const calculateMetrics = (context: FlowContext) => {
       input: '{filename, source, language, metrics}',
       success: '{loc, tokens}',
     },
-    useCases: [],
+    useCases: [
+      useCases.functionMetricsList.name,
+      useCases.methodMetricsList.name,
+      useCases.classMetricsList.name,
+      useCases.fileMetrics.name,
+    ],
   };
   calls.push(call);
 };
@@ -121,7 +149,10 @@ export const formatOutput = (context: FlowContext) => {
     signature: {
       input: '{results}',
     },
-    useCases: [],
+    useCases: [
+      useCases.aiFriendlyOutput.name,
+      useCases.humanFriendlyOutput.name,
+    ],
   };
   calls.push(call);
 };
