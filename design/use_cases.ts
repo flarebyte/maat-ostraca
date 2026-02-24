@@ -127,6 +127,16 @@ export const useCases: Record<string, UseCase> = {
     title: 'Sementic analysis should be performed a single source file',
     note: 'This is the reduce the scope of the implementation for v1',
   },
+  aiFriendlyOutput: {
+    name: 'output.ai.friendly',
+    title: 'Output should be ai friendly',
+    note: 'A --json output could achieve this',
+  },
+  humanFriendlyOutput: {
+    name: 'output.human.friendly',
+    title: 'Output should be human friendly',
+    note: 'Perhhaps some colors',
+  },
 };
 
 export const getByName = (expectedName: string) =>

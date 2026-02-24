@@ -6,7 +6,7 @@
 maat CLI root command [cli.root]
   - pkg: cmd/maat
   Parse args for analysing the source code [cli.analyse]
-    - note: flags: --in filename.go --rules io.calls.count,import.file.list --language go --json
+    - note: flags: --in filename.go --rules io.calls.count,import.file.list --language go --json. Uses of commander.js
     - pkg: cmd/maat
     Read the content of source file and analyse the source file [file.read]
       - input: {filename, rules, language}
@@ -22,6 +22,8 @@ maat CLI root command [cli.root]
         Calculate code metrics [metrics.calculate]
           - input: {filename, source, language, metrics}
           - success: {loc, tokens}
+    Format output for human or ai to stdout [format.output]
+      - input: {results}
 ```
 
 Supported use cases:
@@ -56,6 +58,8 @@ Unsupported use cases (yet):
   - Support semantic parsing of go file
   - Predefined rules based analysis — Output will be composed based on the selected rules
   - Sementic analysis should be performed a single source file — This is the reduce the scope of the implementation for v1
+  - Output should be ai friendly — A --json output could achieve this
+  - Output should be human friendly — Perhhaps some colors
 
 
 
