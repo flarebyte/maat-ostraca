@@ -4,7 +4,7 @@ import { type ComponentCall, type FlowContext, incrContext } from './common';
 export const cliRoot = (context: FlowContext) => {
   const call: ComponentCall = {
     name: 'cli.root',
-    title: 'maat CLI root command',
+    title: 'MAAT CLI root command',
     directory: 'cmd/maat',
     note: '',
     level: context.level,
@@ -18,9 +18,9 @@ export const cliRoot = (context: FlowContext) => {
 export const cliArgsAnalyse = (context: FlowContext) => {
   const call: ComponentCall = {
     name: 'cli.analyse',
-    title: 'Parse args for analysing the source code',
+    title: 'Parse CLI arguments for source code analysis',
     directory: 'cmd/maat',
-    note: 'flags: --in filename.go --rules io.calls.count,import.files.list --language go --json. Uses of commander.js',
+    note: 'Flags: --in filename.go --rules io.calls.count,import.files.list --language go --json. Implemented with commander.js.',
     level: context.level,
     useCases: [],
   };
@@ -32,7 +32,7 @@ export const cliArgsAnalyse = (context: FlowContext) => {
 export const analyseSourceContent = (context: FlowContext) => {
   const call: ComponentCall = {
     name: 'file.read',
-    title: 'Read the content of source file and analyse the source file',
+    title: 'Read and analyze a source file',
     directory: '',
     note: '',
     level: context.level,
@@ -48,9 +48,9 @@ export const analyseSourceContent = (context: FlowContext) => {
 export const analyseRule = (context: FlowContext) => {
   const call: ComponentCall = {
     name: 'analyse.rule',
-    title: 'Analyse a single rule',
+    title: 'Analyze a single rule',
     directory: '',
-    note: 'Dispatch to right rule analyser than may use different hardcoded approach (ex: semgrep, ...)',
+    note: 'Dispatch to the matching rule analyzer, which may use different hardcoded approaches (for example, semgrep).',
     level: context.level,
     signature: {
       input: '{filename, source, rulename, language}',
@@ -66,7 +66,7 @@ export const analyseRule = (context: FlowContext) => {
 export const astgrepSearch = (context: FlowContext) => {
   const call: ComponentCall = {
     name: 'astgrep.search',
-    title: 'Search content using a pattern using astgrep',
+    title: 'Search source content with an ast-grep pattern',
     directory: '',
     note: '',
     level: context.level,
@@ -82,9 +82,9 @@ export const astgrepSearch = (context: FlowContext) => {
 export const astgrepSearchCount = (context: FlowContext) => {
   const call: ComponentCall = {
     name: 'astgrep.search.count',
-    title: 'Count patterns using astgrep',
+    title: 'Count pattern matches with ast-grep',
     directory: '',
-    note: ``,
+    note: '',
     level: context.level,
     signature: {
       input: '{filename, source, language, pattern}',
@@ -114,9 +114,9 @@ export const calculateMetrics = (context: FlowContext) => {
 export const formatOutput = (context: FlowContext) => {
   const call: ComponentCall = {
     name: 'format.output',
-    title: 'Format output for human or ai to stdout',
+    title: 'Format output for humans or AI and write to stdout',
     directory: '',
-    note: ``,
+    note: '',
     level: context.level,
     signature: {
       input: '{results}',

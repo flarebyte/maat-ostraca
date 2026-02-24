@@ -3,26 +3,26 @@
 ## Function calls tree
 
 ```
-maat CLI root command [cli.root]
+MAAT CLI root command [cli.root]
   - pkg: cmd/maat
-  Parse args for analysing the source code [cli.analyse]
-    - note: flags: --in filename.go --rules io.calls.count,import.files.list --language go --json. Uses of commander.js
+  Parse CLI arguments for source code analysis [cli.analyse]
+    - note: Flags: --in filename.go --rules io.calls.count,import.files.list --language go --json. Implemented with commander.js.
     - pkg: cmd/maat
-    Read the content of source file and analyse the source file [file.read]
+    Read and analyze a source file [file.read]
       - input: {filename, rules, language}
-      Analyse a single rule [analyse.rule]
-        - note: Dispatch to right rule analyser than may use different hardcoded approach (ex: semgrep, ...)
+      Analyze a single rule [analyse.rule]
+        - note: Dispatch to the matching rule analyzer, which may use different hardcoded approaches (for example, semgrep).
         - input: {filename, source, rulename, language}
-        Search content using a pattern using astgrep [astgrep.search]
+        Search source content with an ast-grep pattern [astgrep.search]
           - input: {filename, source, language, pattern}
           - success: {lines}[]
-        Count patterns using astgrep [astgrep.search.count]
+        Count pattern matches with ast-grep [astgrep.search.count]
           - input: {filename, source, language, pattern}
           - success: {count}[]
         Calculate code metrics [metrics.calculate]
           - input: {filename, source, language, metrics}
           - success: {loc, tokens}
-    Format output for human or ai to stdout [format.output]
+    Format output for humans or AI and write to stdout [format.output]
       - input: {results}
 ```
 
