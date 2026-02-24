@@ -1,141 +1,141 @@
 import type { UseCase } from './common.ts';
 
-// Uses cases when parsing a single source file in go, dart, ts
+// Use cases for parsing a single source file (Go, Dart, TypeScript).
 export const useCases: Record<string, UseCase> = {
   ioCallsCount: {
     name: 'io.calls.count',
-    title: 'Count all IO calls',
+    title: 'Count all I/O calls',
     note: '',
   },
   ioReadCallsCount: {
     name: 'io.read.calls.count',
-    title: 'Count all Read IO calls',
+    title: 'Count all I/O read calls',
     note: '',
   },
   ioWriteCallsCount: {
     name: 'io.write.calls.count',
-    title: 'Count all Write IO calls',
+    title: 'Count all I/O write calls',
     note: '',
   },
-  ImportFileList: {
-    name: 'import.file.list',
-    title: 'list all imports files',
+  importFileList: {
+    name: 'import.files.list',
+    title: 'List all imported files',
     note: '',
   },
-  ImportFunctionList: {
-    name: 'import.function.list',
-    title: 'list all imported functions',
+  importFunctionList: {
+    name: 'import.functions.list',
+    title: 'List all imported functions',
     note: '',
   },
-  ImportTypeList: {
-    name: 'import.type.list',
-    title: 'list all imported types',
+  importTypeList: {
+    name: 'import.types.list',
+    title: 'List all imported types',
     note: '',
   },
   packageImportList: {
-    name: 'package.import.list',
-    title: 'list all import of external packages',
+    name: 'package.imports.list',
+    title: 'List all external package imports',
     note: '',
   },
-  exceptionListMessage: {
-    name: 'exceptions.list.message',
-    title: 'list all exceptions messages',
+  exceptionMessageList: {
+    name: 'exception.messages.list',
+    title: 'List all exception messages',
     note: '',
   },
   errorMessageList: {
-    name: 'error.message.list',
-    title: 'list all error messages',
+    name: 'error.messages.list',
+    title: 'List all error messages',
     note: '',
   },
   functionSignatureList: {
-    name: 'function.signature.list',
-    title: 'list all functions signatures',
-    note: 'Parameters / return signature',
+    name: 'function.signatures.list',
+    title: 'List all function signatures',
+    note: 'Includes parameter and return signatures.',
   },
-  functionMetricList: {
-    name: 'function.metric.list',
-    title: 'list all functions metrics',
-    note: 'Metrics includes LOC, complexity, tokens, number of loops, number of conditions, number of returns',
+  functionMetricsList: {
+    name: 'function.metrics.list',
+    title: 'List all function metrics',
+    note: 'Includes LOC, complexity, tokens, loop count, condition count, and return count.',
   },
   methodSignatureList: {
-    name: 'method.signature.list',
-    title: 'list all method signatures',
-    note: 'Parameters / return signature',
+    name: 'method.signatures.list',
+    title: 'List all method signatures',
+    note: 'Includes parameter and return signatures.',
   },
-  methodMetricList: {
-    name: 'method.metric.list',
-    title: 'list all methods metrics',
-    note: 'Metrics includes LOC, complexity, tokens, number of loops, number of conditions, number of returns',
+  methodMetricsList: {
+    name: 'method.metrics.list',
+    title: 'List all method metrics',
+    note: 'Includes LOC, complexity, tokens, loop count, condition count, and return count.',
   },
   interfaceList: {
-    name: 'interface.list',
-    title: 'list all interfaces',
+    name: 'interfaces.list',
+    title: 'List all interfaces',
     note: '',
   },
   classList: {
-    name: 'class.list',
-    title: 'list all classes',
+    name: 'classes.list',
+    title: 'List all classes',
     note: '',
   },
-  classMetricList: {
-    name: 'class.metric.list',
-    title: 'list all classes metrics',
-    note: 'Metrics includes LOC, complexity, tokens, number of methods',
+  classMetricsList: {
+    name: 'class.metrics.list',
+    title: 'List all class metrics',
+    note: 'Includes LOC, complexity, tokens, and method count.',
   },
   interfaceCodeList: {
-    name: 'interface.code.list',
-    title: 'list the code of all the interfaces',
+    name: 'interfaces.code.list',
+    title: 'List code for all interfaces',
     note: '',
   },
-  fileMetric: {
+  fileMetrics: {
     name: 'file.metrics',
-    title: 'Metrics for the files',
-    note: 'Metrics includes LOC, complexity, tokens, number of loops, number of conditions',
+    title: 'List file-level metrics',
+    note: 'Includes LOC, complexity, tokens, loop count, and condition count.',
   },
-  testcaseListTitle: {
-    name: 'testcase.list.title',
-    title: 'list all test cases titles',
-    note: 'testcase may includes unit tests and e2e tests',
+  testCaseTitleList: {
+    name: 'testcase.titles.list',
+    title: 'List all test case titles',
+    note: 'May include unit and end-to-end tests.',
   },
-  envListName: {
-    name: 'env.list.name',
-    title: 'list all environment names',
+  envNamesList: {
+    name: 'env.names.list',
+    title: 'List all environment variable names',
     note: '',
   },
   dartSupport: {
     name: 'dart.support',
-    title: 'Support semantic parsing of Dart/Flutter file',
+    title: 'Support semantic parsing of Dart and Flutter files',
     note: '',
   },
   tsSupport: {
     name: 'typescript.support',
-    title: 'Support semantic parsing of Typescript file',
+    title: 'Support semantic parsing of TypeScript files',
     note: '',
   },
   goSupport: {
     name: 'go.support',
-    title: 'Support semantic parsing of go file',
+    title: 'Support semantic parsing of Go files',
     note: '',
   },
-  predifinedRuleBasedAnalysis: {
-    name: 'analysis.rule.base',
-    title: 'Predefined rules based analysis',
-    note: 'Output will be composed based on the selected rules',
+  predefinedRuleBasedAnalysis: {
+    name: 'analysis.rules.predefined',
+    title: 'Run predefined rule-based analysis',
+    note: 'Output is generated from the selected rules.',
   },
   singleFileAnalysis: {
-    name: 'analysis.single',
-    title: 'Sementic analysis should be performed a single source file',
-    note: 'This is the reduce the scope of the implementation for v1',
+    name: 'analysis.single.file',
+    title: 'Run semantic analysis on a single source file',
+    note: 'This reduces implementation scope for v1.',
   },
   aiFriendlyOutput: {
     name: 'output.ai.friendly',
-    title: 'Output should be ai friendly',
-    note: 'A --json output could achieve this',
+    title: 'Provide AI-friendly output',
+    note: 'A `--json` output mode can support this.',
   },
   humanFriendlyOutput: {
     name: 'output.human.friendly',
-    title: 'Output should be human friendly',
-    note: 'Perhhaps some colors',
+    title: 'Provide human-friendly output',
+    note: 'Use readable formatting, such as colors.',
   },
 };
 

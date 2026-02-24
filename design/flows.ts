@@ -20,7 +20,7 @@ export const cliArgsAnalyse = (context: FlowContext) => {
     name: 'cli.analyse',
     title: 'Parse args for analysing the source code',
     directory: 'cmd/maat',
-    note: 'flags: --in filename.go --rules io.calls.count,import.file.list --language go --json. Uses of commander.js',
+    note: 'flags: --in filename.go --rules io.calls.count,import.files.list --language go --json. Uses of commander.js',
     level: context.level,
     useCases: [],
   };
