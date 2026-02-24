@@ -1,6 +1,20 @@
 import { calls } from './calls';
 import { type ComponentCall, type FlowContext, incrContext } from './common';
 
+export const cliRoot = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'cli.root',
+    title: 'maat CLI root command',
+    directory: 'cmd/maat',
+    note: '',
+    level: context.level,
+    useCases: [],
+  };
+  calls.push(call);
+  // Register commands under the root.
+  cliArgsAnalyse(incrContext(context));
+};
+
 export const cliArgsAnalyse = (context: FlowContext) => {
   const call: ComponentCall = {
     name: 'cli.analyse',

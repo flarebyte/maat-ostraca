@@ -121,14 +121,14 @@ export const toUseCaseSet = (calls: ComponentCall[]) => {
  * Reset the generated design report.
  */
 export const resetReport = async () => {
-  await writeFile('docs/designs/FLOW_DESIGN.md', '');
+  await writeFile('doc/FLOW_DESIGN.md', '');
 };
 
 /**
  * Append a single line to the generated design report.
  */
 export const appendToReport = async (line: string) => {
-  await appendFile('docs/designs/FLOW_DESIGN.md', `${line}\n`, 'utf8');
+  await appendFile('doc/FLOW_DESIGN.md', `${line}\n`, 'utf8');
 };
 
 /**
