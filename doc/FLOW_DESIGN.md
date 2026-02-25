@@ -10,18 +10,21 @@ MAAT CLI root command [cli.root]
     - pkg: cmd/maat
     Read and analyze a source file [file.read]
       - input: {filename, rules, language}
-      Analyze a single rule [analyse.rule]
-        - note: Dispatch to the matching rule analyzer, which may use different hardcoded approaches (for example, semgrep).
-        - input: {filename, source, rulename, language}
-        Search source content with an ast-grep pattern [astgrep.search]
-          - input: {filename, source, language, pattern}
-          - success: {lines}[]
-        Count pattern matches with ast-grep [astgrep.search.count]
-          - input: {filename, source, language, pattern}
-          - success: {count}[]
-        Calculate code metrics [metrics.calculate]
-          - input: {filename, source, language, metrics}
-          - success: {loc, tokens}
+      Analyze all rules [analyse.rules]
+        - note: Ideally analyzes rules in parallel.
+        - input: {filename, source, rules, language}
+        Analyze a single rule [analyse.rule]
+          - note: Dispatch to the matching rule analyzer, which may use different hardcoded approaches (for example, ast-grep).
+          - input: {filename, source, rulename, language}
+          Search source content with an ast-grep pattern [astgrep.search]
+            - input: {filename, source, language, pattern}
+            - success: {lines}[]
+          Count pattern matches with ast-grep [astgrep.search.count]
+            - input: {filename, source, language, pattern}
+            - success: {count}[]
+          Calculate code metrics [metrics.calculate]
+            - input: {filename, source, language, metrics}
+            - success: {loc, tokens}
     Format output for humans or AI and write to stdout [format.output]
       - input: {results}
 ```
@@ -49,10 +52,12 @@ Supported use cases:
   - Count all I/O calls
   - Count all I/O read calls
   - Count all I/O write calls
-  - List all function metrics — Includes LOC, complexity, tokens, loop count, condition count, and return count.
-  - List all method metrics — Includes LOC, complexity, tokens, loop count, condition count, and return count.
-  - List all class metrics — Includes LOC, complexity, tokens, and method count.
+  - List all function metrics — Includes LOC, complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
+  - List all method metrics — Includes LOC, complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
+  - List all class metrics — Includes LOC, complexity, tokens, SHA-256 hash, and method count.
   - List file-level metrics — Includes LOC, complexity, tokens, loop count, and condition count.
+  - SHA-256 hash of code body — Use SHA-256 to hash function or class bodies so code changes are easy to detect.
+  - Code cyclomatic complexity — The score increases for each branch (for example: if, else, for, while, case).
   - Provide AI-friendly output — A `--json` output mode can support this.
   - Provide human-friendly output — Use readable formatting, such as colors.
 

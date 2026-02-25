@@ -55,7 +55,7 @@ export const useCases: Record<string, UseCase> = {
   functionMetricsList: {
     name: 'function.metrics.list',
     title: 'List all function metrics',
-    note: 'Includes LOC, complexity, tokens, loop count, condition count, and return count.',
+    note: 'Includes LOC, complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
   },
   methodSignatureList: {
     name: 'method.signatures.list',
@@ -65,7 +65,7 @@ export const useCases: Record<string, UseCase> = {
   methodMetricsList: {
     name: 'method.metrics.list',
     title: 'List all method metrics',
-    note: 'Includes LOC, complexity, tokens, loop count, condition count, and return count.',
+    note: 'Includes LOC, complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
   },
   interfaceList: {
     name: 'interfaces.list',
@@ -80,7 +80,7 @@ export const useCases: Record<string, UseCase> = {
   classMetricsList: {
     name: 'class.metrics.list',
     title: 'List all class metrics',
-    note: 'Includes LOC, complexity, tokens, and method count.',
+    note: 'Includes LOC, complexity, tokens, SHA-256 hash, and method count.',
   },
   interfaceCodeList: {
     name: 'interfaces.code.list',
@@ -136,6 +136,16 @@ export const useCases: Record<string, UseCase> = {
     name: 'output.human.friendly',
     title: 'Provide human-friendly output',
     note: 'Use readable formatting, such as colors.',
+  },
+  codeHash: {
+    name: 'code.hash',
+    title: 'SHA-256 hash of code body',
+    note: 'Use SHA-256 to hash function or class bodies so code changes are easy to detect.',
+  },
+  codeComplexity: {
+    name: 'code.complexity',
+    title: 'Code cyclomatic complexity',
+    note: 'The score increases for each branch (for example: if, else, for, while, case).',
   },
 };
 

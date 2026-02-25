@@ -47,15 +47,15 @@ export const analyseSourceContent = (context: FlowContext) => {
     useCases: [useCases.singleFileAnalysis.name],
   };
   calls.push(call);
-  analyseRule(incrContext(context));
+  analyseAllRules(incrContext(context));
 };
 
-export const analyseRule = (context: FlowContext) => {
+export const analyseSingleRule = (context: FlowContext) => {
   const call: ComponentCall = {
     name: 'analyse.rule',
     title: 'Analyze a single rule',
     directory: '',
-    note: 'Dispatch to the matching rule analyzer, which may use different hardcoded approaches (for example, semgrep).',
+    note: 'Dispatch to the matching rule analyzer, which may use different hardcoded approaches (for example, ast-grep).',
     level: context.level,
     signature: {
       input: '{filename, source, rulename, language}',
@@ -66,6 +66,22 @@ export const analyseRule = (context: FlowContext) => {
   astgrepSearch(incrContext(context));
   astgrepSearchCount(incrContext(context));
   calculateMetrics(incrContext(context));
+};
+
+export const analyseAllRules = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'analyse.rules',
+    title: 'Analyze all rules',
+    directory: '',
+    note: 'Ideally analyzes rules in parallel.',
+    level: context.level,
+    signature: {
+      input: '{filename, source, rules, language}',
+    },
+    useCases: [useCases.predefinedRuleBasedAnalysis.name],
+  };
+  calls.push(call);
+  analyseSingleRule(incrContext(context));
 };
 
 export const astgrepSearch = (context: FlowContext) => {
@@ -134,6 +150,8 @@ export const calculateMetrics = (context: FlowContext) => {
       useCases.methodMetricsList.name,
       useCases.classMetricsList.name,
       useCases.fileMetrics.name,
+      useCases.codeHash.name,
+      useCases.codeComplexity.name,
     ],
   };
   calls.push(call);
