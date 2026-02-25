@@ -8,6 +8,10 @@ MAAT CLI root command [cli.root]
   Parse CLI arguments for source code analysis [cli.analyse]
     - note: Flags: --in filename.go --rules io.calls.count,import.files.list --language go --json. Implemented with commander.js.
     - pkg: cmd/maat
+    Resolve requested rules from explicit names and wildcard selectors [rules.resolve]
+      - note: Expands `--rules` values such as `import.*` and `io.*` into a deterministic list of concrete rules.
+      - input: {rules, language}
+      - success: {resolvedRules}[]
     Read and analyze a source file [file.read]
       - input: {filename, rules, language}
       Analyze all rules [analyse.rules]
@@ -16,15 +20,19 @@ MAAT CLI root command [cli.root]
         Analyze a single rule [analyse.rule]
           - note: Dispatch to the matching rule analyzer, which may use different hardcoded approaches (for example, ast-grep).
           - input: {filename, source, rulename, language}
-          Search source content with an ast-grep pattern [astgrep.search]
-            - input: {filename, source, language, pattern}
-            - success: {lines}[]
-          Count pattern matches with ast-grep [astgrep.search.count]
-            - input: {filename, source, language, pattern}
-            - success: {count}[]
-          Calculate code metrics [metrics.calculate]
-            - input: {filename, source, language, metrics}
-            - success: {loc, tokens}
+          Load and dispatch the rule implementation by rule name and language [rules.dispatch]
+            - note: Each rule-language combination should have its own implementation file (for example: `internal/rules/io.calls.count/go.ts`).
+            - pkg: internal/rules
+            - input: {ruleName, language, filename, source}
+            Search source content with an ast-grep pattern [astgrep.search]
+              - input: {filename, source, language, pattern}
+              - success: {lines}[]
+            Count pattern matches with ast-grep [astgrep.search.count]
+              - input: {filename, source, language, pattern}
+              - success: {count}[]
+            Calculate code metrics [metrics.calculate]
+              - input: {filename, source, language, metrics}
+              - success: {loc, tokens}
     Format output for humans or AI and write to stdout [format.output]
       - input: {results}
 ```
@@ -35,7 +43,10 @@ Supported use cases:
   - Support semantic parsing of Go files
   - Support semantic parsing of TypeScript files
   - Support semantic parsing of Dart and Flutter files
+  - Support wildcard rule selection in --rules — Allow selectors such as `import.*` and `io.*` to expand to matching rule names.
   - Run predefined rule-based analysis — Output is generated from the selected rules.
+  - Dispatch rule execution by rule name and language — Resolve and run the matching implementation using both rule name and source language.
+  - Maintain one rule implementation file per rule-language combination — Keep rule logic isolated by rule and language (for example: `rules/io.calls.count/go.ts`).
   - List all imported files
   - List all imported functions
   - List all imported types

@@ -27,11 +27,29 @@ export const cliArgsAnalyse = (context: FlowContext) => {
       useCases.goSupport.name,
       useCases.tsSupport.name,
       useCases.dartSupport.name,
+      useCases.rulesWildcardSelection.name,
     ],
   };
   calls.push(call);
+  resolveRequestedRules(incrContext(context));
   analyseSourceContent(incrContext(context));
   formatOutput(incrContext(context));
+};
+
+export const resolveRequestedRules = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'rules.resolve',
+    title: 'Resolve requested rules from explicit names and wildcard selectors',
+    directory: '',
+    note: 'Expands `--rules` values such as `import.*` and `io.*` into a deterministic list of concrete rules.',
+    level: context.level,
+    signature: {
+      input: '{rules, language}',
+      success: '{resolvedRules}[]',
+    },
+    useCases: [useCases.rulesWildcardSelection.name],
+  };
+  calls.push(call);
 };
 
 export const analyseSourceContent = (context: FlowContext) => {
@@ -63,9 +81,7 @@ export const analyseSingleRule = (context: FlowContext) => {
     useCases: [useCases.predefinedRuleBasedAnalysis.name],
   };
   calls.push(call);
-  astgrepSearch(incrContext(context));
-  astgrepSearchCount(incrContext(context));
-  calculateMetrics(incrContext(context));
+  dispatchRuleImplementation(incrContext(context));
 };
 
 export const analyseAllRules = (context: FlowContext) => {
@@ -82,6 +98,28 @@ export const analyseAllRules = (context: FlowContext) => {
   };
   calls.push(call);
   analyseSingleRule(incrContext(context));
+};
+
+export const dispatchRuleImplementation = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'rules.dispatch',
+    title:
+      'Load and dispatch the rule implementation by rule name and language',
+    directory: 'internal/rules',
+    note: 'Each rule-language combination should have its own implementation file (for example: `internal/rules/io.calls.count/go.ts`).',
+    level: context.level,
+    signature: {
+      input: '{ruleName, language, filename, source}',
+    },
+    useCases: [
+      useCases.rulesDispatchByNameAndLanguage.name,
+      useCases.rulesImplementationPerLanguageFile.name,
+    ],
+  };
+  calls.push(call);
+  astgrepSearch(incrContext(context));
+  astgrepSearchCount(incrContext(context));
+  calculateMetrics(incrContext(context));
 };
 
 export const astgrepSearch = (context: FlowContext) => {

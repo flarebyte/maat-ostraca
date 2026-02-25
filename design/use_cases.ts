@@ -122,6 +122,22 @@ export const useCases: Record<string, UseCase> = {
     title: 'Run predefined rule-based analysis',
     note: 'Output is generated from the selected rules.',
   },
+  rulesWildcardSelection: {
+    name: 'rules.selection.wildcard',
+    title: 'Support wildcard rule selection in --rules',
+    note: 'Allow selectors such as `import.*` and `io.*` to expand to matching rule names.',
+  },
+  rulesDispatchByNameAndLanguage: {
+    name: 'rules.dispatch.by.name.language',
+    title: 'Dispatch rule execution by rule name and language',
+    note: 'Resolve and run the matching implementation using both rule name and source language.',
+  },
+  rulesImplementationPerLanguageFile: {
+    name: 'rules.implementation.per.language.file',
+    title:
+      'Maintain one rule implementation file per rule-language combination',
+    note: 'Keep rule logic isolated by rule and language (for example: `rules/io.calls.count/go.ts`).',
+  },
   singleFileAnalysis: {
     name: 'analysis.single.file',
     title: 'Run semantic analysis on a single source file',
