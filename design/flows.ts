@@ -170,6 +170,8 @@ export const formatOutput = (context: FlowContext) => {
     useCases: [
       useCases.aiFriendlyOutput.name,
       useCases.humanFriendlyOutput.name,
+      useCases.outputDeterministicOrder.name,
+      useCases.outputSortedValues.name,
     ],
   };
   calls.push(call);

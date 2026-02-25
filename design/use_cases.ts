@@ -137,6 +137,16 @@ export const useCases: Record<string, UseCase> = {
     title: 'Provide human-friendly output',
     note: 'Use readable formatting, such as colors.',
   },
+  outputDeterministicOrder: {
+    name: 'output.order.deterministic',
+    title: 'Provide deterministic output ordering',
+    note: 'Keep field and section ordering stable across runs for the same input.',
+  },
+  outputSortedValues: {
+    name: 'output.values.sorted',
+    title: 'Provide sorted list values in output',
+    note: 'Sort list-like outputs (for example: imports, names, messages) to keep results predictable.',
+  },
   codeHash: {
     name: 'code.hash',
     title: 'SHA-256 hash of code body',

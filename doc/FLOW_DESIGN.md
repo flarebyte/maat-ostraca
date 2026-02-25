@@ -60,6 +60,8 @@ Supported use cases:
   - Code cyclomatic complexity — The score increases for each branch (for example: if, else, for, while, case).
   - Provide AI-friendly output — A `--json` output mode can support this.
   - Provide human-friendly output — Use readable formatting, such as colors.
+  - Provide deterministic output ordering — Keep field and section ordering stable across runs for the same input.
+  - Provide sorted list values in output — Sort list-like outputs (for example: imports, names, messages) to keep results predictable.
 
 
 
