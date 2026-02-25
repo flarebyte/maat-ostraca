@@ -28,6 +28,9 @@ export const generateRisksReport = async () => {
     lines.push('');
     lines.push(`- Description: ${r.description}`);
     lines.push(`- Mitigation: ${r.mitigation}`);
+    if (r.calls && r.calls.length > 0) {
+      lines.push(`- Calls: ${r.calls.join(', ')}`);
+    }
     lines.push('');
   }
 
@@ -36,10 +39,14 @@ export const generateRisksReport = async () => {
   // Also generate one stickie per risk with markdown-like sections in the note.
   for (const r of entries) {
     const title = `Risk: ${r.title}`;
-    const note = [
+    const noteParts = [
       `Description:\n- ${r.description}`,
       `Mitigation:\n- ${r.mitigation}`,
-    ].join('\n\n');
+    ];
+    if (r.calls && r.calls.length > 0) {
+      noteParts.push(`Calls:\n- ${r.calls.join('\n- ')}`);
+    }
+    const note = noteParts.join('\n\n');
     // Place under notes/ root folder (no subfolder)
     await writeSectionStickie(title, note, 'notes');
   }

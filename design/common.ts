@@ -19,12 +19,28 @@ export type UseCase = {
  * - title: concise human-friendly description
  * - description: what could go wrong and why
  * - mitigation: actions or controls to reduce impact/likelihood
+ * - calls: names of flow calls this risk applies to
  */
 export type Risk = {
   name: string;
   title: string;
   description: string;
   mitigation: string;
+  calls?: string[];
+};
+
+/**
+ * Canonical implementation suggestion for the current design.
+ * - name: short machine-friendly identifier
+ * - title: concise recommendation statement
+ * - description: why this choice is suggested
+ * - calls: names of flow calls this suggestion applies to
+ */
+export type ImplementationConsideration = {
+  name: string;
+  title: string;
+  description: string;
+  calls?: string[];
 };
 
 /**
