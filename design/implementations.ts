@@ -2,6 +2,13 @@ import type { ImplementationConsideration } from './common.ts';
 
 // Initial implementation suggestions. Keep this list small and actionable.
 export const implementations: Record<string, ImplementationConsideration> = {
+  dependencyPolicy: {
+    name: 'deps.policy.minimal.mature',
+    title: 'Keep dependencies minimal and choose mature packages',
+    description:
+      'Default to built-in Node.js modules and add external dependencies only when justified; when needed, prefer mature, widely used, and actively maintained packages.',
+    calls: ['cli.analyse', 'rules.resolve', 'rules.dispatch', 'format.output'],
+  },
   nodeRuntime: {
     name: 'runtime.nodejs',
     title: 'Use Node.js as the CLI runtime',

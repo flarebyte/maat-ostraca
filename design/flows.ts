@@ -190,6 +190,9 @@ export const calculateMetrics = (context: FlowContext) => {
       useCases.fileMetrics.name,
       useCases.codeHash.name,
       useCases.codeComplexity.name,
+      useCases.codeNestingDepthMax.name,
+      useCases.codeCognitiveComplexity.name,
+      useCases.codeHalsteadMetrics.name,
     ],
   };
   calls.push(call);

@@ -55,7 +55,7 @@ export const useCases: Record<string, UseCase> = {
   functionMetricsList: {
     name: 'function.metrics.list',
     title: 'List all function metrics',
-    note: 'Includes LOC, complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
+    note: 'Includes LOC, cyclomatic complexity, max nesting depth, cognitive complexity, Halstead metrics, tokens, SHA-256 hash, loop count, condition count, and return count.',
   },
   methodSignatureList: {
     name: 'method.signatures.list',
@@ -65,7 +65,7 @@ export const useCases: Record<string, UseCase> = {
   methodMetricsList: {
     name: 'method.metrics.list',
     title: 'List all method metrics',
-    note: 'Includes LOC, complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
+    note: 'Includes LOC, cyclomatic complexity, max nesting depth, cognitive complexity, Halstead metrics, tokens, SHA-256 hash, loop count, condition count, and return count.',
   },
   interfaceList: {
     name: 'interfaces.list',
@@ -80,7 +80,7 @@ export const useCases: Record<string, UseCase> = {
   classMetricsList: {
     name: 'class.metrics.list',
     title: 'List all class metrics',
-    note: 'Includes LOC, complexity, tokens, SHA-256 hash, and method count.',
+    note: 'Includes LOC, cyclomatic complexity, max nesting depth, cognitive complexity, Halstead metrics, tokens, SHA-256 hash, and method count.',
   },
   interfaceCodeList: {
     name: 'interfaces.code.list',
@@ -90,7 +90,7 @@ export const useCases: Record<string, UseCase> = {
   fileMetrics: {
     name: 'file.metrics',
     title: 'List file-level metrics',
-    note: 'Includes LOC, complexity, tokens, loop count, and condition count.',
+    note: 'Includes LOC, cyclomatic complexity, max nesting depth, cognitive complexity, Halstead metrics, tokens, loop count, and condition count.',
   },
   testCaseTitleList: {
     name: 'testcase.titles.list',
@@ -172,6 +172,21 @@ export const useCases: Record<string, UseCase> = {
     name: 'code.complexity',
     title: 'Code cyclomatic complexity',
     note: 'The score increases for each branch (for example: if, else, for, while, case).',
+  },
+  codeNestingDepthMax: {
+    name: 'code.nesting.depth.max',
+    title: 'Maximum nesting depth',
+    note: 'Measures the deepest control-flow nesting level in the analyzed scope.',
+  },
+  codeCognitiveComplexity: {
+    name: 'code.cognitive.complexity',
+    title: 'Code cognitive complexity',
+    note: 'Estimates how difficult the control flow is for humans to understand.',
+  },
+  codeHalsteadMetrics: {
+    name: 'code.halstead.metrics',
+    title: 'Code Halstead metrics',
+    note: 'Includes operator/operand-based measures such as volume, difficulty, and effort.',
   },
 };
 
