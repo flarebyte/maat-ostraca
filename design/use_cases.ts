@@ -77,10 +77,10 @@ export const useCases: Record<string, UseCase> = {
     title: 'List all classes',
     note: '',
   },
-  classMetricsMap: {
-    name: 'class_metrics_map',
-    title: 'Map class metrics by class name',
-    note: 'Keyed by class name; each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, and method count.',
+  classMap: {
+    name: 'class_map',
+    title: 'Map classes by class name',
+    note: 'Keyed by class name; each value includes class metadata and metrics (for example: modifiers, inheritance, LOC, SLOC, complexity, tokens, SHA-256 hash, and method count).',
   },
   interfacesCodeMap: {
     name: 'interfaces_code_map',

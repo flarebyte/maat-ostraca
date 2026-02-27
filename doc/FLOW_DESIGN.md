@@ -75,7 +75,7 @@ Supported use cases:
   - Count I/O write calls per function and method — Returns counts keyed by function and method.
   - Map function metrics by function name — Keyed by function name; each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
   - Map method metrics by method key — Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
-  - Map class metrics by class name — Keyed by class name; each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, and method count.
+  - Map classes by class name — Keyed by class name; each value includes class metadata and metrics (for example: modifiers, inheritance, LOC, SLOC, complexity, tokens, SHA-256 hash, and method count).
   - List file-level metrics — Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, loop count, and condition count.
   - SHA-256 hash of code body — Use SHA-256 to hash function or class bodies so code changes are easy to detect.
   - Code cyclomatic complexity — The score increases for each branch (for example: if, else, for, while, case).

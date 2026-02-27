@@ -27,6 +27,7 @@ export const exampleCliJsonResult: CliJsonResult = {
       chargeCustomer: {
         modifiers: ['async'],
         params: ['ctx: RequestContext', 'req: ChargeRequest'],
+        returns: ['Promise<ChargeResponse>'],
         loc: 38,
         sloc: 31,
         cyclomaticComplexity: 7,
@@ -49,6 +50,7 @@ export const exampleCliJsonResult: CliJsonResult = {
         receiver: 'PaymentService',
         name: 'Charge',
         params: ['ctx: RequestContext', 'req: ChargeRequest'],
+        returns: ['Promise<ChargeResponse>'],
         loc: 54,
         sloc: 45,
         cyclomaticComplexity: 10,
@@ -77,7 +79,22 @@ export const exampleCliJsonResult: CliJsonResult = {
       'payment provider timeout',
       'failed to decode response body',
     ],
-    class_metrics_map: {},
+    class_map: {
+      PaymentService: {
+        modifiers: ['abstract', 'export'],
+        extends: 'BaseService',
+        implements: ['PaymentProvider'],
+        methodCount: 6,
+        loc: 119,
+        sloc: 96,
+        cyclomaticComplexity: 12,
+        cognitiveComplexity: 18,
+        maxNestingDepth: 3,
+        tokens: 672,
+        sha256:
+          '27a5fc67ab26922f6c25d2b5fdc2944768c625f9168fd66ac8fbe0efb94a4306',
+      },
+    },
     file_metrics: {
       loc: 212,
       sloc: 174,
@@ -130,6 +147,10 @@ export const exampleRulesListResult: CliRulesListResult = {
     {
       name: 'method_map',
       description: 'Method-level map keyed by method key',
+    },
+    {
+      name: 'class_map',
+      description: 'Class-level map keyed by class name',
     },
   ],
 };

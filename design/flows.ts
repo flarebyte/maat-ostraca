@@ -224,7 +224,7 @@ export const calculateMetrics = (context: FlowContext) => {
     useCases: [
       useCases.functionMetricsMap.name,
       useCases.methodMetricsMap.name,
-      useCases.classMetricsMap.name,
+      useCases.classMap.name,
       useCases.fileMetrics.name,
       useCases.codeHash.name,
       useCases.codeComplexity.name,
