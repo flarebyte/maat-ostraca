@@ -23,28 +23,46 @@ export const exampleCliJsonResult: CliJsonResult = {
   filename: 'internal/service/payment_service.ts',
   language: 'typescript',
   rules: {
-    io_calls_count: {
-      functions: {
-        chargeCustomer: 4,
-      },
-      methods: {
-        paymentServiceCharge: 8,
+    function_map: {
+      chargeCustomer: {
+        modifiers: ['async'],
+        params: ['ctx: RequestContext', 'req: ChargeRequest'],
+        loc: 38,
+        sloc: 31,
+        cyclomaticComplexity: 7,
+        cognitiveComplexity: 11,
+        maxNestingDepth: 3,
+        tokens: 214,
+        sha256:
+          'b64e0ef6509d3f2d001f56f40d6f2f16c5db74de969e5052cff10fbd2f6ff4e0',
+        loops: 1,
+        conditions: 6,
+        returns: 4,
+        ioCallsCount: 4,
+        ioReadCallsCount: 2,
+        ioWriteCallsCount: 2,
       },
     },
-    io_read_calls_count: {
-      functions: {
-        chargeCustomer: 2,
-      },
-      methods: {
-        paymentServiceCharge: 3,
-      },
-    },
-    io_write_calls_count: {
-      functions: {
-        chargeCustomer: 2,
-      },
-      methods: {
-        paymentServiceCharge: 5,
+    method_map: {
+      paymentServiceCharge: {
+        modifiers: ['override', 'private'],
+        receiver: 'PaymentService',
+        name: 'Charge',
+        params: ['ctx: RequestContext', 'req: ChargeRequest'],
+        loc: 54,
+        sloc: 45,
+        cyclomaticComplexity: 10,
+        cognitiveComplexity: 15,
+        maxNestingDepth: 4,
+        tokens: 301,
+        sha256:
+          '8c1a5ef3e933b16b36f10a4885d2fd66dd275f79aa9f69f8fa593d7f644bdf68',
+        loops: 1,
+        conditions: 8,
+        returns: 5,
+        ioCallsCount: 8,
+        ioReadCallsCount: 3,
+        ioWriteCallsCount: 5,
       },
     },
 
@@ -59,56 +77,6 @@ export const exampleCliJsonResult: CliJsonResult = {
       'payment provider timeout',
       'failed to decode response body',
     ],
-
-    function_signatures_map: {
-      chargeCustomer: {
-        modifiers: ['async'],
-        params: ['ctx: RequestContext', 'req: ChargeRequest'],
-        returns: ['Promise<ChargeResponse>'],
-      },
-    },
-    method_signatures_map: {
-      paymentServiceCharge: {
-        modifiers: ['override', 'private'],
-        receiver: 'PaymentService',
-        name: 'Charge',
-        params: ['ctx: RequestContext', 'req: ChargeRequest'],
-        returns: ['Promise<ChargeResponse>'],
-      },
-    },
-
-    function_metrics_map: {
-      chargeCustomer: {
-        loc: 38,
-        sloc: 31,
-        cyclomaticComplexity: 7,
-        cognitiveComplexity: 11,
-        maxNestingDepth: 3,
-        tokens: 214,
-        sha256:
-          'b64e0ef6509d3f2d001f56f40d6f2f16c5db74de969e5052cff10fbd2f6ff4e0',
-        loops: 1,
-        conditions: 6,
-        returns: 4,
-      },
-    },
-    method_metrics_map: {
-      paymentServiceCharge: {
-        receiver: '*PaymentService',
-        name: 'Charge',
-        loc: 54,
-        sloc: 45,
-        cyclomaticComplexity: 10,
-        cognitiveComplexity: 15,
-        maxNestingDepth: 4,
-        tokens: 301,
-        sha256:
-          '8c1a5ef3e933b16b36f10a4885d2fd66dd275f79aa9f69f8fa593d7f644bdf68',
-        loops: 1,
-        conditions: 8,
-        returns: 5,
-      },
-    },
     class_metrics_map: {},
     file_metrics: {
       loc: 212,
@@ -156,12 +124,12 @@ export const exampleRulesListResult: CliRulesListResult = {
       description: 'List all imported files',
     },
     {
-      name: 'io_calls_count',
-      description: 'Count all I/O calls',
+      name: 'function_map',
+      description: 'Function-level map keyed by function name',
     },
     {
-      name: 'method_metrics_map',
-      description: 'Map method metrics by method key',
+      name: 'method_map',
+      description: 'Method-level map keyed by method key',
     },
   ],
 };
