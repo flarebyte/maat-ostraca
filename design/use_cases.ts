@@ -47,25 +47,15 @@ export const useCases: Record<string, UseCase> = {
     title: 'List all error messages',
     note: '',
   },
-  functionSignaturesMap: {
-    name: 'function_signatures_map',
-    title: 'Map function signatures by function name',
-    note: 'Keyed by function name; each value includes parameter/return signatures and sorted `modifiers`.',
+  functionMap: {
+    name: 'function_map',
+    title: 'Map functions by function name',
+    note: 'Keyed by function name; each value includes signature details, sorted `modifiers`, metrics, and I/O counts.',
   },
-  functionMetricsMap: {
-    name: 'function_metrics_map',
-    title: 'Map function metrics by function name',
-    note: 'Keyed by function name; each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
-  },
-  methodSignaturesMap: {
-    name: 'method_signatures_map',
-    title: 'Map method signatures by method key',
-    note: 'Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes parameter/return signatures and sorted `modifiers`.',
-  },
-  methodMetricsMap: {
-    name: 'method_metrics_map',
-    title: 'Map method metrics by method key',
-    note: 'Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
+  methodMap: {
+    name: 'method_map',
+    title: 'Map methods by method key',
+    note: 'Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes signature details, sorted `modifiers`, metrics, and I/O counts.',
   },
   interfaceMap: {
     name: 'interface_map',

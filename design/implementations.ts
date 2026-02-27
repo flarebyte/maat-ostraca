@@ -6,7 +6,7 @@ export const implementations: Record<string, ImplementationConsideration> = {
     name: 'rules.name.separator.underscore',
     title: 'Use underscore as the rule-name separator',
     description:
-      'Use `_` in rule names (for example: `function_metrics_map`) instead of `.` to avoid escaping in tools such as jq and JavaScript property access.',
+      'Use `_` in rule names (for example: `function_map`) instead of `.` to avoid escaping in tools such as jq and JavaScript property access.',
     calls: [
       'cli.analyse',
       'rules.resolve',

@@ -47,7 +47,7 @@ This document summarizes suggested implementation choices.
 
 ## Use underscore as the rule-name separator [rules.name.separator.underscore]
 
-- Description: Use `_` in rule names (for example: `function_metrics_map`) instead of `.` to avoid escaping in tools such as jq and JavaScript property access.
+- Description: Use `_` in rule names (for example: `function_map`) instead of `.` to avoid escaping in tools such as jq and JavaScript property access.
 - Calls: cli.analyse, rules.resolve, rules.catalog.list, format.output
 
 ## Target latest Node.js LTS and keep dependencies up to date [runtime.node.lts.latest]

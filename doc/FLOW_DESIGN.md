@@ -63,8 +63,8 @@ Supported use cases:
   - List all external package imports
   - List all exception messages
   - List all error messages
-  - Map function signatures by function name — Keyed by function name; each value includes parameter/return signatures and sorted `modifiers`.
-  - Map method signatures by method key — Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes parameter/return signatures and sorted `modifiers`.
+  - Map functions by function name — Keyed by function name; each value includes signature details, sorted `modifiers`, metrics, and I/O counts.
+  - Map methods by method key — Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes signature details, sorted `modifiers`, metrics, and I/O counts.
   - Map interfaces by interface name — Keyed by interface name; each value includes interface metadata (for example: modifiers, extends, method signatures).
   - Map interface code by interface name — Keyed by interface name; each value is the interface code snippet.
   - List all test case titles — May include unit and end-to-end tests.
@@ -72,8 +72,6 @@ Supported use cases:
   - Count I/O calls per function and method — Returns counts keyed by function and method.
   - Count I/O read calls per function and method — Returns counts keyed by function and method.
   - Count I/O write calls per function and method — Returns counts keyed by function and method.
-  - Map function metrics by function name — Keyed by function name; each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
-  - Map method metrics by method key — Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
   - Map classes by class name — Keyed by class name; each value includes class metadata and metrics (for example: modifiers, inheritance, LOC, SLOC, complexity, tokens, SHA-256 hash, and method count).
   - List file-level metrics — Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, loop count, and condition count.
   - SHA-256 hash of code body — Use SHA-256 to hash function or class bodies so code changes are easy to detect.
