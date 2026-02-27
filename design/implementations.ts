@@ -2,6 +2,20 @@ import type { ImplementationConsideration } from './common.ts';
 
 // Initial implementation suggestions. Keep this list small and actionable.
 export const implementations: Record<string, ImplementationConsideration> = {
+  languageModernSyntax: {
+    name: 'lang.tsjs.modern.syntax',
+    title: 'Adopt modern TypeScript/JavaScript syntax quickly',
+    description:
+      'Use modern TS/JS syntax and recommendations by default, unless a newer construct has a measurable negative performance impact in a hot path.',
+    calls: ['cli.root', 'rules.resolve', 'rules.dispatch', 'metrics.calculate'],
+  },
+  nodeLtsAndDependencyFreshness: {
+    name: 'runtime.node.lts.latest',
+    title: 'Target latest Node.js LTS and keep dependencies up to date',
+    description:
+      'Run on the latest Node.js LTS and keep dependencies current with regular updates to benefit from security fixes, compatibility improvements, and ecosystem recommendations.',
+    calls: ['cli.root', 'cli.analyse', 'rules.resolve', 'format.output'],
+  },
   dependencyPolicy: {
     name: 'deps.policy.minimal.mature',
     title: 'Keep dependencies minimal and choose mature packages',
