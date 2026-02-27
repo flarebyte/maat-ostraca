@@ -63,19 +63,19 @@ Supported use cases:
   - List all external package imports
   - List all exception messages
   - List all error messages
-  - List all function signatures — Includes parameter and return signatures.
-  - List all method signatures — Includes parameter and return signatures.
+  - Map function signatures by function name — Keyed by function name; each value includes parameter and return signatures.
+  - Map method signatures by method key — Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes parameter and return signatures.
   - List all interfaces
   - List all classes
-  - List code for all interfaces
+  - Map interface code by interface name — Keyed by interface name; each value is the interface code snippet.
   - List all test case titles — May include unit and end-to-end tests.
   - List all environment variable names
   - Count all I/O calls
   - Count all I/O read calls
   - Count all I/O write calls
-  - List all function metrics — Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
-  - List all method metrics — Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
-  - List all class metrics — Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, and method count.
+  - Map function metrics by function name — Keyed by function name; each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
+  - Map method metrics by method key — Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
+  - Map class metrics by class name — Keyed by class name; each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, and method count.
   - List file-level metrics — Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, loop count, and condition count.
   - SHA-256 hash of code body — Use SHA-256 to hash function or class bodies so code changes are easy to detect.
   - Code cyclomatic complexity — The score increases for each branch (for example: if, else, for, while, case).
@@ -86,6 +86,7 @@ Supported use cases:
   - Provide human-friendly output — Use readable formatting, such as colors.
   - Provide deterministic output ordering — Keep field and section ordering stable across runs for the same input.
   - Provide sorted list values in output — Sort list-like outputs (for example: imports, names, messages) to keep results predictable.
+  - Provide map-like outputs for dot-notation access — Prefer object maps over arrays for symbol-based outputs so values can be accessed directly by key.
   - List all available rules with descriptions — Expose discoverable rule names and descriptions for the selected language.
 
 

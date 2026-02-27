@@ -39,25 +39,23 @@ export const exampleCliJsonResult: CliJsonResult = {
       'failed to decode response body',
     ],
 
-    'function.signatures.list': [
-      {
-        name: 'chargeCustomer',
+    'function.signatures.map': {
+      chargeCustomer: {
         params: ['ctx context.Context', 'req ChargeRequest'],
         returns: ['ChargeResponse', 'error'],
       },
-    ],
-    'method.signatures.list': [
-      {
+    },
+    'method.signatures.map': {
+      paymentServiceCharge: {
         receiver: '*PaymentService',
         name: 'Charge',
         params: ['ctx context.Context', 'req ChargeRequest'],
         returns: ['ChargeResponse', 'error'],
       },
-    ],
+    },
 
-    'function.metrics.list': [
-      {
-        name: 'chargeCustomer',
+    'function.metrics.map': {
+      chargeCustomer: {
         loc: 38,
         sloc: 31,
         cyclomaticComplexity: 7,
@@ -70,9 +68,9 @@ export const exampleCliJsonResult: CliJsonResult = {
         conditions: 6,
         returns: 4,
       },
-    ],
-    'method.metrics.list': [
-      {
+    },
+    'method.metrics.map': {
+      paymentServiceCharge: {
         receiver: '*PaymentService',
         name: 'Charge',
         loc: 54,
@@ -87,8 +85,8 @@ export const exampleCliJsonResult: CliJsonResult = {
         conditions: 8,
         returns: 5,
       },
-    ],
-    'class.metrics.list': [],
+    },
+    'class.metrics.map': {},
     'file.metrics': {
       loc: 212,
       sloc: 174,
@@ -102,12 +100,10 @@ export const exampleCliJsonResult: CliJsonResult = {
 
     'interfaces.list': ['PaymentProvider', 'AuditLogger'],
     'classes.list': [],
-    'interfaces.code.list': [
-      {
-        name: 'PaymentProvider',
-        code: 'type PaymentProvider interface { Charge(ctx context.Context, req ChargeRequest) (ChargeResponse, error) }',
-      },
-    ],
+    'interfaces.code.map': {
+      PaymentProvider:
+        'type PaymentProvider interface { Charge(ctx context.Context, req ChargeRequest) (ChargeResponse, error) }',
+    },
 
     'testcase.titles.list': [
       'Charge returns error when API key is missing',
@@ -141,8 +137,8 @@ export const exampleRulesListResult: CliRulesListResult = {
       description: 'Count all I/O calls',
     },
     {
-      name: 'method.metrics.list',
-      description: 'List all method metrics',
+      name: 'method.metrics.map',
+      description: 'Map method metrics by method key',
     },
   ],
 };

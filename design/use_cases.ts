@@ -47,25 +47,25 @@ export const useCases: Record<string, UseCase> = {
     title: 'List all error messages',
     note: '',
   },
-  functionSignatureList: {
-    name: 'function.signatures.list',
-    title: 'List all function signatures',
-    note: 'Includes parameter and return signatures.',
+  functionSignaturesMap: {
+    name: 'function.signatures.map',
+    title: 'Map function signatures by function name',
+    note: 'Keyed by function name; each value includes parameter and return signatures.',
   },
-  functionMetricsList: {
-    name: 'function.metrics.list',
-    title: 'List all function metrics',
-    note: 'Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
+  functionMetricsMap: {
+    name: 'function.metrics.map',
+    title: 'Map function metrics by function name',
+    note: 'Keyed by function name; each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
   },
-  methodSignatureList: {
-    name: 'method.signatures.list',
-    title: 'List all method signatures',
-    note: 'Includes parameter and return signatures.',
+  methodSignaturesMap: {
+    name: 'method.signatures.map',
+    title: 'Map method signatures by method key',
+    note: 'Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes parameter and return signatures.',
   },
-  methodMetricsList: {
-    name: 'method.metrics.list',
-    title: 'List all method metrics',
-    note: 'Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
+  methodMetricsMap: {
+    name: 'method.metrics.map',
+    title: 'Map method metrics by method key',
+    note: 'Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
   },
   interfaceList: {
     name: 'interfaces.list',
@@ -77,15 +77,15 @@ export const useCases: Record<string, UseCase> = {
     title: 'List all classes',
     note: '',
   },
-  classMetricsList: {
-    name: 'class.metrics.list',
-    title: 'List all class metrics',
-    note: 'Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, and method count.',
+  classMetricsMap: {
+    name: 'class.metrics.map',
+    title: 'Map class metrics by class name',
+    note: 'Keyed by class name; each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, and method count.',
   },
-  interfaceCodeList: {
-    name: 'interfaces.code.list',
-    title: 'List code for all interfaces',
-    note: '',
+  interfacesCodeMap: {
+    name: 'interfaces.code.map',
+    title: 'Map interface code by interface name',
+    note: 'Keyed by interface name; each value is the interface code snippet.',
   },
   fileMetrics: {
     name: 'file.metrics',
@@ -167,6 +167,11 @@ export const useCases: Record<string, UseCase> = {
     name: 'output.values.sorted',
     title: 'Provide sorted list values in output',
     note: 'Sort list-like outputs (for example: imports, names, messages) to keep results predictable.',
+  },
+  outputDotNotationAccess: {
+    name: 'output.access.dot.notation',
+    title: 'Provide map-like outputs for dot-notation access',
+    note: 'Prefer object maps over arrays for symbol-based outputs so values can be accessed directly by key.',
   },
   codeHash: {
     name: 'code.hash',
