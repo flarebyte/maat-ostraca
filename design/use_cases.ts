@@ -4,18 +4,18 @@ import type { UseCase } from './common.ts';
 export const useCases: Record<string, UseCase> = {
   ioCallsCount: {
     name: 'io_calls_count',
-    title: 'Count all I/O calls',
-    note: '',
+    title: 'Count I/O calls per function and method',
+    note: 'Returns counts keyed by function and method.',
   },
   ioReadCallsCount: {
     name: 'io_read_calls_count',
-    title: 'Count all I/O read calls',
-    note: '',
+    title: 'Count I/O read calls per function and method',
+    note: 'Returns counts keyed by function and method.',
   },
   ioWriteCallsCount: {
     name: 'io_write_calls_count',
-    title: 'Count all I/O write calls',
-    note: '',
+    title: 'Count I/O write calls per function and method',
+    note: 'Returns counts keyed by function and method.',
   },
   importFileList: {
     name: 'import_files_list',
@@ -50,7 +50,7 @@ export const useCases: Record<string, UseCase> = {
   functionSignaturesMap: {
     name: 'function_signatures_map',
     title: 'Map function signatures by function name',
-    note: 'Keyed by function name; each value includes parameter and return signatures.',
+    note: 'Keyed by function name; each value includes parameter/return signatures and sorted `modifiers`.',
   },
   functionMetricsMap: {
     name: 'function_metrics_map',
@@ -60,7 +60,7 @@ export const useCases: Record<string, UseCase> = {
   methodSignaturesMap: {
     name: 'method_signatures_map',
     title: 'Map method signatures by method key',
-    note: 'Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes parameter and return signatures.',
+    note: 'Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes parameter/return signatures and sorted `modifiers`.',
   },
   methodMetricsMap: {
     name: 'method_metrics_map',

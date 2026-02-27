@@ -20,12 +20,33 @@ export type CliRulesListResult = {
 };
 
 export const exampleCliJsonResult: CliJsonResult = {
-  filename: 'internal/service/payment_service.go',
-  language: 'go',
+  filename: 'internal/service/payment_service.ts',
+  language: 'typescript',
   rules: {
-    io_calls_count: 12,
-    io_read_calls_count: 5,
-    io_write_calls_count: 7,
+    io_calls_count: {
+      functions: {
+        chargeCustomer: 4,
+      },
+      methods: {
+        paymentServiceCharge: 8,
+      },
+    },
+    io_read_calls_count: {
+      functions: {
+        chargeCustomer: 2,
+      },
+      methods: {
+        paymentServiceCharge: 3,
+      },
+    },
+    io_write_calls_count: {
+      functions: {
+        chargeCustomer: 2,
+      },
+      methods: {
+        paymentServiceCharge: 5,
+      },
+    },
 
     import_files_list: ['context', 'fmt', 'net/http', 'os', 'time'],
     import_functions_list: ['fmt.Sprintf', 'time.Now'],
@@ -41,16 +62,18 @@ export const exampleCliJsonResult: CliJsonResult = {
 
     function_signatures_map: {
       chargeCustomer: {
-        params: ['ctx context.Context', 'req ChargeRequest'],
-        returns: ['ChargeResponse', 'error'],
+        modifiers: ['async'],
+        params: ['ctx: RequestContext', 'req: ChargeRequest'],
+        returns: ['Promise<ChargeResponse>'],
       },
     },
     method_signatures_map: {
       paymentServiceCharge: {
-        receiver: '*PaymentService',
+        modifiers: ['override', 'private'],
+        receiver: 'PaymentService',
         name: 'Charge',
-        params: ['ctx context.Context', 'req ChargeRequest'],
-        returns: ['ChargeResponse', 'error'],
+        params: ['ctx: RequestContext', 'req: ChargeRequest'],
+        returns: ['Promise<ChargeResponse>'],
       },
     },
 

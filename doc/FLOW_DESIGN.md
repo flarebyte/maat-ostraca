@@ -63,16 +63,16 @@ Supported use cases:
   - List all external package imports
   - List all exception messages
   - List all error messages
-  - Map function signatures by function name — Keyed by function name; each value includes parameter and return signatures.
-  - Map method signatures by method key — Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes parameter and return signatures.
+  - Map function signatures by function name — Keyed by function name; each value includes parameter/return signatures and sorted `modifiers`.
+  - Map method signatures by method key — Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes parameter/return signatures and sorted `modifiers`.
   - List all interfaces
   - List all classes
   - Map interface code by interface name — Keyed by interface name; each value is the interface code snippet.
   - List all test case titles — May include unit and end-to-end tests.
   - List all environment variable names
-  - Count all I/O calls
-  - Count all I/O read calls
-  - Count all I/O write calls
+  - Count I/O calls per function and method — Returns counts keyed by function and method.
+  - Count I/O read calls per function and method — Returns counts keyed by function and method.
+  - Count I/O write calls per function and method — Returns counts keyed by function and method.
   - Map function metrics by function name — Keyed by function name; each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
   - Map method metrics by method key — Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
   - Map class metrics by class name — Keyed by class name; each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, and method count.
