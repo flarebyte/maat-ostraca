@@ -55,7 +55,7 @@ export const useCases: Record<string, UseCase> = {
   functionMetricsList: {
     name: 'function.metrics.list',
     title: 'List all function metrics',
-    note: 'Includes LOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
+    note: 'Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
   },
   methodSignatureList: {
     name: 'method.signatures.list',
@@ -65,7 +65,7 @@ export const useCases: Record<string, UseCase> = {
   methodMetricsList: {
     name: 'method.metrics.list',
     title: 'List all method metrics',
-    note: 'Includes LOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
+    note: 'Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
   },
   interfaceList: {
     name: 'interfaces.list',
@@ -80,7 +80,7 @@ export const useCases: Record<string, UseCase> = {
   classMetricsList: {
     name: 'class.metrics.list',
     title: 'List all class metrics',
-    note: 'Includes LOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, and method count.',
+    note: 'Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, and method count.',
   },
   interfaceCodeList: {
     name: 'interfaces.code.list',
@@ -90,7 +90,7 @@ export const useCases: Record<string, UseCase> = {
   fileMetrics: {
     name: 'file.metrics',
     title: 'List file-level metrics',
-    note: 'Includes LOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, loop count, and condition count.',
+    note: 'Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, loop count, and condition count.',
   },
   testCaseTitleList: {
     name: 'testcase.titles.list',
@@ -138,6 +138,11 @@ export const useCases: Record<string, UseCase> = {
       'Maintain one rule implementation file per rule-language combination',
     note: 'Keep rule logic isolated by rule and language (for example: `rules/io.calls.count/go.ts`).',
   },
+  rulesListAvailable: {
+    name: 'rules.list.available',
+    title: 'List all available rules with descriptions',
+    note: 'Expose discoverable rule names and descriptions for the selected language.',
+  },
   singleFileAnalysis: {
     name: 'analysis.single.file',
     title: 'Run semantic analysis on a single source file',
@@ -172,6 +177,11 @@ export const useCases: Record<string, UseCase> = {
     name: 'code.complexity',
     title: 'Code cyclomatic complexity',
     note: 'The score increases for each branch (for example: if, else, for, while, case).',
+  },
+  codeSloc: {
+    name: 'code.sloc',
+    title: 'Source lines of code (SLOC)',
+    note: 'Count non-blank, non-comment source lines in the analyzed scope.',
   },
   codeNestingDepthMax: {
     name: 'code.nesting.depth.max',

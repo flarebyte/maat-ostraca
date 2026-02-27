@@ -35,6 +35,16 @@ MAAT CLI root command [cli.root]
               - success: {loc, tokens}
     Format output for humans or AI and write to stdout [format.output]
       - input: {results}
+  List all available rules and descriptions [cli.rules.list]
+    - note: Exposed as a CLI command to discover rules without running analysis.
+    - pkg: cmd/maat
+    - input: {language}
+    - success: {rules: [{name, description}]}
+    Load rule catalog and filter by language [rules.catalog.list]
+      - note: Returns stable, sorted rule names with human-readable descriptions.
+      - pkg: internal/rules
+      - input: {language}
+      - success: {rules: [{name, description}]}
 ```
 
 Supported use cases:
@@ -63,18 +73,20 @@ Supported use cases:
   - Count all I/O calls
   - Count all I/O read calls
   - Count all I/O write calls
-  - List all function metrics — Includes LOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
-  - List all method metrics — Includes LOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
-  - List all class metrics — Includes LOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, and method count.
-  - List file-level metrics — Includes LOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, loop count, and condition count.
+  - List all function metrics — Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
+  - List all method metrics — Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.
+  - List all class metrics — Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, and method count.
+  - List file-level metrics — Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, loop count, and condition count.
   - SHA-256 hash of code body — Use SHA-256 to hash function or class bodies so code changes are easy to detect.
   - Code cyclomatic complexity — The score increases for each branch (for example: if, else, for, while, case).
+  - Source lines of code (SLOC) — Count non-blank, non-comment source lines in the analyzed scope.
   - Maximum nesting depth — Measures the deepest control-flow nesting level in the analyzed scope.
   - Code cognitive complexity — Estimates how difficult the control flow is for humans to understand.
   - Provide AI-friendly output — A `--json` output mode can support this.
   - Provide human-friendly output — Use readable formatting, such as colors.
   - Provide deterministic output ordering — Keep field and section ordering stable across runs for the same input.
   - Provide sorted list values in output — Sort list-like outputs (for example: imports, names, messages) to keep results predictable.
+  - List all available rules with descriptions — Expose discoverable rule names and descriptions for the selected language.
 
 
 Unsupported use cases (yet):

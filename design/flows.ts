@@ -14,6 +14,7 @@ export const cliRoot = (context: FlowContext) => {
   calls.push(call);
   // Register commands under the root.
   cliArgsAnalyse(incrContext(context));
+  cliRulesList(incrContext(context));
 };
 
 export const cliArgsAnalyse = (context: FlowContext) => {
@@ -34,6 +35,43 @@ export const cliArgsAnalyse = (context: FlowContext) => {
   resolveRequestedRules(incrContext(context));
   analyseSourceContent(incrContext(context));
   formatOutput(incrContext(context));
+};
+
+export const cliRulesList = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'cli.rules.list',
+    title: 'List all available rules and descriptions',
+    directory: 'cmd/maat',
+    note: 'Exposed as a CLI command to discover rules without running analysis.',
+    level: context.level,
+    signature: {
+      input: '{language}',
+      success: '{rules: [{name, description}]}',
+    },
+    useCases: [useCases.rulesListAvailable.name],
+  };
+  calls.push(call);
+  listRulesCatalog(incrContext(context));
+};
+
+export const listRulesCatalog = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'rules.catalog.list',
+    title: 'Load rule catalog and filter by language',
+    directory: 'internal/rules',
+    note: 'Returns stable, sorted rule names with human-readable descriptions.',
+    level: context.level,
+    signature: {
+      input: '{language}',
+      success: '{rules: [{name, description}]}',
+    },
+    useCases: [
+      useCases.rulesListAvailable.name,
+      useCases.outputDeterministicOrder.name,
+      useCases.outputSortedValues.name,
+    ],
+  };
+  calls.push(call);
 };
 
 export const resolveRequestedRules = (context: FlowContext) => {
@@ -190,6 +228,7 @@ export const calculateMetrics = (context: FlowContext) => {
       useCases.fileMetrics.name,
       useCases.codeHash.name,
       useCases.codeComplexity.name,
+      useCases.codeSloc.name,
       useCases.codeNestingDepthMax.name,
       useCases.codeCognitiveComplexity.name,
     ],

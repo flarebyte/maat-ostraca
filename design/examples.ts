@@ -11,6 +11,14 @@ export type CliJsonResult = {
   rules: Record<string, CliRuleValue>;
 };
 
+export type CliRulesListResult = {
+  language: string;
+  rules: Array<{
+    name: string;
+    description: string;
+  }>;
+};
+
 export const exampleCliJsonResult: CliJsonResult = {
   filename: 'internal/service/payment_service.go',
   language: 'go',
@@ -51,6 +59,7 @@ export const exampleCliJsonResult: CliJsonResult = {
       {
         name: 'chargeCustomer',
         loc: 38,
+        sloc: 31,
         cyclomaticComplexity: 7,
         cognitiveComplexity: 11,
         maxNestingDepth: 3,
@@ -67,6 +76,7 @@ export const exampleCliJsonResult: CliJsonResult = {
         receiver: '*PaymentService',
         name: 'Charge',
         loc: 54,
+        sloc: 45,
         cyclomaticComplexity: 10,
         cognitiveComplexity: 15,
         maxNestingDepth: 4,
@@ -81,6 +91,7 @@ export const exampleCliJsonResult: CliJsonResult = {
     'class.metrics.list': [],
     'file.metrics': {
       loc: 212,
+      sloc: 174,
       cyclomaticComplexity: 29,
       cognitiveComplexity: 41,
       maxNestingDepth: 5,
@@ -112,14 +123,39 @@ export const exampleCliJsonResult: CliJsonResult = {
       cyclomatic: 29,
       rating: 'C',
     },
+    'code.sloc': 174,
     'code.nesting.depth.max': 5,
     'code.cognitive.complexity': 41,
   },
 };
 
+export const exampleRulesListResult: CliRulesListResult = {
+  language: 'go',
+  rules: [
+    {
+      name: 'import.files.list',
+      description: 'List all imported files',
+    },
+    {
+      name: 'io.calls.count',
+      description: 'Count all I/O calls',
+    },
+    {
+      name: 'method.metrics.list',
+      description: 'List all method metrics',
+    },
+  ],
+};
+
 // Helpful when documenting the exact JSON output shape in markdown/docs.
 export const exampleCliJsonResultText = JSON.stringify(
   exampleCliJsonResult,
+  null,
+  2,
+);
+
+export const exampleRulesListResultText = JSON.stringify(
+  exampleRulesListResult,
   null,
   2,
 );
