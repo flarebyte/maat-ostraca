@@ -106,7 +106,20 @@ export const exampleCliJsonResult: CliJsonResult = {
       conditions: 19,
     },
 
-    interfaces_list: ['PaymentProvider', 'AuditLogger'],
+    interface_map: {
+      AuditLogger: {
+        modifiers: ['export'],
+        extends: [],
+        methods: ['log(event: AuditEvent): void'],
+      },
+      PaymentProvider: {
+        modifiers: ['export'],
+        extends: [],
+        methods: [
+          'Charge(ctx: RequestContext, req: ChargeRequest): Promise<ChargeResponse>',
+        ],
+      },
+    },
     classes_list: [],
     interfaces_code_map: {
       PaymentProvider:
@@ -151,6 +164,10 @@ export const exampleRulesListResult: CliRulesListResult = {
     {
       name: 'class_map',
       description: 'Class-level map keyed by class name',
+    },
+    {
+      name: 'interface_map',
+      description: 'Interface-level map keyed by interface name',
     },
   ],
 };

@@ -65,7 +65,7 @@ Supported use cases:
   - List all error messages
   - Map function signatures by function name — Keyed by function name; each value includes parameter/return signatures and sorted `modifiers`.
   - Map method signatures by method key — Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes parameter/return signatures and sorted `modifiers`.
-  - List all interfaces
+  - Map interfaces by interface name — Keyed by interface name; each value includes interface metadata (for example: modifiers, extends, method signatures).
   - List all classes
   - Map interface code by interface name — Keyed by interface name; each value is the interface code snippet.
   - List all test case titles — May include unit and end-to-end tests.

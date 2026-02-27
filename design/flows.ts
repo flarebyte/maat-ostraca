@@ -180,7 +180,7 @@ export const astgrepSearch = (context: FlowContext) => {
       useCases.errorMessageList.name,
       useCases.functionSignaturesMap.name,
       useCases.methodSignaturesMap.name,
-      useCases.interfaceList.name,
+      useCases.interfaceMap.name,
       useCases.classList.name,
       useCases.interfacesCodeMap.name,
       useCases.testCaseTitleList.name,

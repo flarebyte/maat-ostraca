@@ -67,10 +67,10 @@ export const useCases: Record<string, UseCase> = {
     title: 'Map method metrics by method key',
     note: 'Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, SHA-256 hash, loop count, condition count, and return count.',
   },
-  interfaceList: {
-    name: 'interfaces_list',
-    title: 'List all interfaces',
-    note: '',
+  interfaceMap: {
+    name: 'interface_map',
+    title: 'Map interfaces by interface name',
+    note: 'Keyed by interface name; each value includes interface metadata (for example: modifiers, extends, method signatures).',
   },
   classList: {
     name: 'classes_list',
