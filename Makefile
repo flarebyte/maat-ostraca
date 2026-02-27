@@ -1,40 +1,25 @@
 ## Makefile: Thin, explicit wrappers for tools
 ## - One responsibility per target
 ## - No dynamic variables or shell logic
-## - Real logic lives in scripts (TypeScript/Bun, bash, Go)
+## - Real logic lives in scripts (TypeScript/Bun, bash)
 
 .PHONY: lint format test test-race gen build build-dev e2e release clean help
 
 BIOME := npx @biomejs/biome
 BUN := bun
-GO := go
-GOLINT := golangci-lint
 
 lint:
 	$(BIOME) check
-	$(GO) vet ./...
-	$(GOLINT) run
 
 format:
-	gofmt -w .
 	$(BIOME) format --write .
 	$(BIOME) check --unsafe --write
 
-test: gen
-	$(GO) test ./...
-
-test-race: gen
-	$(GO) test -race ./...
-
-gen:
-	true
+test:
+	npm run test
 
 build:
-	$(BUN) run build-go.mts
-
-build-dev:
-	mkdir -p .e2e-bin
-	GOCACHE=$(PWD)/.gocache GOMODCACHE=$(PWD)/.gomodcache CGO_ENABLED=0 $(GO) build -o .e2e-bin/thoth ./cmd/thoth
+	npm run build
 
 e2e:
 	cd script/e2e && $(BUN) test
@@ -46,13 +31,11 @@ clean:
 	rm -rf build
 
 complexity:
-	scc --sort complexity --by-file -i go . | head -n 15
 	scc --sort complexity --by-file -i ts . | head -n 15
 
 sec:
 	semgrep scan --config auto
 dup:
-	npx jscpd --format go --min-lines 10 --gitignore .
 	npx jscpd --format typescript --min-lines 15 --gitignore .
 
 help:

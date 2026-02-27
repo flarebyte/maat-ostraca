@@ -1,6 +1,5 @@
 import { calls } from './calls.ts';
 import {
-  appendSection,
   appendToReport,
   appendUseCases,
   displayCallsDetailed,
@@ -35,5 +34,4 @@ export const generateFlowDesignReport = async () => {
       useCaseCatalogByName,
     );
   }
-  await appendSection('title', ['todo']);
 };

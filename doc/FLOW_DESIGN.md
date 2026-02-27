@@ -94,6 +94,3 @@ Unsupported use cases (yet):
   - Code Halstead metrics — Post-v1 candidate: operator/operand-based measures such as volume, difficulty, and effort.
 
 
-
-## title
-  - todo
