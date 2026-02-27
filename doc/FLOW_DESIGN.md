@@ -6,10 +6,10 @@
 MAAT CLI root command [cli.root]
   - pkg: cmd/maat
   Parse CLI arguments for source code analysis [cli.analyse]
-    - note: Flags: --in filename.go --rules io.calls.count,import.files.list --language go --json. Implemented with commander.js.
+    - note: Flags: --in filename.go --rules io_calls_count,import_files_list --language go --json. Implemented with commander.js.
     - pkg: cmd/maat
     Resolve requested rules from explicit names and wildcard selectors [rules.resolve]
-      - note: Expands `--rules` values such as `import.*` and `io.*` into a deterministic list of concrete rules.
+      - note: Expands `--rules` values such as `import_*` and `io_*` into a deterministic list of concrete rules.
       - input: {rules, language}
       - success: {resolvedRules}[]
     Read and analyze a source file [file.read]
@@ -21,7 +21,7 @@ MAAT CLI root command [cli.root]
           - note: Dispatch to the matching rule analyzer, which may use different hardcoded approaches (for example, ast-grep).
           - input: {filename, source, rulename, language}
           Load and dispatch the rule implementation by rule name and language [rules.dispatch]
-            - note: Each rule-language combination should have its own implementation file (for example: `internal/rules/io.calls.count/go.ts`).
+            - note: Each rule-language combination should have its own implementation file (for example: `internal/rules/io_calls_count/go.ts`).
             - pkg: internal/rules
             - input: {ruleName, language, filename, source}
             Search source content with an ast-grep pattern [astgrep.search]
@@ -53,10 +53,10 @@ Supported use cases:
   - Support semantic parsing of Go files
   - Support semantic parsing of TypeScript files
   - Support semantic parsing of Dart and Flutter files
-  - Support wildcard rule selection in --rules — Allow selectors such as `import.*` and `io.*` to expand to matching rule names.
+  - Support wildcard rule selection in --rules — Allow selectors such as `import_*` and `io_*` to expand to matching rule names.
   - Run predefined rule-based analysis — Output is generated from the selected rules.
   - Dispatch rule execution by rule name and language — Resolve and run the matching implementation using both rule name and source language.
-  - Maintain one rule implementation file per rule-language combination — Keep rule logic isolated by rule and language (for example: `rules/io.calls.count/go.ts`).
+  - Maintain one rule implementation file per rule-language combination — Keep rule logic isolated by rule and language (for example: `rules/io_calls_count/go.ts`).
   - List all imported files
   - List all imported functions
   - List all imported types

@@ -22,7 +22,7 @@ export const cliArgsAnalyse = (context: FlowContext) => {
     name: 'cli.analyse',
     title: 'Parse CLI arguments for source code analysis',
     directory: 'cmd/maat',
-    note: 'Flags: --in filename.go --rules io.calls.count,import.files.list --language go --json. Implemented with commander.js.',
+    note: 'Flags: --in filename.go --rules io_calls_count,import_files_list --language go --json. Implemented with commander.js.',
     level: context.level,
     useCases: [
       useCases.goSupport.name,
@@ -79,7 +79,7 @@ export const resolveRequestedRules = (context: FlowContext) => {
     name: 'rules.resolve',
     title: 'Resolve requested rules from explicit names and wildcard selectors',
     directory: '',
-    note: 'Expands `--rules` values such as `import.*` and `io.*` into a deterministic list of concrete rules.',
+    note: 'Expands `--rules` values such as `import_*` and `io_*` into a deterministic list of concrete rules.',
     level: context.level,
     signature: {
       input: '{rules, language}',
@@ -144,7 +144,7 @@ export const dispatchRuleImplementation = (context: FlowContext) => {
     title:
       'Load and dispatch the rule implementation by rule name and language',
     directory: 'internal/rules',
-    note: 'Each rule-language combination should have its own implementation file (for example: `internal/rules/io.calls.count/go.ts`).',
+    note: 'Each rule-language combination should have its own implementation file (for example: `internal/rules/io_calls_count/go.ts`).',
     level: context.level,
     signature: {
       input: '{ruleName, language, filename, source}',

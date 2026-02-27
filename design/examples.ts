@@ -23,29 +23,29 @@ export const exampleCliJsonResult: CliJsonResult = {
   filename: 'internal/service/payment_service.go',
   language: 'go',
   rules: {
-    'io.calls.count': 12,
-    'io.read.calls.count': 5,
-    'io.write.calls.count': 7,
+    io_calls_count: 12,
+    io_read_calls_count: 5,
+    io_write_calls_count: 7,
 
-    'import.files.list': ['context', 'fmt', 'net/http', 'os', 'time'],
-    'import.functions.list': ['fmt.Sprintf', 'time.Now'],
-    'import.types.list': ['http.Client', 'context.Context'],
-    'package.imports.list': ['github.com/stripe/stripe-go/v79'],
+    import_files_list: ['context', 'fmt', 'net/http', 'os', 'time'],
+    import_functions_list: ['fmt.Sprintf', 'time.Now'],
+    import_types_list: ['http.Client', 'context.Context'],
+    package_imports_list: ['github.com/stripe/stripe-go/v79'],
 
-    'exception.messages.list': ['panic: failed to parse payment payload'],
-    'error.messages.list': [
+    exception_messages_list: ['panic: failed to parse payment payload'],
+    error_messages_list: [
       'missing api key',
       'payment provider timeout',
       'failed to decode response body',
     ],
 
-    'function.signatures.map': {
+    function_signatures_map: {
       chargeCustomer: {
         params: ['ctx context.Context', 'req ChargeRequest'],
         returns: ['ChargeResponse', 'error'],
       },
     },
-    'method.signatures.map': {
+    method_signatures_map: {
       paymentServiceCharge: {
         receiver: '*PaymentService',
         name: 'Charge',
@@ -54,7 +54,7 @@ export const exampleCliJsonResult: CliJsonResult = {
       },
     },
 
-    'function.metrics.map': {
+    function_metrics_map: {
       chargeCustomer: {
         loc: 38,
         sloc: 31,
@@ -69,7 +69,7 @@ export const exampleCliJsonResult: CliJsonResult = {
         returns: 4,
       },
     },
-    'method.metrics.map': {
+    method_metrics_map: {
       paymentServiceCharge: {
         receiver: '*PaymentService',
         name: 'Charge',
@@ -86,8 +86,8 @@ export const exampleCliJsonResult: CliJsonResult = {
         returns: 5,
       },
     },
-    'class.metrics.map': {},
-    'file.metrics': {
+    class_metrics_map: {},
+    file_metrics: {
       loc: 212,
       sloc: 174,
       cyclomaticComplexity: 29,
@@ -98,30 +98,30 @@ export const exampleCliJsonResult: CliJsonResult = {
       conditions: 19,
     },
 
-    'interfaces.list': ['PaymentProvider', 'AuditLogger'],
-    'classes.list': [],
-    'interfaces.code.map': {
+    interfaces_list: ['PaymentProvider', 'AuditLogger'],
+    classes_list: [],
+    interfaces_code_map: {
       PaymentProvider:
         'type PaymentProvider interface { Charge(ctx context.Context, req ChargeRequest) (ChargeResponse, error) }',
     },
 
-    'testcase.titles.list': [
+    testcase_titles_list: [
       'Charge returns error when API key is missing',
       'Charge retries once on transient timeout',
     ],
-    'env.names.list': ['STRIPE_API_KEY', 'PAYMENT_TIMEOUT_MS', 'LOG_LEVEL'],
+    env_names_list: ['STRIPE_API_KEY', 'PAYMENT_TIMEOUT_MS', 'LOG_LEVEL'],
 
-    'code.hash': {
+    code_hash: {
       algorithm: 'sha256',
       file: 'a7e5904f2d6dcf9ef95458c6f8db75749f579597f16bd8f7fd8d9f4db44de4aa',
     },
-    'code.complexity': {
+    code_complexity: {
       cyclomatic: 29,
       rating: 'C',
     },
-    'code.sloc': 174,
-    'code.nesting.depth.max': 5,
-    'code.cognitive.complexity': 41,
+    code_sloc: 174,
+    code_nesting_depth_max: 5,
+    code_cognitive_complexity: 41,
   },
 };
 
@@ -129,15 +129,15 @@ export const exampleRulesListResult: CliRulesListResult = {
   language: 'go',
   rules: [
     {
-      name: 'import.files.list',
+      name: 'import_files_list',
       description: 'List all imported files',
     },
     {
-      name: 'io.calls.count',
+      name: 'io_calls_count',
       description: 'Count all I/O calls',
     },
     {
-      name: 'method.metrics.map',
+      name: 'method_metrics_map',
       description: 'Map method metrics by method key',
     },
   ],

@@ -9,6 +9,7 @@ This document summarizes suggested implementation choices.
 - Adopt modern TypeScript/JavaScript syntax quickly [lang.tsjs.modern.syntax]
 - Prefer maintainability over perfect performance [quality.balance.maintainability.performance]
 - Implement one module per rule-language combination [rules.modules.by.language]
+- Use underscore as the rule-name separator [rules.name.separator.underscore]
 - Target latest Node.js LTS and keep dependencies up to date [runtime.node.lts.latest]
 - Use Node.js as the CLI runtime [runtime.nodejs]
 - Use Bun for TypeScript scripts and e2e tests [scripts.bun.conventions]
@@ -41,8 +42,13 @@ This document summarizes suggested implementation choices.
 
 ## Implement one module per rule-language combination [rules.modules.by.language]
 
-- Description: Keep implementations isolated by rule and language (for example: internal/rules/io.calls.count/go.ts) to simplify dispatch and maintenance.
+- Description: Keep implementations isolated by rule and language (for example: internal/rules/io_calls_count/go.ts) to simplify dispatch and maintenance.
 - Calls: rules.dispatch
+
+## Use underscore as the rule-name separator [rules.name.separator.underscore]
+
+- Description: Use `_` in rule names (for example: `function_metrics_map`) instead of `.` to avoid escaping in tools such as jq and JavaScript property access.
+- Calls: cli.analyse, rules.resolve, rules.catalog.list, format.output
 
 ## Target latest Node.js LTS and keep dependencies up to date [runtime.node.lts.latest]
 

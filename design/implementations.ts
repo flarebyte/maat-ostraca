@@ -2,6 +2,18 @@ import type { ImplementationConsideration } from './common.ts';
 
 // Initial implementation suggestions. Keep this list small and actionable.
 export const implementations: Record<string, ImplementationConsideration> = {
+  ruleNameSeparator: {
+    name: 'rules.name.separator.underscore',
+    title: 'Use underscore as the rule-name separator',
+    description:
+      'Use `_` in rule names (for example: `function_metrics_map`) instead of `.` to avoid escaping in tools such as jq and JavaScript property access.',
+    calls: [
+      'cli.analyse',
+      'rules.resolve',
+      'rules.catalog.list',
+      'format.output',
+    ],
+  },
   languageModernSyntax: {
     name: 'lang.tsjs.modern.syntax',
     title: 'Adopt modern TypeScript/JavaScript syntax quickly',
@@ -67,7 +79,7 @@ export const implementations: Record<string, ImplementationConsideration> = {
     name: 'rules.modules.by.language',
     title: 'Implement one module per rule-language combination',
     description:
-      'Keep implementations isolated by rule and language (for example: internal/rules/io.calls.count/go.ts) to simplify dispatch and maintenance.',
+      'Keep implementations isolated by rule and language (for example: internal/rules/io_calls_count/go.ts) to simplify dispatch and maintenance.',
     calls: ['rules.dispatch'],
   },
   bunScriptConventions: {
