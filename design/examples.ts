@@ -54,13 +54,6 @@ export const exampleCliJsonResult: CliJsonResult = {
         cyclomaticComplexity: 7,
         cognitiveComplexity: 11,
         maxNestingDepth: 3,
-        halstead: {
-          vocabulary: 42,
-          length: 126,
-          volume: 679.56,
-          difficulty: 13.2,
-          effort: 8970.19,
-        },
         tokens: 214,
         sha256:
           'b64e0ef6509d3f2d001f56f40d6f2f16c5db74de969e5052cff10fbd2f6ff4e0',
@@ -77,13 +70,6 @@ export const exampleCliJsonResult: CliJsonResult = {
         cyclomaticComplexity: 10,
         cognitiveComplexity: 15,
         maxNestingDepth: 4,
-        halstead: {
-          vocabulary: 57,
-          length: 173,
-          volume: 1008.25,
-          difficulty: 17.8,
-          effort: 17946.85,
-        },
         tokens: 301,
         sha256:
           '8c1a5ef3e933b16b36f10a4885d2fd66dd275f79aa9f69f8fa593d7f644bdf68',
@@ -98,13 +84,6 @@ export const exampleCliJsonResult: CliJsonResult = {
       cyclomaticComplexity: 29,
       cognitiveComplexity: 41,
       maxNestingDepth: 5,
-      halstead: {
-        vocabulary: 201,
-        length: 1104,
-        volume: 8421.77,
-        difficulty: 36.9,
-        effort: 310763.31,
-      },
       tokens: 1230,
       loops: 4,
       conditions: 19,
@@ -135,13 +114,6 @@ export const exampleCliJsonResult: CliJsonResult = {
     },
     'code.nesting.depth.max': 5,
     'code.cognitive.complexity': 41,
-    'code.halstead.metrics': {
-      vocabulary: 201,
-      length: 1104,
-      volume: 8421.77,
-      difficulty: 36.9,
-      effort: 310763.31,
-    },
   },
 };
 
