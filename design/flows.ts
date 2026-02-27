@@ -181,7 +181,6 @@ export const astgrepSearch = (context: FlowContext) => {
       useCases.functionSignaturesMap.name,
       useCases.methodSignaturesMap.name,
       useCases.interfaceMap.name,
-      useCases.classList.name,
       useCases.interfacesCodeMap.name,
       useCases.testCaseTitleList.name,
       useCases.envNamesList.name,
@@ -227,10 +226,6 @@ export const calculateMetrics = (context: FlowContext) => {
       useCases.classMap.name,
       useCases.fileMetrics.name,
       useCases.codeHash.name,
-      useCases.codeComplexity.name,
-      useCases.codeSloc.name,
-      useCases.codeNestingDepthMax.name,
-      useCases.codeCognitiveComplexity.name,
     ],
   };
   calls.push(call);

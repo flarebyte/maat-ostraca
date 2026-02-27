@@ -66,7 +66,6 @@ Supported use cases:
   - Map function signatures by function name — Keyed by function name; each value includes parameter/return signatures and sorted `modifiers`.
   - Map method signatures by method key — Keyed by a stable method key (for example: `paymentServiceCharge`); each value includes parameter/return signatures and sorted `modifiers`.
   - Map interfaces by interface name — Keyed by interface name; each value includes interface metadata (for example: modifiers, extends, method signatures).
-  - List all classes
   - Map interface code by interface name — Keyed by interface name; each value is the interface code snippet.
   - List all test case titles — May include unit and end-to-end tests.
   - List all environment variable names
@@ -78,10 +77,6 @@ Supported use cases:
   - Map classes by class name — Keyed by class name; each value includes class metadata and metrics (for example: modifiers, inheritance, LOC, SLOC, complexity, tokens, SHA-256 hash, and method count).
   - List file-level metrics — Includes LOC, SLOC, cyclomatic complexity, max nesting depth, cognitive complexity, tokens, loop count, and condition count.
   - SHA-256 hash of code body — Use SHA-256 to hash function or class bodies so code changes are easy to detect.
-  - Code cyclomatic complexity — The score increases for each branch (for example: if, else, for, while, case).
-  - Source lines of code (SLOC) — Count non-blank, non-comment source lines in the analyzed scope.
-  - Maximum nesting depth — Measures the deepest control-flow nesting level in the analyzed scope.
-  - Code cognitive complexity — Estimates how difficult the control flow is for humans to understand.
   - Provide AI-friendly output — A `--json` output mode can support this.
   - Provide human-friendly output — Use readable formatting, such as colors.
   - Provide deterministic output ordering — Keep field and section ordering stable across runs for the same input.

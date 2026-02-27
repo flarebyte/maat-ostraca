@@ -72,11 +72,6 @@ export const useCases: Record<string, UseCase> = {
     title: 'Map interfaces by interface name',
     note: 'Keyed by interface name; each value includes interface metadata (for example: modifiers, extends, method signatures).',
   },
-  classList: {
-    name: 'classes_list',
-    title: 'List all classes',
-    note: '',
-  },
   classMap: {
     name: 'class_map',
     title: 'Map classes by class name',
@@ -177,26 +172,6 @@ export const useCases: Record<string, UseCase> = {
     name: 'code_hash',
     title: 'SHA-256 hash of code body',
     note: 'Use SHA-256 to hash function or class bodies so code changes are easy to detect.',
-  },
-  codeComplexity: {
-    name: 'code_complexity',
-    title: 'Code cyclomatic complexity',
-    note: 'The score increases for each branch (for example: if, else, for, while, case).',
-  },
-  codeSloc: {
-    name: 'code_sloc',
-    title: 'Source lines of code (SLOC)',
-    note: 'Count non-blank, non-comment source lines in the analyzed scope.',
-  },
-  codeNestingDepthMax: {
-    name: 'code_nesting_depth_max',
-    title: 'Maximum nesting depth',
-    note: 'Measures the deepest control-flow nesting level in the analyzed scope.',
-  },
-  codeCognitiveComplexity: {
-    name: 'code_cognitive_complexity',
-    title: 'Code cognitive complexity',
-    note: 'Estimates how difficult the control flow is for humans to understand.',
   },
   codeHalsteadMetrics: {
     name: 'code_halstead_metrics',

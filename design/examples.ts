@@ -120,7 +120,6 @@ export const exampleCliJsonResult: CliJsonResult = {
         ],
       },
     },
-    classes_list: [],
     interfaces_code_map: {
       PaymentProvider:
         'type PaymentProvider interface { Charge(ctx context.Context, req ChargeRequest) (ChargeResponse, error) }',
@@ -136,13 +135,6 @@ export const exampleCliJsonResult: CliJsonResult = {
       algorithm: 'sha256',
       file: 'a7e5904f2d6dcf9ef95458c6f8db75749f579597f16bd8f7fd8d9f4db44de4aa',
     },
-    code_complexity: {
-      cyclomatic: 29,
-      rating: 'C',
-    },
-    code_sloc: 174,
-    code_nesting_depth_max: 5,
-    code_cognitive_complexity: 41,
   },
 };
 
