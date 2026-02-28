@@ -1,6 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import {
   exampleCliJsonResultText,
+  exampleDiffDeltaOnlyJsonResultText,
   exampleDiffJsonResultText,
   exampleRulesListResultText,
 } from './examples.ts';
@@ -27,6 +28,12 @@ export const generateExamplesReport = async () => {
   lines.push('');
   lines.push('```json');
   lines.push(exampleDiffJsonResultText);
+  lines.push('```');
+  lines.push('');
+  lines.push('## Diff Command Output (`--delta-only`)');
+  lines.push('');
+  lines.push('```json');
+  lines.push(exampleDiffDeltaOnlyJsonResultText);
   lines.push('```');
   lines.push('');
 

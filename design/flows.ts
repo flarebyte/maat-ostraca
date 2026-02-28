@@ -78,16 +78,17 @@ export const cliDiff = (context: FlowContext) => {
     name: 'cli.diff',
     title: 'Parse CLI arguments for source diff analysis',
     directory: 'cmd/maat',
-    note: 'Flags: --from path --to path --rules io_calls_count --language go --json. `--to` may be omitted to read from stdin.',
+    note: 'Flags: --from path --to path --rules io_calls_count --language go --json [--delta-only]. `--to` may be omitted to read from stdin.',
     level: context.level,
     signature: {
-      input: '{from, to?, stdin, rules, language}',
+      input: '{from, to?, stdin, rules, language, deltaOnly?}',
     },
     useCases: [
       useCases.analysisDiffSources.name,
       useCases.analysisEvolutionTracking.name,
       useCases.sourceInputStdin.name,
       useCases.rulesWildcardSelection.name,
+      useCases.outputDiffDeltaOnly.name,
     ],
   };
   calls.push(call);
@@ -164,13 +165,14 @@ export const diffAnalysisResults = (context: FlowContext) => {
     note: 'Produces a stable diff payload mirroring the analysis structure.',
     level: context.level,
     signature: {
-      input: '{fromResults, toResults}',
+      input: '{fromResults, toResults, deltaOnly?}',
       success: '{diff}',
     },
     useCases: [
       useCases.analysisDiffSources.name,
       useCases.analysisEvolutionTracking.name,
       useCases.outputDiffObject.name,
+      useCases.outputDiffDeltaOnly.name,
       useCases.outputDeterministicOrder.name,
     ],
   };

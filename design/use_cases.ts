@@ -143,6 +143,11 @@ export const useCases: Record<string, UseCase> = {
     title: 'Provide structured diff output',
     note: 'Emit a diff object that mirrors analysis shape with `from`, `to`, and `delta` values where relevant.',
   },
+  outputDiffDeltaOnly: {
+    name: 'output_diff_delta_only',
+    title: 'Provide delta-only diff output',
+    note: 'When `--delta-only` is set, emit compact diff fields with only deltas (and added/removed markers), without `from`/`to` values.',
+  },
   sourceInputStdin: {
     name: 'source_input_stdin',
     title: 'Support source input from stdin',

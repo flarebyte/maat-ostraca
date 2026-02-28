@@ -41,9 +41,9 @@ MAAT CLI root command [cli.root]
     Format output for humans or AI and write to stdout [format.output]
       - input: {results}
   Parse CLI arguments for source diff analysis [cli.diff]
-    - note: Flags: --from path --to path --rules io_calls_count --language go --json. `--to` may be omitted to read from stdin.
+    - note: Flags: --from path --to path --rules io_calls_count --language go --json [--delta-only]. `--to` may be omitted to read from stdin.
     - pkg: cmd/maat
-    - input: {from, to?, stdin, rules, language}
+    - input: {from, to?, stdin, rules, language, deltaOnly?}
     Resolve requested rules from explicit names and wildcard selectors [rules.resolve]
       - note: Expands `--rules` values such as `import_*` and `io_*` into a deterministic list of concrete rules.
       - input: {rules, language}
@@ -60,7 +60,7 @@ MAAT CLI root command [cli.root]
       - success: {toResults}
     Build diff object from two analysis snapshots [results.diff]
       - note: Produces a stable diff payload mirroring the analysis structure.
-      - input: {fromResults, toResults}
+      - input: {fromResults, toResults, deltaOnly?}
       - success: {diff}
     Format output for humans or AI and write to stdout [format.output]
       - input: {results}
@@ -112,6 +112,7 @@ Supported use cases:
   - Provide map-like outputs for dot-notation access — Prefer object maps over arrays for symbol-based outputs so values can be accessed directly by key.
   - Diff analysis between two source snapshots — Compare rule results between a `from` source and a `to` source.
   - Track code evolution across time or projects — Useful to inspect how a shared file evolves over time or differs between repositories.
+  - Provide delta-only diff output — When `--delta-only` is set, emit compact diff fields with only deltas (and added/removed markers), without `from`/`to` values.
   - Provide structured diff output — Emit a diff object that mirrors analysis shape with `from`, `to`, and `delta` values where relevant.
   - List all available rules with descriptions — Expose discoverable rule names and descriptions for the selected language.
 
