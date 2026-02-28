@@ -8,16 +8,6 @@
     "declaration": true,
     "declarationMap": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts"
-  ],
-  "exclude": [
-    "test",
-    "design",
-    "doc",
-    "notes",
-    "dist",
-    "node_modules"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": ["test", "design", "doc", "notes", "dist", "node_modules"]
 }
