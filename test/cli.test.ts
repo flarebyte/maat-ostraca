@@ -129,7 +129,7 @@ describe('maat cli parsing', () => {
     ]);
     assert.equal(
       result.stdout,
-      '{"language":"typescript","rules":{"code_hash":{"algorithm":"sha256","file":"b79b14bd2584dd52b0f0ef042a2a4f104cda48330500e12237737cc51fbda43d"},"file_metrics":{"loc":2,"sloc":1,"tokens":5},"import_files_list":[]}}\n',
+      '{"language":"typescript","rules":{"code_hash":{"algorithm":"sha256","file":"b79b14bd2584dd52b0f0ef042a2a4f104cda48330500e12237737cc51fbda43d"},"file_metrics":{"cognitiveComplexity":1,"conditions":0,"cyclomaticComplexity":1,"loc":2,"loops":0,"maxNestingDepth":0,"sloc":1,"tokens":5},"import_files_list":[]}}\n',
     );
   });
 

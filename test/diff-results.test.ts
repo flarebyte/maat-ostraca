@@ -78,6 +78,86 @@ describe('diffResults', () => {
     });
   });
 
+  it('builds numeric deltas for file_metrics fields', () => {
+    const from = base({
+      file_metrics: {
+        loc: 10,
+        sloc: 8,
+        tokens: 20,
+        loops: 1,
+        conditions: 2,
+        cyclomaticComplexity: 4,
+        cognitiveComplexity: 4,
+        maxNestingDepth: 2,
+      },
+    });
+    const to = base({
+      file_metrics: {
+        loc: 12,
+        sloc: 9,
+        tokens: 25,
+        loops: 2,
+        conditions: 3,
+        cyclomaticComplexity: 6,
+        cognitiveComplexity: 6,
+        maxNestingDepth: 3,
+      },
+    });
+
+    const diff = diffResults(from, to, {});
+
+    assert.deepEqual(diff.rules.file_metrics, {
+      cognitiveComplexity: { from: 4, to: 6, delta: 2 },
+      conditions: { from: 2, to: 3, delta: 1 },
+      cyclomaticComplexity: { from: 4, to: 6, delta: 2 },
+      loc: { from: 10, to: 12, delta: 2 },
+      loops: { from: 1, to: 2, delta: 1 },
+      maxNestingDepth: { from: 2, to: 3, delta: 1 },
+      sloc: { from: 8, to: 9, delta: 1 },
+      tokens: { from: 20, to: 25, delta: 5 },
+    });
+  });
+
+  it('builds delta-only numeric file_metrics fields', () => {
+    const from = base({
+      file_metrics: {
+        loc: 3,
+        sloc: 2,
+        tokens: 7,
+        loops: 0,
+        conditions: 1,
+        cyclomaticComplexity: 2,
+        cognitiveComplexity: 2,
+        maxNestingDepth: 1,
+      },
+    });
+    const to = base({
+      file_metrics: {
+        loc: 5,
+        sloc: 4,
+        tokens: 9,
+        loops: 1,
+        conditions: 2,
+        cyclomaticComplexity: 4,
+        cognitiveComplexity: 4,
+        maxNestingDepth: 2,
+      },
+    });
+
+    const diff = diffResults(from, to, { deltaOnly: true });
+
+    assert.deepEqual(diff.rules.file_metrics, {
+      cognitiveComplexity: 2,
+      conditions: 1,
+      cyclomaticComplexity: 2,
+      loc: 2,
+      loops: 1,
+      maxNestingDepth: 1,
+      sloc: 2,
+      tokens: 2,
+    });
+  });
+
   it('omits rules when both values are null', () => {
     const from = base({ import_files_list: null });
     const to = base({ import_files_list: null });

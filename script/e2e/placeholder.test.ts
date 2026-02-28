@@ -208,3 +208,36 @@ test('maat analyse import_files_list + package_imports_list matches golden and i
   const goldenCanonical = `${canonicalStringify(JSON.parse(golden) as unknown)}\n`;
   expect(first.stdout).toBe(goldenCanonical);
 });
+
+test('maat diff file_metrics matches golden and is deterministic', () => {
+  const args = [
+    'diff',
+    '--from',
+    'testdata/metrics/v1.ts',
+    '--to',
+    'testdata/metrics/v2.ts',
+    '--rules',
+    'file_metrics',
+    '--language',
+    'typescript',
+    '--json',
+  ];
+
+  const first = runCli(args);
+  const second = runCli(args);
+
+  expect(first.status).toBe(0);
+  expect(second.status).toBe(0);
+  expect(first.stdout).toBe(second.stdout);
+
+  const payload = JSON.parse(first.stdout) as unknown;
+  const parsed = DiffOutputSchema.safeParse(payload);
+  expect(parsed.success).toBeTrue();
+
+  const golden = readFileSync(
+    'testdata/metrics/diff-file-metrics.golden.json',
+    'utf8',
+  );
+  const goldenCanonical = `${canonicalStringify(JSON.parse(golden) as unknown)}\n`;
+  expect(first.stdout).toBe(goldenCanonical);
+});

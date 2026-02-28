@@ -1,0 +1,16 @@
+{
+  "from": { "filename": "testdata/metrics/v1.ts", "language": "typescript" },
+  "rules": {
+    "file_metrics": {
+      "cognitiveComplexity": { "delta": 5, "from": 2, "to": 7 },
+      "conditions": { "delta": 4, "from": 1, "to": 5 },
+      "cyclomaticComplexity": { "delta": 5, "from": 2, "to": 7 },
+      "loc": { "delta": 13, "from": 8, "to": 21 },
+      "loops": { "delta": 1, "from": 0, "to": 1 },
+      "maxNestingDepth": { "delta": 2, "from": 2, "to": 4 },
+      "sloc": { "delta": 13, "from": 6, "to": 19 },
+      "tokens": { "delta": 65, "from": 28, "to": 93 }
+    }
+  },
+  "to": { "filename": "testdata/metrics/v2.ts", "language": "typescript" }
+}

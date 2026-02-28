@@ -31,6 +31,11 @@ describe('runAnalyse orchestrator', () => {
       loc: 5,
       sloc: 3,
       tokens: 19,
+      loops: 0,
+      conditions: 0,
+      cyclomaticComplexity: 1,
+      cognitiveComplexity: 1,
+      maxNestingDepth: 0,
     });
   });
 
