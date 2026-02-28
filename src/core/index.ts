@@ -3,9 +3,19 @@ export type {
   DiffOutput,
   JsonErrorOutput,
   Language,
+  OutputKind,
   RulesListOutput,
 } from './contracts/index.js';
-export { SUPPORTED_LANGUAGES } from './contracts/index.js';
+export {
+  AnalyseOutputSchema,
+  DiffOutputSchema,
+  JsonErrorOutputSchema,
+  LanguageSchema,
+  RuleNameSchema,
+  RulesListOutputSchema,
+  SUPPORTED_LANGUAGES,
+  validateOutputOrThrow,
+} from './contracts/index.js';
 export {
   formatError,
   InternalError,

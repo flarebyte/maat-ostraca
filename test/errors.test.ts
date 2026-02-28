@@ -15,10 +15,12 @@ describe('error mapping and formatting', () => {
     assert.equal(mapped, 2);
     assert.equal(formatted.exitCode, 2);
     assert.equal(formatted.stderr, undefined);
-    assert.equal(
-      formatted.stdout,
-      '{"error":{"code":"E_USAGE","message":"invalid input"}}\n',
-    );
+    assert.deepEqual(formatted.jsonOutput, {
+      error: {
+        code: 'E_USAGE',
+        message: 'invalid input',
+      },
+    });
   });
 
   it('maps unknown errors to exit code 1 and formats json envelope when json=true', () => {
@@ -28,9 +30,11 @@ describe('error mapping and formatting', () => {
     assert.equal(mapped, 1);
     assert.equal(formatted.exitCode, 1);
     assert.equal(formatted.stderr, undefined);
-    assert.equal(
-      formatted.stdout,
-      '{"error":{"code":"E_INTERNAL","message":"internal error"}}\n',
-    );
+    assert.deepEqual(formatted.jsonOutput, {
+      error: {
+        code: 'E_INTERNAL',
+        message: 'internal error',
+      },
+    });
   });
 });

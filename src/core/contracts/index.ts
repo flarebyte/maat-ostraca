@@ -6,3 +6,13 @@ export type {
   JsonErrorOutput,
   RulesListOutput,
 } from './outputs.js';
+export {
+  AnalyseOutputSchema,
+  DiffOutputSchema,
+  JsonErrorOutputSchema,
+  LanguageSchema,
+  RuleNameSchema,
+  RulesListOutputSchema,
+} from './schemas.js';
+export type { OutputKind } from './validate.js';
+export { validateOutputOrThrow } from './validate.js';

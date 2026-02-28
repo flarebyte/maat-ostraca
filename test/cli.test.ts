@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { describe, it } from 'node:test';
+import {
+  JsonErrorOutputSchema,
+  RulesListOutputSchema,
+} from '../src/core/contracts/schemas.js';
 
 const runCli = (args: string[], input?: string) => {
   return spawnSync(
@@ -55,6 +59,10 @@ describe('maat cli parsing', () => {
 
     assert.equal(result.status, 2);
     assert.equal(result.stderr, '');
+
+    const payload = JSON.parse(result.stdout) as unknown;
+    const parsed = JsonErrorOutputSchema.safeParse(payload);
+    assert.equal(parsed.success, true);
     assert.equal(
       result.stdout,
       '{"error":{"code":"E_USAGE","message":"unknown rule \\"unknown_rule\\" for language \\"typescript\\""}}\n',
@@ -75,18 +83,19 @@ describe('maat cli parsing', () => {
     );
   });
 
-  it('returns sorted rules list for language in json mode', () => {
+  it('returns sorted rules list for language in json mode and matches schema', () => {
     const result = runCli(['rules', '--language', 'typescript', '--json']);
 
     assert.equal(result.status, 0);
 
-    const payload = JSON.parse(result.stdout) as {
-      language: string;
-      rules: Array<{ name: string; description: string }>;
-    };
+    const payload = JSON.parse(result.stdout) as unknown;
+    const parsed = RulesListOutputSchema.safeParse(payload);
+    assert.equal(parsed.success, true);
+    if (!parsed.success) {
+      return;
+    }
 
-    assert.equal(payload.language, 'typescript');
-    const names = payload.rules.map((rule) => rule.name);
+    const names = parsed.data.rules.map((rule) => rule.name);
     const sortedNames = [...names].sort((a, b) => a.localeCompare(b));
     assert.deepEqual(names, sortedNames);
     assert.ok(names.includes('import_files_list'));
@@ -110,6 +119,10 @@ describe('maat cli parsing', () => {
       'import_functions_list',
       'import_types_list',
     ]);
+    assert.equal(
+      result.stdout,
+      '{"language":"typescript","rules":{"import_files_list":null,"import_functions_list":null,"import_types_list":null}}\n',
+    );
   });
 
   it('json success output is byte-identical across runs', () => {

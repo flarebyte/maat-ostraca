@@ -1,5 +1,10 @@
 import { expect, test } from 'bun:test';
 import { spawnSync } from 'node:child_process';
+import {
+  AnalyseOutputSchema,
+  DiffOutputSchema,
+  RulesListOutputSchema,
+} from '../../src/core/contracts/schemas.js';
 
 const runCli = (args: string[], input?: string) =>
   spawnSync('node', ['--import', 'tsx', 'src/cmd/maat/index.ts', ...args], {
@@ -21,15 +26,17 @@ test('maat analyse with --in includes filename in json output', () => {
   ]);
 
   expect(result.status).toBe(0);
-  const payload = JSON.parse(result.stdout) as {
-    filename?: string;
-    language: string;
-    rules: Record<string, null>;
-  };
+  const payload = JSON.parse(result.stdout) as unknown;
+  const parsed = AnalyseOutputSchema.safeParse(payload);
 
-  expect(payload.filename).toBe('testdata/analyse-input.ts');
-  expect(payload.language).toBe('typescript');
-  expect(Object.keys(payload.rules)).toEqual([
+  expect(parsed.success).toBeTrue();
+  if (!parsed.success) {
+    return;
+  }
+
+  expect(parsed.data.filename).toBe('testdata/analyse-input.ts');
+  expect(parsed.data.language).toBe('typescript');
+  expect(Object.keys(parsed.data.rules)).toEqual([
     'import_files_list',
     'import_functions_list',
     'import_types_list',
@@ -53,6 +60,11 @@ test('maat analyse via stdin succeeds and is deterministic', () => {
   expect(first.status).toBe(0);
   expect(second.status).toBe(0);
   expect(first.stdout).toBe(second.stdout);
+
+  const parsed = AnalyseOutputSchema.safeParse(
+    JSON.parse(first.stdout) as unknown,
+  );
+  expect(parsed.success).toBeTrue();
 });
 
 test('maat diff uses stdin for to-source when --to is omitted', () => {
@@ -71,19 +83,38 @@ test('maat diff uses stdin for to-source when --to is omitted', () => {
   );
 
   expect(result.status).toBe(0);
-  const payload = JSON.parse(result.stdout) as {
-    from: { filename: string; language: string };
-    to: { filename?: string; language: string };
-    rules: Record<string, null>;
-  };
+  const payload = JSON.parse(result.stdout) as unknown;
+  const parsed = DiffOutputSchema.safeParse(payload);
 
-  expect(payload.from.filename).toBe('testdata/diff-from.ts');
-  expect(payload.to.filename).toBeUndefined();
-  expect(payload.from.language).toBe('typescript');
-  expect(payload.to.language).toBe('typescript');
-  expect(Object.keys(payload.rules)).toEqual([
+  expect(parsed.success).toBeTrue();
+  if (!parsed.success) {
+    return;
+  }
+
+  expect(parsed.data.from.filename).toBe('testdata/diff-from.ts');
+  expect(parsed.data.to.filename).toBeUndefined();
+  expect(parsed.data.from.language).toBe('typescript');
+  expect(parsed.data.to.language).toBe('typescript');
+  expect(Object.keys(parsed.data.rules)).toEqual([
     'import_files_list',
     'import_functions_list',
     'import_types_list',
   ]);
+});
+
+test('maat rules json output matches schema', () => {
+  const result = runCli(['rules', '--language', 'typescript', '--json']);
+
+  expect(result.status).toBe(0);
+  const payload = JSON.parse(result.stdout) as unknown;
+  const parsed = RulesListOutputSchema.safeParse(payload);
+
+  expect(parsed.success).toBeTrue();
+  if (!parsed.success) {
+    return;
+  }
+
+  const names = parsed.data.rules.map((rule) => rule.name);
+  const sorted = [...names].sort((a, b) => a.localeCompare(b));
+  expect(names).toEqual(sorted);
 });

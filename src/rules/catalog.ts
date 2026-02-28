@@ -1,24 +1,27 @@
 import type { Language } from '../core/types.js';
 
-export type RuleName =
-  | 'class_map'
-  | 'code_hash'
-  | 'env_names_list'
-  | 'error_messages_list'
-  | 'exception_messages_list'
-  | 'file_metrics'
-  | 'function_map'
-  | 'import_files_list'
-  | 'import_functions_list'
-  | 'import_types_list'
-  | 'interface_map'
-  | 'interfaces_code_map'
-  | 'io_calls_count'
-  | 'io_read_calls_count'
-  | 'io_write_calls_count'
-  | 'method_map'
-  | 'package_imports_list'
-  | 'testcase_titles_list';
+export const RULE_NAMES = [
+  'import_files_list',
+  'import_functions_list',
+  'import_types_list',
+  'package_imports_list',
+  'exception_messages_list',
+  'error_messages_list',
+  'env_names_list',
+  'testcase_titles_list',
+  'function_map',
+  'method_map',
+  'class_map',
+  'interface_map',
+  'interfaces_code_map',
+  'file_metrics',
+  'code_hash',
+  'io_calls_count',
+  'io_read_calls_count',
+  'io_write_calls_count',
+] as const;
+
+export type RuleName = (typeof RULE_NAMES)[number];
 
 export interface RuleCatalogEntry {
   name: RuleName;

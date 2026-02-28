@@ -4,15 +4,18 @@ import {
   InvalidArgumentError,
   Option,
 } from 'commander';
+import type { JsonErrorOutput } from '../../core/contracts/outputs.js';
 import {
   canonicalStringify,
   formatError,
   type Language,
+  type OutputKind,
   runAnalyse,
   runDiff,
   runRulesList,
   SUPPORTED_LANGUAGES,
   UsageError,
+  validateOutputOrThrow,
 } from '../../core/index.js';
 import { resolveSource } from '../../core/source/resolve.js';
 import { resolveDiffSource } from '../../core/source/resolve-diff.js';
@@ -42,12 +45,14 @@ const parseRulesCsv = (value: string): string => {
 };
 
 const writeResult = (
+  kind: OutputKind,
   commandName: string,
   json: boolean,
   result: object,
   io: CliIo,
 ): void => {
   if (json) {
+    validateOutputOrThrow(kind, result);
     io.stdout(`${canonicalStringify(result)}\n`);
     return;
   }
@@ -65,6 +70,13 @@ const normalizeError = (error: unknown): unknown => {
   }
 
   return error;
+};
+
+const fallbackInternalJsonError: JsonErrorOutput = {
+  error: {
+    code: 'E_INTERNAL',
+    message: 'internal error',
+  },
 };
 
 export const createProgram = (io: CliIo): Command => {
@@ -118,7 +130,7 @@ export const createProgram = (io: CliIo): Command => {
         const result = await runAnalyse({
           ...analyseArgs,
         });
-        writeResult('analyse', Boolean(options.json), result, io);
+        writeResult('analyse', 'analyse', Boolean(options.json), result, io);
       },
     );
 
@@ -172,7 +184,7 @@ export const createProgram = (io: CliIo): Command => {
         const result = await runDiff({
           ...diffArgs,
         });
-        writeResult('diff', Boolean(options.json), result, io);
+        writeResult('diff', 'diff', Boolean(options.json), result, io);
       },
     );
 
@@ -186,7 +198,7 @@ export const createProgram = (io: CliIo): Command => {
     .option('--json', 'Print JSON output')
     .action(async (options: { language: Language; json?: boolean }) => {
       const result = await runRulesList({ language: options.language });
-      writeResult('rules', Boolean(options.json), result, io);
+      writeResult('rules', 'rules', Boolean(options.json), result, io);
     });
 
   return program;
@@ -212,8 +224,15 @@ export const runCli = async (
   } catch (error) {
     const formatted = formatError(normalizeError(error), { json: jsonOutput });
 
-    if (formatted.stdout) {
-      io.stdout(formatted.stdout);
+    if (formatted.jsonOutput) {
+      try {
+        validateOutputOrThrow('error', formatted.jsonOutput);
+        io.stdout(`${canonicalStringify(formatted.jsonOutput)}\n`);
+        return formatted.exitCode;
+      } catch {
+        io.stdout(`${canonicalStringify(fallbackInternalJsonError)}\n`);
+        return 1;
+      }
     }
 
     if (formatted.stderr) {

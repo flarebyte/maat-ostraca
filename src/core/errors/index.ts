@@ -1,5 +1,4 @@
 import type { JsonErrorOutput } from '../contracts/outputs.js';
-import { canonicalStringify } from '../format/canonical-json.js';
 
 export type ExitCode = 2 | 1;
 
@@ -57,7 +56,7 @@ export const mapErrorToExitCode = (error: unknown): ExitCode => {
 export const formatError = (
   error: unknown,
   options: { json: boolean },
-): { exitCode: ExitCode; stdout?: string; stderr?: string } => {
+): { exitCode: ExitCode; jsonOutput?: JsonErrorOutput; stderr?: string } => {
   const normalized =
     error instanceof UsageError ? error : toInternalError(error);
   const exitCode = mapErrorToExitCode(normalized);
@@ -73,7 +72,7 @@ export const formatError = (
 
     return {
       exitCode,
-      stdout: `${canonicalStringify(payload)}\n`,
+      jsonOutput: payload,
     };
   }
 
