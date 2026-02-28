@@ -14,6 +14,7 @@ export const cliRoot = (context: FlowContext) => {
   calls.push(call);
   // Register commands under the root.
   cliArgsAnalyse(incrContext(context));
+  cliDiff(incrContext(context));
   cliRulesList(incrContext(context));
 };
 
@@ -70,6 +71,110 @@ export const cliRulesList = (context: FlowContext) => {
   };
   calls.push(call);
   listRulesCatalog(incrContext(context));
+};
+
+export const cliDiff = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'cli.diff',
+    title: 'Parse CLI arguments for source diff analysis',
+    directory: 'cmd/maat',
+    note: 'Flags: --from path --to path --rules io_calls_count --language go --json. `--to` may be omitted to read from stdin.',
+    level: context.level,
+    signature: {
+      input: '{from, to?, stdin, rules, language}',
+    },
+    useCases: [
+      useCases.analysisDiffSources.name,
+      useCases.analysisEvolutionTracking.name,
+      useCases.sourceInputStdin.name,
+      useCases.rulesWildcardSelection.name,
+    ],
+  };
+  calls.push(call);
+  resolveRequestedRules(incrContext(context));
+  resolveDiffSourceInputs(incrContext(context));
+  analyseSourceSnapshot(incrContext(context));
+  analyseTargetSnapshot(incrContext(context));
+  diffAnalysisResults(incrContext(context));
+  formatOutput(incrContext(context));
+};
+
+export const resolveDiffSourceInputs = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'source.resolve.diff',
+    title: 'Resolve diff sources from file paths or stdin',
+    directory: '',
+    note: 'Reads `from` and `to` sources from files, or reads `to` from stdin when omitted.',
+    level: context.level,
+    signature: {
+      input: '{from, to?, stdin, language}',
+      success: '{fromSource, toSource, fromFilename, toFilename?, language}',
+    },
+    useCases: [
+      useCases.sourceInputStdin.name,
+      useCases.analysisDiffSources.name,
+    ],
+  };
+  calls.push(call);
+};
+
+export const analyseSourceSnapshot = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'analyse.snapshot.from',
+    title: 'Analyze source snapshot (`from`)',
+    directory: '',
+    note: '',
+    level: context.level,
+    signature: {
+      input: '{fromFilename, fromSource, rules, language}',
+      success: '{fromResults}',
+    },
+    useCases: [
+      useCases.analysisDiffSources.name,
+      useCases.predefinedRuleBasedAnalysis.name,
+    ],
+  };
+  calls.push(call);
+};
+
+export const analyseTargetSnapshot = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'analyse.snapshot.to',
+    title: 'Analyze target snapshot (`to`)',
+    directory: '',
+    note: '',
+    level: context.level,
+    signature: {
+      input: '{toFilename?, toSource, rules, language}',
+      success: '{toResults}',
+    },
+    useCases: [
+      useCases.analysisDiffSources.name,
+      useCases.predefinedRuleBasedAnalysis.name,
+    ],
+  };
+  calls.push(call);
+};
+
+export const diffAnalysisResults = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'results.diff',
+    title: 'Build diff object from two analysis snapshots',
+    directory: '',
+    note: 'Produces a stable diff payload mirroring the analysis structure.',
+    level: context.level,
+    signature: {
+      input: '{fromResults, toResults}',
+      success: '{diff}',
+    },
+    useCases: [
+      useCases.analysisDiffSources.name,
+      useCases.analysisEvolutionTracking.name,
+      useCases.outputDiffObject.name,
+      useCases.outputDeterministicOrder.name,
+    ],
+  };
+  calls.push(call);
 };
 
 export const listRulesCatalog = (context: FlowContext) => {

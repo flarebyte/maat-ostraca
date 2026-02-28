@@ -189,3 +189,183 @@
   ]
 }
 ```
+
+## Diff Command Output
+
+```json
+{
+  "from": {
+    "filename": "internal/service/payment_service.ts",
+    "language": "typescript"
+  },
+  "to": {
+    "filename": "internal/service/payment_service_v2.ts",
+    "language": "typescript"
+  },
+  "rules": {
+    "function_map": {
+      "chargeCustomer": {
+        "status": "modified",
+        "loc": {
+          "from": 38,
+          "to": 44,
+          "delta": 6
+        },
+        "sloc": {
+          "from": 31,
+          "to": 36,
+          "delta": 5
+        },
+        "cyclomaticComplexity": {
+          "from": 7,
+          "to": 9,
+          "delta": 2
+        },
+        "cognitiveComplexity": {
+          "from": 11,
+          "to": 14,
+          "delta": 3
+        },
+        "maxNestingDepth": {
+          "from": 3,
+          "to": 4,
+          "delta": 1
+        },
+        "ioCallsCount": {
+          "from": 4,
+          "to": 6,
+          "delta": 2
+        },
+        "ioReadCallsCount": {
+          "from": 2,
+          "to": 3,
+          "delta": 1
+        },
+        "ioWriteCallsCount": {
+          "from": 2,
+          "to": 3,
+          "delta": 1
+        }
+      },
+      "refundCustomer": {
+        "status": "added"
+      }
+    },
+    "method_map": {
+      "paymentServiceCharge": {
+        "status": "modified",
+        "loc": {
+          "from": 54,
+          "to": 61,
+          "delta": 7
+        },
+        "sloc": {
+          "from": 45,
+          "to": 50,
+          "delta": 5
+        },
+        "cyclomaticComplexity": {
+          "from": 10,
+          "to": 12,
+          "delta": 2
+        },
+        "cognitiveComplexity": {
+          "from": 15,
+          "to": 18,
+          "delta": 3
+        }
+      }
+    },
+    "class_map": {
+      "PaymentService": {
+        "status": "modified",
+        "methodCount": {
+          "from": 6,
+          "to": 7,
+          "delta": 1
+        },
+        "loc": {
+          "from": 119,
+          "to": 141,
+          "delta": 22
+        },
+        "sloc": {
+          "from": 96,
+          "to": 113,
+          "delta": 17
+        }
+      }
+    },
+    "interface_map": {
+      "PaymentProvider": {
+        "status": "modified",
+        "methods": {
+          "added": [
+            "Refund(ctx: RequestContext, req: RefundRequest): Promise<RefundResponse>"
+          ],
+          "removed": []
+        }
+      }
+    },
+    "file_metrics": {
+      "loc": {
+        "from": 212,
+        "to": 249,
+        "delta": 37
+      },
+      "sloc": {
+        "from": 174,
+        "to": 204,
+        "delta": 30
+      },
+      "cyclomaticComplexity": {
+        "from": 29,
+        "to": 36,
+        "delta": 7
+      },
+      "cognitiveComplexity": {
+        "from": 41,
+        "to": 50,
+        "delta": 9
+      },
+      "maxNestingDepth": {
+        "from": 5,
+        "to": 6,
+        "delta": 1
+      },
+      "tokens": {
+        "from": 1230,
+        "to": 1468,
+        "delta": 238
+      },
+      "loops": {
+        "from": 4,
+        "to": 5,
+        "delta": 1
+      },
+      "conditions": {
+        "from": 19,
+        "to": 24,
+        "delta": 5
+      }
+    },
+    "import_files_list": {
+      "added": [
+        "crypto"
+      ],
+      "removed": []
+    },
+    "error_messages_list": {
+      "added": [
+        "payment provider rejected refund"
+      ],
+      "removed": []
+    },
+    "code_hash": {
+      "from": "a7e5904f2d6dcf9ef95458c6f8db75749f579597f16bd8f7fd8d9f4db44de4aa",
+      "to": "53a4d8784f7f0956f1e4d8e47085817ae8e4992d08117417ea735be070d2bd3f",
+      "changed": true
+    }
+  }
+}
+```

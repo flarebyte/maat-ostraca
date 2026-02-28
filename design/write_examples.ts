@@ -1,6 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import {
   exampleCliJsonResultText,
+  exampleDiffJsonResultText,
   exampleRulesListResultText,
 } from './examples.ts';
 
@@ -20,6 +21,12 @@ export const generateExamplesReport = async () => {
   lines.push('');
   lines.push('```json');
   lines.push(exampleRulesListResultText);
+  lines.push('```');
+  lines.push('');
+  lines.push('## Diff Command Output');
+  lines.push('');
+  lines.push('```json');
+  lines.push(exampleDiffJsonResultText);
   lines.push('```');
   lines.push('');
 

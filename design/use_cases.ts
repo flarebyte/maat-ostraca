@@ -128,6 +128,21 @@ export const useCases: Record<string, UseCase> = {
     title: 'List all available rules with descriptions',
     note: 'Expose discoverable rule names and descriptions for the selected language.',
   },
+  analysisDiffSources: {
+    name: 'analysis_diff_sources',
+    title: 'Diff analysis between two source snapshots',
+    note: 'Compare rule results between a `from` source and a `to` source.',
+  },
+  analysisEvolutionTracking: {
+    name: 'analysis_evolution_tracking',
+    title: 'Track code evolution across time or projects',
+    note: 'Useful to inspect how a shared file evolves over time or differs between repositories.',
+  },
+  outputDiffObject: {
+    name: 'output_diff_object',
+    title: 'Provide structured diff output',
+    note: 'Emit a diff object that mirrors analysis shape with `from`, `to`, and `delta` values where relevant.',
+  },
   sourceInputStdin: {
     name: 'source_input_stdin',
     title: 'Support source input from stdin',
