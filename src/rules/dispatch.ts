@@ -19,6 +19,10 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
     'import_files_list:typescript',
     () => import('./import_files_list/typescript.js'),
   ],
+  [
+    'package_imports_list:typescript',
+    () => import('./package_imports_list/typescript.js'),
+  ],
   ['file_metrics:typescript', () => import('./file_metrics/typescript.js')],
   ['code_hash:typescript', () => import('./code_hash/typescript.js')],
 ]);

@@ -1,0 +1,23 @@
+{
+  "filename": "testdata/package-imports-fixture.ts",
+  "language": "typescript",
+  "rules": {
+    "import_files_list": [
+      "../local",
+      "./rel-export",
+      "./types",
+      "@scope/pkg",
+      "@scope/pkg/utils",
+      "/abs",
+      "file:./x",
+      "lodash/fp",
+      "react"
+    ],
+    "package_imports_list": [
+      "@scope/pkg",
+      "@scope/pkg/utils",
+      "lodash/fp",
+      "react"
+    ]
+  }
+}

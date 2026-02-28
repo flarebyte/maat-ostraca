@@ -1,2 +1,6 @@
-export type { AstGrepMatch, AstGrepSearchInput } from './search.js';
-export { search } from './search.js';
+export type {
+  AstGrepKindSearchInput,
+  AstGrepMatch,
+  AstGrepSearchInput,
+} from './search.js';
+export { search, searchByKind } from './search.js';

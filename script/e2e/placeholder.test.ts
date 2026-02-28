@@ -177,3 +177,34 @@ test('maat analyse import_files_list matches golden json and is deterministic', 
   const goldenCanonical = `${canonicalStringify(JSON.parse(golden) as unknown)}\n`;
   expect(first.stdout).toBe(goldenCanonical);
 });
+
+test('maat analyse import_files_list + package_imports_list matches golden and is deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/package-imports-fixture.ts',
+    '--rules',
+    'import_files_list,package_imports_list',
+    '--language',
+    'typescript',
+    '--json',
+  ];
+
+  const first = runCli(args);
+  const second = runCli(args);
+
+  expect(first.status).toBe(0);
+  expect(second.status).toBe(0);
+  expect(first.stdout).toBe(second.stdout);
+
+  const payload = JSON.parse(first.stdout) as unknown;
+  const parsed = AnalyseOutputSchema.safeParse(payload);
+  expect(parsed.success).toBeTrue();
+
+  const golden = readFileSync(
+    'testdata/package-imports-fixture.golden.json',
+    'utf8',
+  );
+  const goldenCanonical = `${canonicalStringify(JSON.parse(golden) as unknown)}\n`;
+  expect(first.stdout).toBe(goldenCanonical);
+});
