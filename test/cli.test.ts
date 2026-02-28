@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { describe, it } from 'node:test';
 import {
+  DiffOutputSchema,
   JsonErrorOutputSchema,
   RulesListOutputSchema,
 } from '../src/core/contracts/schemas.js';
@@ -125,6 +126,48 @@ describe('maat cli parsing', () => {
     );
   });
 
+  it('diff json output matches DiffOutputSchema', () => {
+    const result = runCli(
+      [
+        'diff',
+        '--from',
+        'testdata/diff-from.ts',
+        '--rules',
+        'import_*',
+        '--language',
+        'typescript',
+        '--json',
+      ],
+      'export const value = 2;\n',
+    );
+
+    assert.equal(result.status, 0);
+    const payload = JSON.parse(result.stdout) as unknown;
+    const parsed = DiffOutputSchema.safeParse(payload);
+    assert.equal(parsed.success, true);
+  });
+
+  it('diff json delta-only output includes top-level deltaOnly true', () => {
+    const result = runCli(
+      [
+        'diff',
+        '--from',
+        'testdata/diff-from.ts',
+        '--rules',
+        'import_*',
+        '--language',
+        'typescript',
+        '--json',
+        '--delta-only',
+      ],
+      'export const value = 2;\n',
+    );
+
+    assert.equal(result.status, 0);
+    const payload = JSON.parse(result.stdout) as { deltaOnly?: boolean };
+    assert.equal(payload.deltaOnly, true);
+  });
+
   it('json success output is byte-identical across runs', () => {
     const first = runCli(
       ['analyse', '--rules', 'import_*', '--language', 'typescript', '--json'],
@@ -166,6 +209,25 @@ describe('maat cli parsing', () => {
 
     assert.equal(first.status, 2);
     assert.equal(second.status, 2);
+    assert.equal(first.stdout, second.stdout);
+  });
+
+  it('diff json success output is byte-identical across runs', () => {
+    const args = [
+      'diff',
+      '--from',
+      'testdata/diff-from.ts',
+      '--rules',
+      'import_*',
+      '--language',
+      'typescript',
+      '--json',
+    ];
+    const first = runCli(args, 'export const value = 2;\n');
+    const second = runCli(args, 'export const value = 2;\n');
+
+    assert.equal(first.status, 0);
+    assert.equal(second.status, 0);
     assert.equal(first.stdout, second.stdout);
   });
 });

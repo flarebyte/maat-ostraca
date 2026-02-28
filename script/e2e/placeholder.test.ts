@@ -95,11 +95,35 @@ test('maat diff uses stdin for to-source when --to is omitted', () => {
   expect(parsed.data.to.filename).toBeUndefined();
   expect(parsed.data.from.language).toBe('typescript');
   expect(parsed.data.to.language).toBe('typescript');
-  expect(Object.keys(parsed.data.rules)).toEqual([
-    'import_files_list',
-    'import_functions_list',
-    'import_types_list',
-  ]);
+  expect(Object.keys(parsed.data.rules)).toEqual([]);
+});
+
+test('maat diff delta-only json output matches schema and includes top-level flag', () => {
+  const result = runCli(
+    [
+      'diff',
+      '--from',
+      'testdata/diff-from.ts',
+      '--rules',
+      'import_*',
+      '--language',
+      'typescript',
+      '--json',
+      '--delta-only',
+    ],
+    'export const value = 2;\r\n',
+  );
+
+  expect(result.status).toBe(0);
+  const payload = JSON.parse(result.stdout) as unknown;
+  const parsed = DiffOutputSchema.safeParse(payload);
+
+  expect(parsed.success).toBeTrue();
+  if (!parsed.success) {
+    return;
+  }
+
+  expect(parsed.data.deltaOnly).toBeTrue();
 });
 
 test('maat rules json output matches schema', () => {

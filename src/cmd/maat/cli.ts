@@ -7,11 +7,11 @@ import {
 import type { JsonErrorOutput } from '../../core/contracts/outputs.js';
 import {
   canonicalStringify,
+  diffResults,
   formatError,
   type Language,
   type OutputKind,
   runAnalyse,
-  runDiff,
   runRulesList,
   SUPPORTED_LANGUAGES,
   UsageError,
@@ -181,8 +181,20 @@ export const createProgram = (io: CliIo): Command => {
           ...(source.toFilename ? { toFilename: source.toFilename } : {}),
           ...(options.deltaOnly ? { deltaOnly: true as const } : {}),
         };
-        const result = await runDiff({
-          ...diffArgs,
+        const fromSnapshot = await runAnalyse({
+          filename: diffArgs.fromFilename,
+          source: diffArgs.fromSource,
+          language: diffArgs.language,
+          rules: diffArgs.rules,
+        });
+        const toSnapshot = await runAnalyse({
+          ...(diffArgs.toFilename ? { filename: diffArgs.toFilename } : {}),
+          source: diffArgs.toSource,
+          language: diffArgs.language,
+          rules: diffArgs.rules,
+        });
+        const result = diffResults(fromSnapshot, toSnapshot, {
+          deltaOnly: Boolean(diffArgs.deltaOnly),
         });
         writeResult('diff', 'diff', Boolean(options.json), result, io);
       },

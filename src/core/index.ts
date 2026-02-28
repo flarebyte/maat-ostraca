@@ -16,6 +16,7 @@ export {
   SUPPORTED_LANGUAGES,
   validateOutputOrThrow,
 } from './contracts/index.js';
+export { diffResults } from './diff/index.js';
 export {
   formatError,
   InternalError,
