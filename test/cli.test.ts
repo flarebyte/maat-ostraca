@@ -35,7 +35,7 @@ describe('maat cli parsing', () => {
       '--from',
       'a.ts',
       '--rules',
-      'import_*',
+      'code_hash',
       '--language',
       'typescript',
       '--delta-only',
@@ -102,27 +102,34 @@ describe('maat cli parsing', () => {
     assert.ok(names.includes('import_files_list'));
   });
 
-  it('analyse json includes expanded wildcard rule keys', () => {
+  it('analyse json includes deterministic outputs for implemented rules', () => {
     const result = runCli(
-      ['analyse', '--rules', 'import_*', '--language', 'typescript', '--json'],
+      [
+        'analyse',
+        '--rules',
+        'import_files_list,file_metrics,code_hash',
+        '--language',
+        'typescript',
+        '--json',
+      ],
       'const a = 1;\r\n',
     );
 
     assert.equal(result.status, 0);
     const payload = JSON.parse(result.stdout) as {
       language: string;
-      rules: Record<string, null>;
+      rules: Record<string, unknown>;
     };
 
     assert.equal(payload.language, 'typescript');
     assert.deepEqual(Object.keys(payload.rules), [
+      'code_hash',
+      'file_metrics',
       'import_files_list',
-      'import_functions_list',
-      'import_types_list',
     ]);
     assert.equal(
       result.stdout,
-      '{"language":"typescript","rules":{"import_files_list":null,"import_functions_list":null,"import_types_list":null}}\n',
+      '{"language":"typescript","rules":{"code_hash":{"algorithm":"sha256","file":"b79b14bd2584dd52b0f0ef042a2a4f104cda48330500e12237737cc51fbda43d"},"file_metrics":{"loc":2,"sloc":1,"tokens":5},"import_files_list":[]}}\n',
     );
   });
 
@@ -133,7 +140,7 @@ describe('maat cli parsing', () => {
         '--from',
         'testdata/diff-from.ts',
         '--rules',
-        'import_*',
+        'import_files_list,file_metrics,code_hash',
         '--language',
         'typescript',
         '--json',
@@ -154,7 +161,7 @@ describe('maat cli parsing', () => {
         '--from',
         'testdata/diff-from.ts',
         '--rules',
-        'import_*',
+        'import_files_list,file_metrics,code_hash',
         '--language',
         'typescript',
         '--json',
@@ -170,11 +177,25 @@ describe('maat cli parsing', () => {
 
   it('json success output is byte-identical across runs', () => {
     const first = runCli(
-      ['analyse', '--rules', 'import_*', '--language', 'typescript', '--json'],
+      [
+        'analyse',
+        '--rules',
+        'import_files_list,file_metrics,code_hash',
+        '--language',
+        'typescript',
+        '--json',
+      ],
       'const a = 1;\r\n',
     );
     const second = runCli(
-      ['analyse', '--rules', 'import_*', '--language', 'typescript', '--json'],
+      [
+        'analyse',
+        '--rules',
+        'import_files_list,file_metrics,code_hash',
+        '--language',
+        'typescript',
+        '--json',
+      ],
       'const a = 1;\r\n',
     );
 
@@ -218,7 +239,7 @@ describe('maat cli parsing', () => {
       '--from',
       'testdata/diff-from.ts',
       '--rules',
-      'import_*',
+      'import_files_list,file_metrics,code_hash',
       '--language',
       'typescript',
       '--json',

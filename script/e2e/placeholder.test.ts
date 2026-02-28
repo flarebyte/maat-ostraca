@@ -19,7 +19,7 @@ test('maat analyse with --in includes filename in json output', () => {
     '--in',
     'testdata/analyse-input.ts',
     '--rules',
-    'import_*',
+    'import_files_list,file_metrics,code_hash',
     '--language',
     'typescript',
     '--json',
@@ -37,9 +37,9 @@ test('maat analyse with --in includes filename in json output', () => {
   expect(parsed.data.filename).toBe('testdata/analyse-input.ts');
   expect(parsed.data.language).toBe('typescript');
   expect(Object.keys(parsed.data.rules)).toEqual([
+    'code_hash',
+    'file_metrics',
     'import_files_list',
-    'import_functions_list',
-    'import_types_list',
   ]);
 });
 
@@ -47,7 +47,7 @@ test('maat analyse via stdin succeeds and is deterministic', () => {
   const args = [
     'analyse',
     '--rules',
-    'import_*',
+    'import_files_list,file_metrics,code_hash',
     '--language',
     'typescript',
     '--json',
@@ -74,7 +74,7 @@ test('maat diff uses stdin for to-source when --to is omitted', () => {
       '--from',
       'testdata/diff-from.ts',
       '--rules',
-      'import_*',
+      'import_files_list,file_metrics,code_hash',
       '--language',
       'typescript',
       '--json',
@@ -95,7 +95,9 @@ test('maat diff uses stdin for to-source when --to is omitted', () => {
   expect(parsed.data.to.filename).toBeUndefined();
   expect(parsed.data.from.language).toBe('typescript');
   expect(parsed.data.to.language).toBe('typescript');
-  expect(Object.keys(parsed.data.rules)).toEqual([]);
+  expect((parsed.data.rules.code_hash as { changed?: boolean }).changed).toBe(
+    true,
+  );
 });
 
 test('maat diff delta-only json output matches schema and includes top-level flag', () => {
@@ -105,7 +107,7 @@ test('maat diff delta-only json output matches schema and includes top-level fla
       '--from',
       'testdata/diff-from.ts',
       '--rules',
-      'import_*',
+      'import_files_list,file_metrics,code_hash',
       '--language',
       'typescript',
       '--json',

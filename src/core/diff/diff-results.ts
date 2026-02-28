@@ -201,7 +201,7 @@ const readHashFile = (
   value: RuleValue,
   side: 'from' | 'to',
 ): string => {
-  const objectValue = assertObject(rule, value, side);
+  const objectValue = assertObject(rule, value, side) as { file?: unknown };
   const hash = objectValue.file;
 
   if (typeof hash !== 'string') {
