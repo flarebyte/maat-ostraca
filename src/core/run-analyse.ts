@@ -2,9 +2,10 @@ import type { RuleName } from '../rules/catalog.js';
 import type { Language } from './types.js';
 
 export interface AnalyseArgs {
-  inputPath?: string;
+  filename?: string;
+  source: string;
   language: Language;
-  resolvedRules: readonly RuleName[];
+  rules: readonly RuleName[];
 }
 
 const buildRulesObject = (
@@ -18,10 +19,12 @@ const buildRulesObject = (
 };
 
 export const runAnalyse = async (args: AnalyseArgs): Promise<object> => {
-  const filename = args.inputPath;
+  const filename = args.filename;
+  const source = args.source;
+  void source;
   return {
     ...(filename ? { filename } : {}),
     language: args.language,
-    rules: buildRulesObject(args.resolvedRules),
+    rules: buildRulesObject(args.rules),
   };
 };

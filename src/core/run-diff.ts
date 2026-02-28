@@ -2,10 +2,12 @@ import type { RuleName } from '../rules/catalog.js';
 import type { Language } from './types.js';
 
 export interface DiffArgs {
-  fromPath: string;
-  toPath?: string;
+  fromFilename: string;
+  fromSource: string;
+  toFilename?: string;
+  toSource: string;
   language: Language;
-  resolvedRules: readonly RuleName[];
+  rules: readonly RuleName[];
   deltaOnly?: true;
 }
 
@@ -20,17 +22,20 @@ const buildRulesObject = (
 };
 
 export const runDiff = async (args: DiffArgs): Promise<object> => {
-  const toFilename = args.toPath;
+  const fromSource = args.fromSource;
+  const toSource = args.toSource;
+  void fromSource;
+  void toSource;
   return {
     from: {
-      filename: args.fromPath,
+      filename: args.fromFilename,
       language: args.language,
     },
     to: {
-      ...(toFilename ? { filename: toFilename } : {}),
+      ...(args.toFilename ? { filename: args.toFilename } : {}),
       language: args.language,
     },
-    rules: buildRulesObject(args.resolvedRules),
+    rules: buildRulesObject(args.rules),
     ...(args.deltaOnly ? { deltaOnly: true } : {}),
   };
 };

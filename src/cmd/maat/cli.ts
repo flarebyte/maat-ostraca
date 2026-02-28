@@ -12,6 +12,11 @@ import {
   runRulesList,
   SUPPORTED_LANGUAGES,
 } from '../../core/index.js';
+import {
+  resolveSource,
+  SourceResolutionError,
+} from '../../core/source/resolve.js';
+import { resolveDiffSource } from '../../core/source/resolve-diff.js';
 import { RuleResolutionError, resolveRules } from '../../rules/index.js';
 
 export interface CliIo {
@@ -91,10 +96,15 @@ export const createProgram = (io: CliIo): Command => {
           rules: options.rules,
           language: options.language,
         });
-        const analyseArgs = {
+        const source = await resolveSource({
           language: options.language,
-          resolvedRules,
-          ...(options.in ? { inputPath: options.in } : {}),
+          ...(options.in ? { inPath: options.in } : {}),
+        });
+        const analyseArgs = {
+          source: source.source,
+          language: options.language,
+          rules: resolvedRules,
+          ...(source.filename ? { filename: source.filename } : {}),
         };
         const result = await runAnalyse({
           ...analyseArgs,
@@ -136,11 +146,18 @@ export const createProgram = (io: CliIo): Command => {
           rules: options.rules,
           language: options.language,
         });
-        const diffArgs = {
+        const source = await resolveDiffSource({
           fromPath: options.from,
           language: options.language,
-          resolvedRules,
           ...(options.to ? { toPath: options.to } : {}),
+        });
+        const diffArgs = {
+          fromFilename: source.fromFilename,
+          fromSource: source.fromSource,
+          toSource: source.toSource,
+          language: options.language,
+          rules: resolvedRules,
+          ...(source.toFilename ? { toFilename: source.toFilename } : {}),
           ...(options.deltaOnly ? { deltaOnly: true as const } : {}),
         };
         const result = await runDiff({
@@ -189,6 +206,11 @@ export const runCli = async (
     }
 
     if (error instanceof RuleResolutionError) {
+      io.stderr(`usage error: ${error.message}\n`);
+      return 2;
+    }
+
+    if (error instanceof SourceResolutionError) {
       io.stderr(`usage error: ${error.message}\n`);
       return 2;
     }
