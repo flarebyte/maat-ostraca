@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { UsageError } from '../errors/index.js';
 import type { Language } from '../types.js';
 import { normalizeSource } from './normalize.js';
 import { readStdinUtf8 } from './read-stdin.js';
@@ -19,16 +20,17 @@ interface ResolveSourceDeps {
   readStdin?: () => Promise<string>;
 }
 
-export class SourceResolutionError extends Error {}
-
 const defaultReadUtf8File = async (path: string): Promise<string> => {
   return readFile(path, 'utf8');
 };
 
 const ensureNonEmptyStdin = (raw: string): string => {
   if (raw.length === 0) {
-    throw new SourceResolutionError(
+    throw new UsageError(
       'stdin_empty: stdin is required when --in is omitted',
+      {
+        code: 'E_IO',
+      },
     );
   }
 
@@ -51,9 +53,9 @@ export const resolveSource = async (
         language: input.language,
       };
     } catch {
-      throw new SourceResolutionError(
-        `file_read_error: cannot read "${input.inPath}"`,
-      );
+      throw new UsageError(`file_read_error: cannot read "${input.inPath}"`, {
+        code: 'E_IO',
+      });
     }
   }
 

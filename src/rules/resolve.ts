@@ -1,3 +1,4 @@
+import { UsageError } from '../core/errors/index.js';
 import type { Language } from '../core/types.js';
 import { RULE_CATALOG, type RuleName } from './catalog.js';
 
@@ -5,8 +6,6 @@ export interface ResolveRulesInput {
   rules: string;
   language: Language;
 }
-
-export class RuleResolutionError extends Error {}
 
 const isTrailingWildcard = (token: string): boolean => token.endsWith('*');
 
@@ -32,7 +31,7 @@ export const resolveRules = ({
       ).map((entry) => entry.name);
 
       if (matches.length === 0) {
-        throw new RuleResolutionError(
+        throw new UsageError(
           `wildcard selector "${token}" matched no rules for language "${language}"`,
         );
       }
@@ -45,20 +44,20 @@ export const resolveRules = ({
     }
 
     if (token.includes('*')) {
-      throw new RuleResolutionError(
+      throw new UsageError(
         `invalid wildcard selector "${token}" for language "${language}"`,
       );
     }
 
     if (!byName.has(token as RuleName)) {
-      throw new RuleResolutionError(
+      throw new UsageError(
         `unknown rule "${token}" for language "${language}"`,
       );
     }
 
     const entry = byName.get(token as RuleName);
     if (!entry?.languages.includes(language)) {
-      throw new RuleResolutionError(
+      throw new UsageError(
         `unsupported rule "${token}" for language "${language}"`,
       );
     }
@@ -68,9 +67,7 @@ export const resolveRules = ({
 
   const sorted = [...resolved].sort((a, b) => a.localeCompare(b));
   if (sorted.length === 0) {
-    throw new RuleResolutionError(
-      `no rules selected for language "${language}"`,
-    );
+    throw new UsageError(`no rules selected for language "${language}"`);
   }
 
   return sorted;

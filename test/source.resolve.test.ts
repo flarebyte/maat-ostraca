@@ -3,10 +3,8 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
-import {
-  resolveSource,
-  SourceResolutionError,
-} from '../src/core/source/resolve.js';
+import { UsageError } from '../src/core/errors/index.js';
+import { resolveSource } from '../src/core/source/resolve.js';
 
 describe('source.resolve', () => {
   it('reads from file when inPath is provided', async () => {
@@ -46,9 +44,9 @@ describe('source.resolve', () => {
           { language: 'typescript' },
           { readStdin: async () => '' },
         ),
-      new SourceResolutionError(
-        'stdin_empty: stdin is required when --in is omitted',
-      ),
+      new UsageError('stdin_empty: stdin is required when --in is omitted', {
+        code: 'E_IO',
+      }),
     );
   });
 

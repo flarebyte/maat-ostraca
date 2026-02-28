@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { RuleResolutionError, resolveRules } from '../src/rules/index.js';
+import { UsageError } from '../src/core/errors/index.js';
+import { resolveRules } from '../src/rules/index.js';
 
 describe('rules.resolve', () => {
   it('expands import_* correctly', () => {
@@ -49,16 +50,14 @@ describe('rules.resolve', () => {
   it('rejects unknown explicit rule', () => {
     assert.throws(
       () => resolveRules({ rules: 'unknown_rule', language: 'typescript' }),
-      new RuleResolutionError(
-        'unknown rule "unknown_rule" for language "typescript"',
-      ),
+      new UsageError('unknown rule "unknown_rule" for language "typescript"'),
     );
   });
 
   it('rejects wildcard with zero matches', () => {
     assert.throws(
       () => resolveRules({ rules: 'unknown_*', language: 'typescript' }),
-      new RuleResolutionError(
+      new UsageError(
         'wildcard selector "unknown_*" matched no rules for language "typescript"',
       ),
     );
@@ -67,7 +66,7 @@ describe('rules.resolve', () => {
   it('rejects rule not supported for language', () => {
     assert.throws(
       () => resolveRules({ rules: 'interfaces_code_map', language: 'go' }),
-      new RuleResolutionError(
+      new UsageError(
         'unsupported rule "interfaces_code_map" for language "go"',
       ),
     );

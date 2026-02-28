@@ -18,7 +18,10 @@ describe('maat cli parsing', () => {
     const result = runCli(['analyse', '--language', 'go']);
 
     assert.equal(result.status, 2);
-    assert.match(result.stderr, /^usage error: /);
+    assert.equal(
+      result.stderr,
+      "error: required option '--rules <csv>' not specified\n",
+    );
   });
 
   it('returns exit code 2 when --delta-only is used without --json', () => {
@@ -34,7 +37,42 @@ describe('maat cli parsing', () => {
     ]);
 
     assert.equal(result.status, 2);
-    assert.equal(result.stderr, 'usage error: --delta-only requires --json\n');
+    assert.equal(result.stderr, '--delta-only requires --json\n');
+  });
+
+  it('unknown rule with --json prints JSON error envelope to stdout and exits 2', () => {
+    const result = runCli(
+      [
+        'analyse',
+        '--rules',
+        'unknown_rule',
+        '--language',
+        'typescript',
+        '--json',
+      ],
+      'const a = 1;\n',
+    );
+
+    assert.equal(result.status, 2);
+    assert.equal(result.stderr, '');
+    assert.equal(
+      result.stdout,
+      '{"error":{"code":"E_USAGE","message":"unknown rule \\"unknown_rule\\" for language \\"typescript\\""}}\n',
+    );
+  });
+
+  it('unknown rule without --json prints deterministic stderr and exits 2', () => {
+    const result = runCli(
+      ['analyse', '--rules', 'unknown_rule', '--language', 'typescript'],
+      'const a = 1;\n',
+    );
+
+    assert.equal(result.status, 2);
+    assert.equal(result.stdout, '');
+    assert.equal(
+      result.stderr,
+      'unknown rule "unknown_rule" for language "typescript"\n',
+    );
   });
 
   it('returns sorted rules list for language in json mode', () => {
@@ -74,7 +112,7 @@ describe('maat cli parsing', () => {
     ]);
   });
 
-  it('wildcard invocation json output is byte-identical across runs', () => {
+  it('json success output is byte-identical across runs', () => {
     const first = runCli(
       ['analyse', '--rules', 'import_*', '--language', 'typescript', '--json'],
       'const a = 1;\r\n',
@@ -86,6 +124,35 @@ describe('maat cli parsing', () => {
 
     assert.equal(first.status, 0);
     assert.equal(second.status, 0);
+    assert.equal(first.stdout, second.stdout);
+  });
+
+  it('json error output is byte-identical across runs', () => {
+    const first = runCli(
+      [
+        'analyse',
+        '--rules',
+        'unknown_rule',
+        '--language',
+        'typescript',
+        '--json',
+      ],
+      'const a = 1;\n',
+    );
+    const second = runCli(
+      [
+        'analyse',
+        '--rules',
+        'unknown_rule',
+        '--language',
+        'typescript',
+        '--json',
+      ],
+      'const a = 1;\n',
+    );
+
+    assert.equal(first.status, 2);
+    assert.equal(second.status, 2);
     assert.equal(first.stdout, second.stdout);
   });
 });

@@ -3,7 +3,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
-import { SourceResolutionError } from '../src/core/source/resolve.js';
+import { UsageError } from '../src/core/errors/index.js';
 import { resolveDiffSource } from '../src/core/source/resolve-diff.js';
 
 describe('source.resolve.diff', () => {
@@ -67,9 +67,9 @@ describe('source.resolve.diff', () => {
             { fromPath: fromFile, language: 'typescript' },
             { readStdin: async () => '' },
           ),
-        new SourceResolutionError(
-          'stdin_empty: stdin is required when --to is omitted',
-        ),
+        new UsageError('stdin_empty: stdin is required when --to is omitted', {
+          code: 'E_IO',
+        }),
       );
     } finally {
       await rm(dir, { recursive: true, force: true });

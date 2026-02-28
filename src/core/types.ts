@@ -1,3 +1,2 @@
-export const SUPPORTED_LANGUAGES = ['go', 'typescript', 'dart'] as const;
-
-export type Language = (typeof SUPPORTED_LANGUAGES)[number];
+export type { Language } from './contracts/language.js';
+export { SUPPORTED_LANGUAGES } from './contracts/language.js';

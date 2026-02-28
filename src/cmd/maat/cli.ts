@@ -6,25 +6,22 @@ import {
 } from 'commander';
 import {
   canonicalStringify,
+  formatError,
   type Language,
   runAnalyse,
   runDiff,
   runRulesList,
   SUPPORTED_LANGUAGES,
+  UsageError,
 } from '../../core/index.js';
-import {
-  resolveSource,
-  SourceResolutionError,
-} from '../../core/source/resolve.js';
+import { resolveSource } from '../../core/source/resolve.js';
 import { resolveDiffSource } from '../../core/source/resolve-diff.js';
-import { RuleResolutionError, resolveRules } from '../../rules/index.js';
+import { resolveRules } from '../../rules/index.js';
 
 export interface CliIo {
   stdout: (message: string) => void;
   stderr: (message: string) => void;
 }
-
-export class UsageError extends Error {}
 
 const parseLanguage = (value: string): Language => {
   if (SUPPORTED_LANGUAGES.includes(value as Language)) {
@@ -56,6 +53,18 @@ const writeResult = (
   }
 
   io.stdout(`${commandName}: ok\n`);
+};
+
+const normalizeError = (error: unknown): unknown => {
+  if (error instanceof UsageError) {
+    return error;
+  }
+
+  if (error instanceof CommanderError) {
+    return new UsageError(error.message);
+  }
+
+  return error;
 };
 
 export const createProgram = (io: CliIo): Command => {
@@ -195,32 +204,22 @@ export const runCli = async (
   },
 ): Promise<number> => {
   const program = createProgram(io);
+  const jsonOutput = argv.includes('--json');
 
   try {
     await program.parseAsync(argv, { from: 'user' });
     return 0;
   } catch (error) {
-    if (error instanceof UsageError) {
-      io.stderr(`usage error: ${error.message}\n`);
-      return 2;
+    const formatted = formatError(normalizeError(error), { json: jsonOutput });
+
+    if (formatted.stdout) {
+      io.stdout(formatted.stdout);
     }
 
-    if (error instanceof RuleResolutionError) {
-      io.stderr(`usage error: ${error.message}\n`);
-      return 2;
+    if (formatted.stderr) {
+      io.stderr(formatted.stderr);
     }
 
-    if (error instanceof SourceResolutionError) {
-      io.stderr(`usage error: ${error.message}\n`);
-      return 2;
-    }
-
-    if (error instanceof CommanderError) {
-      io.stderr(`usage error: ${error.message}\n`);
-      return 2;
-    }
-
-    io.stderr('internal error\n');
-    return 1;
+    return formatted.exitCode;
   }
 };

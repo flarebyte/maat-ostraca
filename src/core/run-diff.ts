@@ -1,4 +1,5 @@
 import type { RuleName } from '../rules/catalog.js';
+import type { DiffOutput } from './contracts/outputs.js';
 import type { Language } from './types.js';
 
 export interface DiffArgs {
@@ -13,19 +14,20 @@ export interface DiffArgs {
 
 const buildRulesObject = (
   rules: readonly RuleName[],
-): Record<RuleName, null> => {
-  const map = {} as Record<RuleName, null>;
+): Record<string, unknown> => {
+  const map: Record<string, unknown> = {};
   for (const rule of rules) {
     map[rule] = null;
   }
   return map;
 };
 
-export const runDiff = async (args: DiffArgs): Promise<object> => {
+export const runDiff = async (args: DiffArgs): Promise<DiffOutput> => {
   const fromSource = args.fromSource;
   const toSource = args.toSource;
   void fromSource;
   void toSource;
+
   return {
     from: {
       filename: args.fromFilename,
