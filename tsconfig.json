@@ -11,6 +11,8 @@
     "moduleDetection": "force",
     "moduleResolution": "nodenext",
     "newLine": "lf",
+    "rootDir": "src",
+    "outDir": "dist",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
@@ -32,6 +34,6 @@
     "files": true,
     "transpileOnly": true
   },
-  "include": ["src"],
-  "exclude": ["dist", "test"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": ["dist", "test", "script", "design", "doc", "notes", "node_modules"]
 }

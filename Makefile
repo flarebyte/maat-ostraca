@@ -3,7 +3,7 @@
 ## - No dynamic variables or shell logic
 ## - Real logic lives in scripts (TypeScript/Bun, bash)
 
-.PHONY: lint format test test-race gen build build-dev e2e release clean help
+.PHONY: lint format test test-race gen build build-dev e2e release clean help typecheck
 
 BIOME := npx @biomejs/biome
 BUN := bun
@@ -21,14 +21,17 @@ test:
 build:
 	npm run build
 
+typecheck:
+	npm run typecheck
+
 e2e:
-	cd script/e2e && $(BUN) test
+	npm run test:e2e
 
 release: build
 	@printf "Artifacts in ./build (checksums.txt included)\n"
 
 clean:
-	rm -rf build
+	npm run clean
 
 complexity:
 	scc --sort complexity --by-file -i ts . | head -n 15

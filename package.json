@@ -22,6 +22,9 @@
   "author": "Olivier Huin (http://flarebyte.com/)",
   "type": "module",
   "main": "index.js",
+  "bin": {
+    "maat": "dist/cmd/maat/index.js"
+  },
   "directories": {
     "doc": "doc"
   },
@@ -29,8 +32,11 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "build": "tsc -p tsconfig.build.json",
     "cli": "tsx src/cli.ts",
-    "test": "node --import tsx --test",
-    "test:cov": "c8 --reporter=text-summary --reporter=lcov node --import tsx --test"
+    "test": "node --import tsx --test test/**/*.test.ts",
+    "test:e2e": "bun test script/e2e",
+    "test:build": "npm run build",
+    "test:cov": "c8 --reporter=text-summary --reporter=lcov node --import tsx --test test/**/*.test.ts",
+    "clean": "node -e \"import { rmSync } from 'node:fs'; rmSync('dist', { recursive: true, force: true });\""
   },
   "devDependencies": {
     "c8": "^11.0.0",
