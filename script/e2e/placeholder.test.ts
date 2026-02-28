@@ -18,5 +18,15 @@ test('maat rules json output is deterministic', () => {
   expect(first.exitCode).toBe(0);
   expect(second.exitCode).toBe(0);
   expect(firstOut).toBe(secondOut);
-  expect(firstOut).toBe('{"language":"typescript","rules":[]}\n');
+
+  const parsed = JSON.parse(firstOut) as {
+    language: string;
+    rules: Array<{ name: string; description: string }>;
+  };
+  const names = parsed.rules.map((rule) => rule.name);
+  const sorted = [...names].sort((a, b) => a.localeCompare(b));
+
+  expect(parsed.language).toBe('typescript');
+  expect(names).toEqual(sorted);
+  expect(names.includes('import_files_list')).toBeTrue();
 });

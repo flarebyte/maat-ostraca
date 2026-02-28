@@ -12,6 +12,7 @@ import {
   runRulesList,
   SUPPORTED_LANGUAGES,
 } from '../../core/index.js';
+import { RuleResolutionError, resolveRules } from '../../rules/index.js';
 
 export interface CliIo {
   stdout: (message: string) => void;
@@ -86,9 +87,13 @@ export const createProgram = (io: CliIo): Command => {
         language: Language;
         json?: boolean;
       }) => {
-        const analyseArgs = {
-          rulesCsv: options.rules,
+        const resolvedRules = resolveRules({
+          rules: options.rules,
           language: options.language,
+        });
+        const analyseArgs = {
+          language: options.language,
+          resolvedRules,
           ...(options.in ? { inputPath: options.in } : {}),
         };
         const result = await runAnalyse({
@@ -127,10 +132,14 @@ export const createProgram = (io: CliIo): Command => {
           throw new UsageError('--delta-only requires --json');
         }
 
+        const resolvedRules = resolveRules({
+          rules: options.rules,
+          language: options.language,
+        });
         const diffArgs = {
           fromPath: options.from,
-          rulesCsv: options.rules,
           language: options.language,
+          resolvedRules,
           ...(options.to ? { toPath: options.to } : {}),
           ...(options.deltaOnly ? { deltaOnly: true as const } : {}),
         };
@@ -175,6 +184,11 @@ export const runCli = async (
     return 0;
   } catch (error) {
     if (error instanceof UsageError) {
+      io.stderr(`usage error: ${error.message}\n`);
+      return 2;
+    }
+
+    if (error instanceof RuleResolutionError) {
       io.stderr(`usage error: ${error.message}\n`);
       return 2;
     }

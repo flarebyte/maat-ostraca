@@ -1,12 +1,23 @@
+import type { RuleName } from '../rules/catalog.js';
 import type { Language } from './types.js';
 
 export interface DiffArgs {
   fromPath: string;
   toPath?: string;
   language: Language;
-  rulesCsv: string;
+  resolvedRules: readonly RuleName[];
   deltaOnly?: true;
 }
+
+const buildRulesObject = (
+  rules: readonly RuleName[],
+): Record<RuleName, null> => {
+  const map = {} as Record<RuleName, null>;
+  for (const rule of rules) {
+    map[rule] = null;
+  }
+  return map;
+};
 
 export const runDiff = async (args: DiffArgs): Promise<object> => {
   const toFilename = args.toPath;
@@ -19,7 +30,7 @@ export const runDiff = async (args: DiffArgs): Promise<object> => {
       ...(toFilename ? { filename: toFilename } : {}),
       language: args.language,
     },
-    rules: {},
+    rules: buildRulesObject(args.resolvedRules),
     ...(args.deltaOnly ? { deltaOnly: true } : {}),
   };
 };
