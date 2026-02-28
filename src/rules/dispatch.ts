@@ -23,6 +23,15 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
     'package_imports_list:typescript',
     () => import('./package_imports_list/typescript.js'),
   ],
+  ['io_calls_count:typescript', () => import('./io_calls_count/typescript.js')],
+  [
+    'io_read_calls_count:typescript',
+    () => import('./io_read_calls_count/typescript.js'),
+  ],
+  [
+    'io_write_calls_count:typescript',
+    () => import('./io_write_calls_count/typescript.js'),
+  ],
   ['file_metrics:typescript', () => import('./file_metrics/typescript.js')],
   ['code_hash:typescript', () => import('./code_hash/typescript.js')],
 ]);

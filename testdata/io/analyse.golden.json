@@ -1,0 +1,18 @@
+{
+  "filename": "testdata/io/analyse.ts",
+  "language": "typescript",
+  "rules": {
+    "io_calls_count": {
+      "functions": { "chargeCustomer": 3, "loadLedger": 2, "saveLedger": 2 },
+      "methods": { "paymentServiceCharge": 3 }
+    },
+    "io_read_calls_count": {
+      "functions": { "chargeCustomer": 2, "loadLedger": 2, "saveLedger": 0 },
+      "methods": { "paymentServiceCharge": 1 }
+    },
+    "io_write_calls_count": {
+      "functions": { "chargeCustomer": 1, "loadLedger": 0, "saveLedger": 2 },
+      "methods": { "paymentServiceCharge": 2 }
+    }
+  }
+}

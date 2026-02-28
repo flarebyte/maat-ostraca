@@ -241,3 +241,65 @@ test('maat diff file_metrics matches golden and is deterministic', () => {
   const goldenCanonical = `${canonicalStringify(JSON.parse(golden) as unknown)}\n`;
   expect(first.stdout).toBe(goldenCanonical);
 });
+
+test('maat analyse io count rules match golden and are deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/io/analyse.ts',
+    '--rules',
+    'io_calls_count,io_read_calls_count,io_write_calls_count',
+    '--language',
+    'typescript',
+    '--json',
+  ];
+
+  const first = runCli(args);
+  const second = runCli(args);
+
+  expect(first.status).toBe(0);
+  expect(second.status).toBe(0);
+  expect(first.stdout).toBe(second.stdout);
+
+  const payload = JSON.parse(first.stdout) as unknown;
+  const parsed = AnalyseOutputSchema.safeParse(payload);
+  expect(parsed.success).toBeTrue();
+
+  const golden = readFileSync('testdata/io/analyse.golden.json', 'utf8');
+  const goldenCanonical = `${canonicalStringify(JSON.parse(golden) as unknown)}\n`;
+  expect(first.stdout).toBe(goldenCanonical);
+});
+
+test('maat diff io_calls_count delta-only matches golden and is deterministic', () => {
+  const args = [
+    'diff',
+    '--from',
+    'testdata/io/diff-v1.ts',
+    '--to',
+    'testdata/io/diff-v2.ts',
+    '--rules',
+    'io_calls_count',
+    '--language',
+    'typescript',
+    '--json',
+    '--delta-only',
+  ];
+
+  const first = runCli(args);
+  const second = runCli(args);
+
+  expect(first.status).toBe(0);
+  expect(second.status).toBe(0);
+  expect(first.stdout).toBe(second.stdout);
+
+  const payload = JSON.parse(first.stdout) as unknown;
+  const parsed = DiffOutputSchema.safeParse(payload);
+  expect(parsed.success).toBeTrue();
+
+  const golden = readFileSync(
+    'testdata/io/diff-io-calls-delta-only.golden.json',
+    'utf8',
+  );
+  const goldenCanonical = `${canonicalStringify(JSON.parse(golden) as unknown)}\n`;
+  expect(first.stdout).toBe(goldenCanonical);
+});
