@@ -128,6 +128,11 @@ export const useCases: Record<string, UseCase> = {
     title: 'List all available rules with descriptions',
     note: 'Expose discoverable rule names and descriptions for the selected language.',
   },
+  sourceInputStdin: {
+    name: 'source_input_stdin',
+    title: 'Support source input from stdin',
+    note: 'Allow analysis without `--in` by reading source content from standard input.',
+  },
   singleFileAnalysis: {
     name: 'analysis_single_file',
     title: 'Run semantic analysis on a single source file',

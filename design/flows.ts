@@ -22,19 +22,37 @@ export const cliArgsAnalyse = (context: FlowContext) => {
     name: 'cli.analyse',
     title: 'Parse CLI arguments for source code analysis',
     directory: 'cmd/maat',
-    note: 'Flags: --in filename.go --rules io_calls_count,import_files_list --language go --json. Implemented with commander.js.',
+    note: 'Flags: --in filename.go --rules io_calls_count,import_files_list --language go --json. If `--in` is omitted, source can be read from stdin. Implemented with commander.js.',
     level: context.level,
     useCases: [
       useCases.goSupport.name,
       useCases.tsSupport.name,
       useCases.dartSupport.name,
       useCases.rulesWildcardSelection.name,
+      useCases.sourceInputStdin.name,
     ],
   };
   calls.push(call);
   resolveRequestedRules(incrContext(context));
+  resolveSourceInput(incrContext(context));
   analyseSourceContent(incrContext(context));
   formatOutput(incrContext(context));
+};
+
+export const resolveSourceInput = (context: FlowContext) => {
+  const call: ComponentCall = {
+    name: 'source.resolve',
+    title: 'Resolve source input from file path or stdin',
+    directory: '',
+    note: 'Reads from `--in` when provided; otherwise reads source from stdin.',
+    level: context.level,
+    signature: {
+      input: '{filename?, stdin, language}',
+      success: '{filename?, source, language}',
+    },
+    useCases: [useCases.sourceInputStdin.name],
+  };
+  calls.push(call);
 };
 
 export const cliRulesList = (context: FlowContext) => {
@@ -93,14 +111,17 @@ export const resolveRequestedRules = (context: FlowContext) => {
 export const analyseSourceContent = (context: FlowContext) => {
   const call: ComponentCall = {
     name: 'file.read',
-    title: 'Read and analyze a source file',
+    title: 'Analyze normalized source content',
     directory: '',
-    note: '',
+    note: 'Consumes source content resolved from file path or stdin.',
     level: context.level,
     signature: {
-      input: '{filename, rules, language}',
+      input: '{filename?, source, rules, language}',
     },
-    useCases: [useCases.singleFileAnalysis.name],
+    useCases: [
+      useCases.singleFileAnalysis.name,
+      useCases.sourceInputStdin.name,
+    ],
   };
   calls.push(call);
   analyseAllRules(incrContext(context));

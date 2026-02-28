@@ -6,14 +6,19 @@
 MAAT CLI root command [cli.root]
   - pkg: cmd/maat
   Parse CLI arguments for source code analysis [cli.analyse]
-    - note: Flags: --in filename.go --rules io_calls_count,import_files_list --language go --json. Implemented with commander.js.
+    - note: Flags: --in filename.go --rules io_calls_count,import_files_list --language go --json. If `--in` is omitted, source can be read from stdin. Implemented with commander.js.
     - pkg: cmd/maat
     Resolve requested rules from explicit names and wildcard selectors [rules.resolve]
       - note: Expands `--rules` values such as `import_*` and `io_*` into a deterministic list of concrete rules.
       - input: {rules, language}
       - success: {resolvedRules}[]
-    Read and analyze a source file [file.read]
-      - input: {filename, rules, language}
+    Resolve source input from file path or stdin [source.resolve]
+      - note: Reads from `--in` when provided; otherwise reads source from stdin.
+      - input: {filename?, stdin, language}
+      - success: {filename?, source, language}
+    Analyze normalized source content [file.read]
+      - note: Consumes source content resolved from file path or stdin.
+      - input: {filename?, source, rules, language}
       Analyze all rules [analyse.rules]
         - note: Ideally analyzes rules in parallel.
         - input: {filename, source, rules, language}
@@ -54,6 +59,7 @@ Supported use cases:
   - Support semantic parsing of TypeScript files
   - Support semantic parsing of Dart and Flutter files
   - Support wildcard rule selection in --rules — Allow selectors such as `import_*` and `io_*` to expand to matching rule names.
+  - Support source input from stdin — Allow analysis without `--in` by reading source content from standard input.
   - Run predefined rule-based analysis — Output is generated from the selected rules.
   - Dispatch rule execution by rule name and language — Resolve and run the matching implementation using both rule name and source language.
   - Maintain one rule implementation file per rule-language combination — Keep rule logic isolated by rule and language (for example: `rules/io_calls_count/go.ts`).
