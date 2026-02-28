@@ -35,5 +35,13 @@
     "transpileOnly": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"],
-  "exclude": ["dist", "test", "script", "design", "doc", "notes", "node_modules"]
+  "exclude": [
+    "dist",
+    "test",
+    "script",
+    "design",
+    "doc",
+    "notes",
+    "node_modules"
+  ]
 }
