@@ -6,10 +6,10 @@
     "declaration": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
+    "lib": ["es2024"],
     "module": "nodenext",
     "moduleDetection": "force",
-    "moduleResolution": "node16",
+    "moduleResolution": "nodenext",
     "newLine": "lf",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
@@ -23,7 +23,9 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2024",
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "verbatimModuleSyntax": true,
+    "exactOptionalPropertyTypes": true,
   },
   "ts-node": {
     "compilerOptions": {},
