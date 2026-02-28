@@ -84,3 +84,5 @@ tmp/
 *.swp
 *.swo
 *~
+
+coverage/
