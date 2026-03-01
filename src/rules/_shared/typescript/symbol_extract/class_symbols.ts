@@ -1,10 +1,9 @@
 import type { SgNode } from '@ast-grep/napi';
 import { kind, Lang } from '@ast-grep/napi';
 import {
+  collectDeclarationModifiers,
   compareLex,
   hasChildKind,
-  hasDefaultModifier,
-  hasExportModifier,
   textOfFirstChild,
 } from './common.js';
 import type { ClassSymbol } from './types.js';
@@ -22,20 +21,6 @@ export const collectClassSymbols = (root: SgNode): ClassSymbol[] => {
       textOfFirstChild(node, 'identifier');
     if (!name) {
       continue;
-    }
-
-    const modifiers = new Set<string>();
-    if (hasExportModifier(node)) {
-      modifiers.add('export');
-    }
-    if (hasDefaultModifier(node)) {
-      modifiers.add('default');
-    }
-    if (
-      node.kind() === 'abstract_class_declaration' ||
-      hasChildKind(node, 'abstract')
-    ) {
-      modifiers.add('abstract');
     }
 
     const heritage = node
@@ -72,7 +57,10 @@ export const collectClassSymbols = (root: SgNode): ClassSymbol[] => {
 
     classes.push({
       name,
-      modifiers: [...modifiers].sort(compareLex),
+      modifiers: collectDeclarationModifiers(node, {
+        includeAbstract: true,
+        abstractKinds: ['abstract_class_declaration'],
+      }),
       ...(extendsName ? { extendsName } : {}),
       implementsNames: [...implementsNames].sort(compareLex),
       methodCount,

@@ -122,3 +122,40 @@ export const sortByName = <T extends { name: string }>(items: T[]): T[] => {
 export const sortByKey = <T extends { key: string }>(items: T[]): T[] => {
   return [...items].sort((a, b) => a.key.localeCompare(b.key));
 };
+
+interface ModifierOptions {
+  includeAsync?: boolean;
+  asyncNode?: SgNode;
+  includeAbstract?: boolean;
+  abstractKinds?: readonly string[];
+}
+
+export const collectDeclarationModifiers = (
+  node: SgNode,
+  options: ModifierOptions = {},
+): string[] => {
+  const modifiers = new Set<string>();
+
+  if (hasExportModifier(node)) {
+    modifiers.add('export');
+  }
+  if (hasDefaultModifier(node)) {
+    modifiers.add('default');
+  }
+  const asyncNode = options.asyncNode ?? node;
+  if (options.includeAsync && hasChildKind(asyncNode, 'async')) {
+    modifiers.add('async');
+  }
+
+  const isAbstractByKind = (options.abstractKinds ?? []).includes(
+    String(node.kind()),
+  );
+  if (
+    options.includeAbstract &&
+    (isAbstractByKind || hasChildKind(node, 'abstract'))
+  ) {
+    modifiers.add('abstract');
+  }
+
+  return [...modifiers].sort(compareLex);
+};

@@ -1,10 +1,7 @@
 import type { SgNode } from '@ast-grep/napi';
 import { kind, Lang } from '@ast-grep/napi';
 import {
-  compareLex,
-  hasChildKind,
-  hasDefaultModifier,
-  hasExportModifier,
+  collectDeclarationModifiers,
   isFunctionExpressionKind,
   parseParams,
   parseReturns,
@@ -22,20 +19,9 @@ const collectFunctionDeclarationSymbols = (root: SgNode): FunctionSymbol[] => {
       continue;
     }
 
-    const modifiers = new Set<string>();
-    if (hasExportModifier(node)) {
-      modifiers.add('export');
-    }
-    if (hasDefaultModifier(node)) {
-      modifiers.add('default');
-    }
-    if (hasChildKind(node, 'async')) {
-      modifiers.add('async');
-    }
-
     symbols.push({
       name,
-      modifiers: [...modifiers].sort(compareLex),
+      modifiers: collectDeclarationModifiers(node, { includeAsync: true }),
       params: parseParams(node),
       returns: parseReturns(node),
       code: node.text(),
@@ -65,20 +51,12 @@ const collectVariableFunctionSymbols = (root: SgNode): FunctionSymbol[] => {
       continue;
     }
 
-    const modifiers = new Set<string>();
-    if (hasExportModifier(declarator)) {
-      modifiers.add('export');
-    }
-    if (hasDefaultModifier(declarator)) {
-      modifiers.add('default');
-    }
-    if (hasChildKind(expressionNode, 'async')) {
-      modifiers.add('async');
-    }
-
     symbols.push({
       name,
-      modifiers: [...modifiers].sort(compareLex),
+      modifiers: collectDeclarationModifiers(declarator, {
+        includeAsync: true,
+        asyncNode: expressionNode,
+      }),
       params: parseParams(expressionNode),
       returns: parseReturns(expressionNode),
       code: expressionNode.text(),

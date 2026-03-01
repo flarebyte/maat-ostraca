@@ -1,12 +1,8 @@
 import type { SgNode } from '@ast-grep/napi';
-import { kind, Lang, parse } from '@ast-grep/napi';
-import { InternalError } from '../../core/errors/index.js';
+import { kind, Lang } from '@ast-grep/napi';
+import { runTypeScriptStringListRule } from '../_shared/typescript/rule_support.js';
 import { readLiteralString } from '../_shared/typescript/string_literals.js';
 import type { RuleRunInput } from '../dispatch.js';
-
-const sortedDedup = (values: string[]): string[] => {
-  return [...new Set(values)].sort((a, b) => a.localeCompare(b));
-};
 
 const compact = (value: string): string => value.replace(/\s+/g, '');
 
@@ -84,22 +80,16 @@ const collectBracketAccessEnvNames = (root: SgNode): string[] => {
 };
 
 export const run = async (input: RuleRunInput): Promise<string[]> => {
-  if (input.language !== 'typescript') {
-    throw new InternalError(
-      `env_names_extract_error: unsupported language "${input.language}"`,
-    );
-  }
-
-  try {
-    const root = parse(Lang.TypeScript, input.source).root();
-    const dotNames = collectDotAccessEnvNames(root);
-    const bracketNames = collectBracketAccessEnvNames(root);
-    return sortedDedup([...dotNames, ...bracketNames]);
-  } catch (error: unknown) {
-    if (error instanceof InternalError) {
-      throw error;
-    }
-
-    throw new InternalError('env_names_extract_error: failed to extract names');
-  }
+  return runTypeScriptStringListRule({
+    input,
+    messages: {
+      unsupported: `env_names_extract_error: unsupported language "${input.language}"`,
+      failed: 'env_names_extract_error: failed to extract names',
+    },
+    extract: (root) => {
+      const dotNames = collectDotAccessEnvNames(root);
+      const bracketNames = collectBracketAccessEnvNames(root);
+      return [...dotNames, ...bracketNames];
+    },
+  });
 };

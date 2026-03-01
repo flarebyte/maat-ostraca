@@ -1,6 +1,10 @@
-import { readFile } from 'node:fs/promises';
-import { UsageError } from '../errors/index.js';
 import type { Language } from '../types.js';
+import {
+  defaultReadUtf8File,
+  ensureNonEmptyStdinOrThrowUsage,
+  type ReadUtf8File,
+  readNormalizedFileOrThrowUsage,
+} from './io.js';
 import { normalizeSource } from './normalize.js';
 import { readStdinUtf8 } from './read-stdin.js';
 
@@ -19,26 +23,9 @@ export interface ResolvedDiffSource {
 }
 
 interface ResolveDiffSourceDeps {
-  readUtf8File?: (path: string) => Promise<string>;
+  readUtf8File?: ReadUtf8File;
   readStdin?: () => Promise<string>;
 }
-
-const defaultReadUtf8File = async (path: string): Promise<string> => {
-  return readFile(path, 'utf8');
-};
-
-const ensureNonEmptyStdin = (raw: string): string => {
-  if (raw.length === 0) {
-    throw new UsageError(
-      'stdin_empty: stdin is required when --to is omitted',
-      {
-        code: 'E_IO',
-      },
-    );
-  }
-
-  return raw;
-};
 
 export const resolveDiffSource = async (
   input: ResolveDiffSourceInput,
@@ -47,33 +34,31 @@ export const resolveDiffSource = async (
   const readUtf8File = deps.readUtf8File ?? defaultReadUtf8File;
   const readStdin = deps.readStdin ?? readStdinUtf8;
 
-  let fromSource: string;
-  try {
-    fromSource = normalizeSource(await readUtf8File(input.fromPath));
-  } catch {
-    throw new UsageError(`file_read_error: cannot read "${input.fromPath}"`, {
-      code: 'E_IO',
-    });
-  }
+  const fromSource = await readNormalizedFileOrThrowUsage(
+    input.fromPath,
+    readUtf8File,
+  );
 
   if (input.toPath) {
-    try {
-      const toSource = normalizeSource(await readUtf8File(input.toPath));
-      return {
-        fromFilename: input.fromPath,
-        fromSource,
-        toFilename: input.toPath,
-        toSource,
-        language: input.language,
-      };
-    } catch {
-      throw new UsageError(`file_read_error: cannot read "${input.toPath}"`, {
-        code: 'E_IO',
-      });
-    }
+    const toSource = await readNormalizedFileOrThrowUsage(
+      input.toPath,
+      readUtf8File,
+    );
+    return {
+      fromFilename: input.fromPath,
+      fromSource,
+      toFilename: input.toPath,
+      toSource,
+      language: input.language,
+    };
   }
 
-  const toSource = normalizeSource(ensureNonEmptyStdin(await readStdin()));
+  const toSource = normalizeSource(
+    ensureNonEmptyStdinOrThrowUsage(
+      await readStdin(),
+      'stdin_empty: stdin is required when --to is omitted',
+    ),
+  );
   return {
     fromFilename: input.fromPath,
     fromSource,

@@ -42,7 +42,7 @@ complexity:
 sec:
 	semgrep scan --config auto
 dup:
-	npx jscpd --format typescript --min-lines 15 --gitignore .
+	npx jscpd --format typescript --min-lines 10 --gitignore .
 
 help:
 	@printf "Targets:\n"
