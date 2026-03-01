@@ -18,23 +18,9 @@ const assertJsonError = (stdout: string) => {
   return parsed.data;
 };
 
-test('analyse unknown rule with --json returns usage envelope on stdout only', () => {
-  const first = runCli([
-    'analyse',
-    '--language',
-    'typescript',
-    '--rules',
-    'does_not_exist',
-    '--json',
-  ]);
-  const second = runCli([
-    'analyse',
-    '--language',
-    'typescript',
-    '--rules',
-    'does_not_exist',
-    '--json',
-  ]);
+const runTwiceUsageJsonCase = (args: string[], expectedCode: string): void => {
+  const first = runCli(args);
+  const second = runCli(args);
 
   expect(first.status).toBe(2);
   expect(second.status).toBe(2);
@@ -43,51 +29,42 @@ test('analyse unknown rule with --json returns usage envelope on stdout only', (
   expect(first.stdout).toBe(second.stdout);
 
   const payload = assertJsonError(first.stdout);
-  expect(payload.error.code).toBe('E_USAGE');
+  expect(payload.error.code).toBe(expectedCode);
+};
+
+test('analyse unknown rule with --json returns usage envelope on stdout only', () => {
+  runTwiceUsageJsonCase(
+    [
+      'analyse',
+      '--language',
+      'typescript',
+      '--rules',
+      'does_not_exist',
+      '--json',
+    ],
+    'E_USAGE',
+  );
 });
 
 test('diff missing --from file with --json returns usage envelope on stdout only', () => {
-  const first = runCli([
-    'diff',
-    '--from',
-    'missing-does-not-exist.ts',
-    '--language',
-    'typescript',
-    '--rules',
-    'import_files_list',
-    '--json',
-  ]);
-  const second = runCli([
-    'diff',
-    '--from',
-    'missing-does-not-exist.ts',
-    '--language',
-    'typescript',
-    '--rules',
-    'import_files_list',
-    '--json',
-  ]);
-
-  expect(first.status).toBe(2);
-  expect(second.status).toBe(2);
-  expect(first.stderr).toBe('');
-  expect(second.stderr).toBe('');
-  expect(first.stdout).toBe(second.stdout);
-
-  const payload = assertJsonError(first.stdout);
-  expect(payload.error.code).toBe('E_IO');
+  runTwiceUsageJsonCase(
+    [
+      'diff',
+      '--from',
+      'missing-does-not-exist.ts',
+      '--language',
+      'typescript',
+      '--rules',
+      'import_files_list',
+      '--json',
+    ],
+    'E_IO',
+  );
 });
 
 test('rules invalid language with --json returns usage envelope on stdout only', () => {
-  const first = runCli(['rules', '--language', 'invalid', '--json']);
-  const second = runCli(['rules', '--language', 'invalid', '--json']);
-
-  expect(first.status).toBe(2);
-  expect(second.status).toBe(2);
-  expect(first.stderr).toBe('');
-  expect(second.stderr).toBe('');
-  expect(first.stdout).toBe(second.stdout);
-
-  const payload = assertJsonError(first.stdout);
-  expect(payload.error.code).toBe('E_USAGE');
+  runTwiceUsageJsonCase(
+    ['rules', '--language', 'invalid', '--json'],
+    'E_USAGE',
+  );
 });

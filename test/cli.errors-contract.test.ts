@@ -9,20 +9,31 @@ import { resolveSource } from '../src/core/source/resolve.js';
 import { resolveDiffSource } from '../src/core/source/resolve-diff.js';
 import { resolveRules } from '../src/rules/index.js';
 
-interface IoCapture {
+interface CliRunResult {
+  code: number;
   stdout: string;
   stderr: string;
 }
 
-const createIoCapture = (): {
-  io: { stdout: (message: string) => void; stderr: (message: string) => void };
-  get: () => IoCapture;
-} => {
+type CliDeps = NonNullable<Parameters<typeof runCli>[2]>;
+
+const defaultDeps: CliDeps = {
+  runAnalyse,
+  runRulesList,
+  resolveRules,
+  resolveSource,
+  resolveDiffSource,
+};
+
+const runCliWithCapture = async (
+  args: string[],
+  deps: CliDeps = defaultDeps,
+): Promise<CliRunResult> => {
   let stdout = '';
   let stderr = '';
-
-  return {
-    io: {
+  const code = await runCli(
+    args,
+    {
       stdout: (message: string) => {
         stdout += message;
       },
@@ -30,8 +41,19 @@ const createIoCapture = (): {
         stderr += message;
       },
     },
-    get: () => ({ stdout, stderr }),
-  };
+    deps,
+  );
+
+  return { code, stdout, stderr };
+};
+
+const runTwice = async (
+  args: string[],
+  deps: CliDeps = defaultDeps,
+): Promise<{ first: CliRunResult; second: CliRunResult }> => {
+  const first = await runCliWithCapture(args, deps);
+  const second = await runCliWithCapture(args, deps);
+  return { first, second };
 };
 
 const parseJsonError = (output: string) => {
@@ -44,105 +66,81 @@ const parseJsonError = (output: string) => {
   return parsed.data;
 };
 
+const assertUsageTextContract = async (
+  args: string[],
+  expectedStderr: string,
+): Promise<void> => {
+  const { first, second } = await runTwice(args);
+
+  assert.equal(first.code, 2);
+  assert.equal(second.code, 2);
+  assert.equal(first.stdout, '');
+  assert.equal(second.stdout, '');
+  assert.equal(first.stderr, expectedStderr);
+  assert.equal(first.stderr, second.stderr);
+};
+
+const assertUsageJsonContract = async (args: string[]): Promise<void> => {
+  const { first, second } = await runTwice(args);
+
+  assert.equal(first.code, 2);
+  assert.equal(second.code, 2);
+  assert.equal(first.stderr, '');
+  assert.equal(second.stderr, '');
+  assert.equal(first.stdout, second.stdout);
+  parseJsonError(first.stdout);
+};
+
+const assertInternalJsonContract = async (
+  args: string[],
+  deps: CliDeps,
+): Promise<void> => {
+  const result = await runCliWithCapture(args, deps);
+
+  assert.equal(result.code, 1);
+  assert.equal(result.stderr, '');
+  const errorPayload = parseJsonError(result.stdout);
+  assert.equal(errorPayload.error.code, 'E_INTERNAL');
+  assert.equal(errorPayload.error.message, 'forced internal');
+};
+
 describe('cli error contract', () => {
   it('analyse usage error without --json routes to stderr with exit 2 and deterministic bytes', async () => {
-    const firstCapture = createIoCapture();
-    const secondCapture = createIoCapture();
-
-    const firstCode = await runCli(
+    await assertUsageTextContract(
       ['analyse', '--rules', 'does_not_exist', '--language', 'typescript'],
-      firstCapture.io,
-    );
-    const secondCode = await runCli(
-      ['analyse', '--rules', 'does_not_exist', '--language', 'typescript'],
-      secondCapture.io,
-    );
-
-    const first = firstCapture.get();
-    const second = secondCapture.get();
-
-    assert.equal(firstCode, 2);
-    assert.equal(secondCode, 2);
-    assert.equal(first.stdout, '');
-    assert.equal(second.stdout, '');
-    assert.equal(
-      first.stderr,
       'unknown rule "does_not_exist" for language "typescript"\n',
     );
-    assert.equal(first.stderr, second.stderr);
   });
 
   it('analyse usage error with --json routes to stdout envelope with exit 2 and deterministic bytes', async () => {
-    const firstCapture = createIoCapture();
-    const secondCapture = createIoCapture();
-
-    const firstCode = await runCli(
-      [
-        'analyse',
-        '--rules',
-        'does_not_exist',
-        '--language',
-        'typescript',
-        '--json',
-      ],
-      firstCapture.io,
-    );
-    const secondCode = await runCli(
-      [
-        'analyse',
-        '--rules',
-        'does_not_exist',
-        '--language',
-        'typescript',
-        '--json',
-      ],
-      secondCapture.io,
-    );
-
-    const first = firstCapture.get();
-    const second = secondCapture.get();
-
-    assert.equal(firstCode, 2);
-    assert.equal(secondCode, 2);
-    assert.equal(first.stderr, '');
-    assert.equal(second.stderr, '');
-    assert.equal(first.stdout, second.stdout);
-    parseJsonError(first.stdout);
+    await assertUsageJsonContract([
+      'analyse',
+      '--rules',
+      'does_not_exist',
+      '--language',
+      'typescript',
+      '--json',
+    ]);
   });
 
   it('analyse internal error with --json exits 1 and routes envelope to stdout only', async () => {
-    const capture = createIoCapture();
-
-    const code = await runCli(
+    await assertInternalJsonContract(
       ['analyse', '--rules', 'code_hash', '--language', 'typescript', '--json'],
-      capture.io,
       {
+        ...defaultDeps,
         runAnalyse: async () => {
           throw new InternalError('forced internal');
         },
-        runRulesList,
-        resolveRules,
         resolveSource: async () => ({
           source: 'const a = 1;\n',
           language: 'typescript',
         }),
-        resolveDiffSource,
       },
     );
-
-    const { stdout, stderr } = capture.get();
-    assert.equal(code, 1);
-    assert.equal(stderr, '');
-    const errorPayload = parseJsonError(stdout);
-    assert.equal(errorPayload.error.code, 'E_INTERNAL');
-    assert.equal(errorPayload.error.message, 'forced internal');
   });
 
   it('diff usage error without --json routes to stderr with exit 2 and deterministic bytes', async () => {
-    const firstCapture = createIoCapture();
-    const secondCapture = createIoCapture();
-
-    const firstCode = await runCli(
+    await assertUsageTextContract(
       [
         'diff',
         '--from',
@@ -152,78 +150,25 @@ describe('cli error contract', () => {
         '--language',
         'typescript',
       ],
-      firstCapture.io,
+      'file_read_error: cannot read "missing.ts"\n',
     );
-    const secondCode = await runCli(
-      [
-        'diff',
-        '--from',
-        'missing.ts',
-        '--rules',
-        'import_files_list',
-        '--language',
-        'typescript',
-      ],
-      secondCapture.io,
-    );
-
-    const first = firstCapture.get();
-    const second = secondCapture.get();
-
-    assert.equal(firstCode, 2);
-    assert.equal(secondCode, 2);
-    assert.equal(first.stdout, '');
-    assert.equal(second.stdout, '');
-    assert.equal(first.stderr, 'file_read_error: cannot read "missing.ts"\n');
-    assert.equal(first.stderr, second.stderr);
   });
 
   it('diff usage error with --json routes to stdout envelope with exit 2 and deterministic bytes', async () => {
-    const firstCapture = createIoCapture();
-    const secondCapture = createIoCapture();
-
-    const firstCode = await runCli(
-      [
-        'diff',
-        '--from',
-        'missing.ts',
-        '--rules',
-        'import_files_list',
-        '--language',
-        'typescript',
-        '--json',
-      ],
-      firstCapture.io,
-    );
-    const secondCode = await runCli(
-      [
-        'diff',
-        '--from',
-        'missing.ts',
-        '--rules',
-        'import_files_list',
-        '--language',
-        'typescript',
-        '--json',
-      ],
-      secondCapture.io,
-    );
-
-    const first = firstCapture.get();
-    const second = secondCapture.get();
-
-    assert.equal(firstCode, 2);
-    assert.equal(secondCode, 2);
-    assert.equal(first.stderr, '');
-    assert.equal(second.stderr, '');
-    assert.equal(first.stdout, second.stdout);
-    parseJsonError(first.stdout);
+    await assertUsageJsonContract([
+      'diff',
+      '--from',
+      'missing.ts',
+      '--rules',
+      'import_files_list',
+      '--language',
+      'typescript',
+      '--json',
+    ]);
   });
 
   it('diff internal error with --json exits 1 and routes envelope to stdout only', async () => {
-    const capture = createIoCapture();
-
-    const code = await runCli(
+    await assertInternalJsonContract(
       [
         'diff',
         '--from',
@@ -234,14 +179,11 @@ describe('cli error contract', () => {
         'typescript',
         '--json',
       ],
-      capture.io,
       {
+        ...defaultDeps,
         runAnalyse: async () => {
           throw new InternalError('forced internal');
         },
-        runRulesList,
-        resolveRules,
-        resolveSource,
         resolveDiffSource: async () => ({
           fromFilename: 'a.ts',
           fromSource: 'export const a = 1;\n',
@@ -250,88 +192,28 @@ describe('cli error contract', () => {
         }),
       },
     );
-
-    const { stdout, stderr } = capture.get();
-    assert.equal(code, 1);
-    assert.equal(stderr, '');
-    const errorPayload = parseJsonError(stdout);
-    assert.equal(errorPayload.error.code, 'E_INTERNAL');
-    assert.equal(errorPayload.error.message, 'forced internal');
   });
 
   it('rules usage error without --json routes to stderr with exit 2 and deterministic bytes', async () => {
-    const firstCapture = createIoCapture();
-    const secondCapture = createIoCapture();
-
-    const firstCode = await runCli(
+    await assertUsageTextContract(
       ['rules', '--language', 'invalid'],
-      firstCapture.io,
-    );
-    const secondCode = await runCli(
-      ['rules', '--language', 'invalid'],
-      secondCapture.io,
-    );
-
-    const first = firstCapture.get();
-    const second = secondCapture.get();
-
-    assert.equal(firstCode, 2);
-    assert.equal(secondCode, 2);
-    assert.equal(first.stdout, '');
-    assert.equal(second.stdout, '');
-    assert.equal(
-      first.stderr,
       "error: option '--language <go|typescript|dart>' argument 'invalid' is invalid. language must be one of: go, typescript, dart\n",
     );
-    assert.equal(first.stderr, second.stderr);
   });
 
   it('rules usage error with --json routes to stdout envelope with exit 2 and deterministic bytes', async () => {
-    const firstCapture = createIoCapture();
-    const secondCapture = createIoCapture();
-
-    const firstCode = await runCli(
-      ['rules', '--language', 'invalid', '--json'],
-      firstCapture.io,
-    );
-    const secondCode = await runCli(
-      ['rules', '--language', 'invalid', '--json'],
-      secondCapture.io,
-    );
-
-    const first = firstCapture.get();
-    const second = secondCapture.get();
-
-    assert.equal(firstCode, 2);
-    assert.equal(secondCode, 2);
-    assert.equal(first.stderr, '');
-    assert.equal(second.stderr, '');
-    assert.equal(first.stdout, second.stdout);
-    parseJsonError(first.stdout);
+    await assertUsageJsonContract(['rules', '--language', 'invalid', '--json']);
   });
 
   it('rules internal error with --json exits 1 and routes envelope to stdout only', async () => {
-    const capture = createIoCapture();
-
-    const code = await runCli(
+    await assertInternalJsonContract(
       ['rules', '--language', 'typescript', '--json'],
-      capture.io,
       {
-        runAnalyse,
+        ...defaultDeps,
         runRulesList: async () => {
           throw new InternalError('forced internal');
         },
-        resolveRules,
-        resolveSource,
-        resolveDiffSource,
       },
     );
-
-    const { stdout, stderr } = capture.get();
-    assert.equal(code, 1);
-    assert.equal(stderr, '');
-    const errorPayload = parseJsonError(stdout);
-    assert.equal(errorPayload.error.code, 'E_INTERNAL');
-    assert.equal(errorPayload.error.message, 'forced internal');
   });
 });

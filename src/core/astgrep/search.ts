@@ -28,6 +28,11 @@ interface SearchDeps extends AstGrepTimeoutOptions {
 const defaultLoadAstGrep = async (): Promise<typeof import('@ast-grep/napi')> =>
   import('@ast-grep/napi');
 
+const toTimeoutOptions = (
+  deps: SearchDeps,
+): AstGrepTimeoutOptions | undefined =>
+  deps.timeoutMs !== undefined ? { timeoutMs: deps.timeoutMs } : undefined;
+
 const toAstGrepLanguage = (
   language: Language,
   astGrep: typeof import('@ast-grep/napi'),
@@ -41,26 +46,40 @@ const toAstGrepLanguage = (
   throw new InternalError(`astgrep_error: unsupported language "${language}"`);
 };
 
+const executeSearch = async (
+  input: { source: string; language: Language },
+  deps: SearchDeps,
+  run: (context: {
+    astGrep: typeof import('@ast-grep/napi');
+    astLanguage: unknown;
+  }) => AstGrepMatch[],
+): Promise<AstGrepMatch[]> => {
+  const loadAstGrep = deps.loadAstGrep ?? defaultLoadAstGrep;
+  const timeoutOptions = toTimeoutOptions(deps);
+
+  return runAstGrepWithTimeout(
+    async () => {
+      const astGrep = await loadAstGrep();
+      const astLanguage = toAstGrepLanguage(input.language, astGrep);
+      return run({ astGrep, astLanguage });
+    },
+    ...(timeoutOptions ? [timeoutOptions] : []),
+  );
+};
+
 export const search = async (
   input: AstGrepSearchInput,
   deps: SearchDeps = {},
 ): Promise<AstGrepMatch[]> => {
   try {
-    const loadAstGrep = deps.loadAstGrep ?? defaultLoadAstGrep;
-    return runAstGrepWithTimeout(
-      async () => {
-        const astGrep = await loadAstGrep();
-        const astLanguage = toAstGrepLanguage(input.language, astGrep);
-        const { parse, pattern } = astGrep;
+    return executeSearch(input, deps, ({ astGrep, astLanguage }) => {
+      const { parse, pattern } = astGrep;
+      const root = parse(astLanguage as never, input.source).root();
+      const compiledPattern = pattern(astLanguage as never, input.pattern);
+      const nodes = root.findAll(compiledPattern);
 
-        const root = parse(astLanguage as never, input.source).root();
-        const compiledPattern = pattern(astLanguage as never, input.pattern);
-        const nodes = root.findAll(compiledPattern);
-
-        return nodes.map((node) => ({ text: node.text() }));
-      },
-      ...(deps.timeoutMs !== undefined ? [{ timeoutMs: deps.timeoutMs }] : []),
-    );
+      return nodes.map((node) => ({ text: node.text() }));
+    });
   } catch (error: unknown) {
     if (error instanceof InternalError) {
       throw error;
@@ -75,21 +94,14 @@ export const searchByKind = async (
   deps: SearchDeps = {},
 ): Promise<AstGrepMatch[]> => {
   try {
-    const loadAstGrep = deps.loadAstGrep ?? defaultLoadAstGrep;
-    return runAstGrepWithTimeout(
-      async () => {
-        const astGrep = await loadAstGrep();
-        const astLanguage = toAstGrepLanguage(input.language, astGrep);
-        const { kind, parse } = astGrep;
+    return executeSearch(input, deps, ({ astGrep, astLanguage }) => {
+      const { kind, parse } = astGrep;
+      const root = parse(astLanguage as never, input.source).root();
+      const astKind = kind(astLanguage as never, input.kindName as never);
+      const nodes = root.findAll(astKind);
 
-        const root = parse(astLanguage as never, input.source).root();
-        const astKind = kind(astLanguage as never, input.kindName as never);
-        const nodes = root.findAll(astKind);
-
-        return nodes.map((node) => ({ text: node.text() }));
-      },
-      ...(deps.timeoutMs !== undefined ? [{ timeoutMs: deps.timeoutMs }] : []),
-    );
+      return nodes.map((node) => ({ text: node.text() }));
+    });
   } catch (error: unknown) {
     if (error instanceof InternalError) {
       throw error;
