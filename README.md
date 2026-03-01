@@ -12,3 +12,36 @@ At a high level, the CLI is designed to:
 
 The output model emphasizes direct key access (for example, function/method/class/interface maps),
 compact metrics, and optional delta-focused diff views for low-noise reporting.
+
+## Quick Start
+
+Install and run locally:
+
+```bash
+npm install
+npm run build
+npm link
+maat rules --language typescript --json
+```
+
+Or run without linking:
+
+```bash
+npx maat-ostraca rules --language typescript --json
+```
+
+Basic commands:
+
+```bash
+# Analyse one file
+maat analyse --in testdata/analyse-input.ts --rules code_hash,file_metrics --language typescript --json
+
+# Analyse from stdin
+cat testdata/analyse-input.ts | maat analyse --rules code_hash --language typescript --json
+
+# Diff two snapshots
+maat diff --from testdata/metrics/v1.ts --to testdata/metrics/v2.ts --rules file_metrics --language typescript --json
+```
+
+Determinism:
+- For the same inputs and rule selection, JSON output is deterministic with stable key ordering.
