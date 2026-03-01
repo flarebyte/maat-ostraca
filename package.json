@@ -35,7 +35,7 @@
     "test": "node --import tsx --test test/**/*.test.ts",
     "test:e2e": "bun test script/e2e",
     "test:build": "npm run build",
-    "test:cov": "c8 --reporter=text-summary --reporter=lcov node --import tsx --test test/**/*.test.ts",
+    "test:cov": "node script/test-cov.cjs",
     "clean": "node -e \"import { rmSync } from 'node:fs'; rmSync('dist', { recursive: true, force: true });\""
   },
   "devDependencies": {
