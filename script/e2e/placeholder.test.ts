@@ -4,9 +4,11 @@ import { readFileSync } from 'node:fs';
 import {
   AnalyseOutputSchema,
   DiffOutputSchema,
+  JsonErrorOutputSchema,
   RulesListOutputSchema,
 } from '../../src/core/contracts/schemas.js';
 import { canonicalStringify } from '../../src/core/format/canonical-json.js';
+import { MAX_SOURCE_BYTES } from '../../src/core/source/limits.js';
 
 const runCli = (args: string[], input?: string) =>
   spawnSync('node', ['--import', 'tsx', 'src/cmd/maat/index.ts', ...args], {
@@ -86,6 +88,50 @@ test('maat analyse via stdin succeeds and is deterministic', () => {
   const input = 'const a = 1;\r\n';
 
   const { first, second } = runTwice(args, input);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+});
+
+test('maat analyse rejects oversized stdin with deterministic json error envelope', () => {
+  const oversized = `${'a'.repeat(MAX_SOURCE_BYTES)}b`;
+  const args = [
+    'analyse',
+    '--rules',
+    'code_hash',
+    '--language',
+    'typescript',
+    '--json',
+  ];
+
+  const first = runCli(args, oversized);
+  const second = runCli(args, oversized);
+
+  expect(first.status).toBe(2);
+  expect(second.status).toBe(2);
+  expect(first.stderr).toBe('');
+  expect(second.stderr).toBe('');
+  expect(first.stdout).toBe(second.stdout);
+
+  const parsed = parseWithSchema(first.stdout, JsonErrorOutputSchema);
+  expect(parsed.error.code).toBe('E_SOURCE_TOO_LARGE');
+  expect(parsed.error.message).toBe(
+    `source_too_large: stdin source is ${MAX_SOURCE_BYTES + 1} bytes, limit is ${MAX_SOURCE_BYTES} bytes`,
+  );
+});
+
+test('maat analyse multi-rule json output is byte-identical across repeated runs', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/symbols/analyse.ts',
+    '--rules',
+    'function_map,method_map,class_map,interface_map,interfaces_code_map,file_metrics,code_hash',
+    '--language',
+    'typescript',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
   expectDeterministicSuccess(first, second);
   parseWithSchema(first.stdout, AnalyseOutputSchema);
 });

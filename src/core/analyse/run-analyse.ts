@@ -12,7 +12,13 @@ export interface AnalyseArgs {
   rules: readonly RuleName[];
 }
 
+export interface RunAnalyseOptions {
+  concurrency?: number;
+  dispatch?: typeof dispatchRule;
+}
+
 const compareLex = (a: string, b: string): number => a.localeCompare(b);
+const MAX_CONCURRENCY = 4;
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -84,8 +90,9 @@ const normalizeRuleResult = (ruleName: RuleName, value: unknown): unknown => {
 const executeRule = async (
   ruleName: RuleName,
   args: AnalyseArgs,
+  dispatch: typeof dispatchRule,
 ): Promise<unknown> => {
-  const runner = await dispatchRule(ruleName, args.language);
+  const runner = await dispatch(ruleName, args.language);
 
   try {
     const result = await runner({
@@ -106,21 +113,88 @@ const executeRule = async (
   }
 };
 
-export const runAnalyse = async (args: AnalyseArgs): Promise<AnalyseOutput> => {
+const normalizeConcurrency = (value: number | undefined): number => {
+  if (value === undefined) {
+    return MAX_CONCURRENCY;
+  }
+
+  if (!Number.isFinite(value)) {
+    return MAX_CONCURRENCY;
+  }
+
+  return Math.max(1, Math.floor(value));
+};
+
+const runRulesBounded = async (
+  sortedRules: readonly RuleName[],
+  args: AnalyseArgs,
+  options: RunAnalyseOptions,
+): Promise<Map<RuleName, unknown>> => {
+  const byRule = new Map<RuleName, unknown>();
+  const failures = new Map<RuleName, unknown>();
+  const dispatch = options.dispatch ?? dispatchRule;
+  const requestedConcurrency = normalizeConcurrency(options.concurrency);
+  const workerCount = Math.min(requestedConcurrency, sortedRules.length);
+  let nextIndex = 0;
+  let shouldStopScheduling = false;
+
+  const worker = async (): Promise<void> => {
+    while (true) {
+      if (shouldStopScheduling) {
+        return;
+      }
+
+      const ruleIndex = nextIndex;
+      if (ruleIndex >= sortedRules.length) {
+        return;
+      }
+
+      nextIndex += 1;
+      const ruleName = sortedRules[ruleIndex];
+      if (ruleName === undefined) {
+        return;
+      }
+
+      try {
+        const value = await executeRule(ruleName, args, dispatch);
+        byRule.set(ruleName, value);
+      } catch (error: unknown) {
+        failures.set(ruleName, error);
+        shouldStopScheduling = true;
+      }
+    }
+  };
+
+  await Promise.all(
+    Array.from({ length: workerCount }, async () => {
+      await worker();
+    }),
+  );
+
+  if (failures.size > 0) {
+    const firstFailingRule = [...failures.keys()].sort(compareLex)[0];
+    if (firstFailingRule === undefined) {
+      throw new InternalError('internal error');
+    }
+    const failure = failures.get(firstFailingRule);
+    if (failure === undefined) {
+      throw new InternalError('internal error');
+    }
+    throw failure;
+  }
+
+  return byRule;
+};
+
+export const runAnalyse = async (
+  args: AnalyseArgs,
+  options: RunAnalyseOptions = {},
+): Promise<AnalyseOutput> => {
   const sortedRules = [...args.rules].sort(compareLex);
 
   // Sorting policy: rules are emitted in lexicographic name order, list-like
   // outputs are sorted, and object-like outputs are rebuilt with sorted keys.
-  const results = await Promise.all(
-    sortedRules.map(async (ruleName) => ({
-      ruleName,
-      value: await executeRule(ruleName, args),
-    })),
-  );
-
-  const byRule = new Map(
-    results.map((result) => [result.ruleName, result.value]),
-  );
+  const byRule = await runRulesBounded(sortedRules, args, options);
   const rules: Record<string, unknown> = {};
 
   for (const ruleName of sortedRules) {

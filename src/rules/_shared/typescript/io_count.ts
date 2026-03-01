@@ -1,5 +1,6 @@
 import type { SgNode } from '@ast-grep/napi';
 import { kind, Lang, parse } from '@ast-grep/napi';
+import { runAstGrepWithTimeout } from '../../../core/astgrep/timeout.js';
 import type { Language } from '../../../core/contracts/language.js';
 import { InternalError } from '../../../core/errors/index.js';
 import { classifyIoCall, type IoCallKind } from './io_patterns.js';
@@ -135,41 +136,46 @@ const shouldCountKind = (detected: IoCallKind, mode: IoCountMode): boolean => {
   return detected === mode;
 };
 
-const countIoCallsInSnippet = (source: string, mode: IoCountMode): number => {
-  const root = parse(Lang.TypeScript, source).root();
-  const calls = root.findAll(kind(Lang.TypeScript, 'call_expression'));
+const countIoCallsInSnippet = async (
+  source: string,
+  mode: IoCountMode,
+): Promise<number> => {
+  return runAstGrepWithTimeout(async () => {
+    const root = parse(Lang.TypeScript, source).root();
+    const calls = root.findAll(kind(Lang.TypeScript, 'call_expression'));
 
-  let count = 0;
-  for (const call of calls) {
-    const callText = call.text();
-    const callee = callText.match(CALL_CALLEE_RE)?.[1]?.trim();
-    if (!callee) {
-      continue;
+    let count = 0;
+    for (const call of calls) {
+      const callText = call.text();
+      const callee = callText.match(CALL_CALLEE_RE)?.[1]?.trim();
+      if (!callee) {
+        continue;
+      }
+
+      const detected = classifyIoCall(callee);
+      if (!detected) {
+        continue;
+      }
+      if (shouldCountKind(detected, mode)) {
+        count += 1;
+      }
     }
 
-    const detected = classifyIoCall(callee);
-    if (!detected) {
-      continue;
-    }
-    if (shouldCountKind(detected, mode)) {
-      count += 1;
-    }
-  }
-
-  return count;
+    return count;
+  });
 };
 
 const countBySymbol = (
   symbols: SymbolBody[],
   mode: IoCountMode,
-): Record<string, number> => {
+): Promise<Record<string, number>> => {
   const counts: Record<string, number> = {};
 
-  for (const symbol of symbols) {
-    counts[symbol.key] = countIoCallsInSnippet(symbol.bodySource, mode);
-  }
-
-  return sortedObject(counts);
+  return Promise.all(
+    symbols.map(async (symbol) => {
+      counts[symbol.key] = await countIoCallsInSnippet(symbol.bodySource, mode);
+    }),
+  ).then(() => sortedObject(counts));
 };
 
 export const countIoBySymbol = async (
@@ -179,14 +185,16 @@ export const countIoBySymbol = async (
 ): Promise<IoCountOutput> => {
   try {
     const astLanguage = toAstLanguage(language);
-    const root = parse(astLanguage, source).root();
+    const root = await runAstGrepWithTimeout(async () =>
+      parse(astLanguage, source).root(),
+    );
 
     const functionSymbols = findFunctionSymbols(root);
     const methodSymbols = findMethodSymbols(root);
 
     return {
-      functions: countBySymbol(functionSymbols, mode),
-      methods: countBySymbol(methodSymbols, mode),
+      functions: await countBySymbol(functionSymbols, mode),
+      methods: await countBySymbol(methodSymbols, mode),
     };
   } catch (error: unknown) {
     if (error instanceof InternalError) {

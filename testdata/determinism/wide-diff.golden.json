@@ -1,0 +1,198 @@
+{
+  "from": {
+    "filename": "testdata/determinism/wide-v1.ts",
+    "language": "typescript"
+  },
+  "rules": {
+    "class_map": {
+      "BillingService": {
+        "cognitiveComplexity": { "delta": 0, "from": 3, "to": 3 },
+        "cyclomaticComplexity": { "delta": 0, "from": 3, "to": 3 },
+        "loc": { "delta": 5, "from": 25, "to": 30 },
+        "maxNestingDepth": { "delta": 0, "from": 3, "to": 3 },
+        "methodCount": { "delta": 1, "from": 3, "to": 4 },
+        "sloc": { "delta": 4, "from": 21, "to": 25 },
+        "status": "modified",
+        "tokens": { "delta": 36, "from": 158, "to": 194 }
+      }
+    },
+    "code_hash": {
+      "changed": true,
+      "from": "b61125e4103271b374780c925d10096ca45561c26c013ea3cd255f80e6b4cc72",
+      "to": "428d648274e787d5c48ba12f5897a3f0ad93ef2fb9faa88a7a79f1de7e601f11"
+    },
+    "env_names_list": {
+      "added": ["DATA_SOURCE_MODE", "SECONDARY_TOKEN"],
+      "removed": ["DATA_SOURCE"]
+    },
+    "error_messages_list": {
+      "added": [
+        "charge failed hard",
+        "failed to persist report v2",
+        "missing API credentials"
+      ],
+      "removed": [
+        "charge failed",
+        "failed to persist report",
+        "missing API_TOKEN"
+      ]
+    },
+    "exception_messages_list": {
+      "added": [
+        "amount must stay positive",
+        "api credential missing",
+        "charge crashed hard"
+      ],
+      "removed": [
+        "amount must be positive",
+        "api token missing",
+        "charge crashed"
+      ]
+    },
+    "file_metrics": {
+      "cognitiveComplexity": { "delta": 0, "from": 4, "to": 4 },
+      "conditions": { "delta": 0, "from": 3, "to": 3 },
+      "cyclomaticComplexity": { "delta": 0, "from": 4, "to": 4 },
+      "loc": { "delta": 12, "from": 73, "to": 85 },
+      "loops": { "delta": 0, "from": 0, "to": 0 },
+      "maxNestingDepth": { "delta": 0, "from": 3, "to": 3 },
+      "sloc": { "delta": 10, "from": 58, "to": 68 },
+      "tokens": { "delta": 110, "from": 485, "to": 595 }
+    },
+    "function_map": {
+      "cleanupCache": { "status": "added" },
+      "loadConfig": {
+        "cognitiveComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "conditions": { "delta": 0, "from": 1, "to": 1 },
+        "cyclomaticComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "ioCallsCount": { "delta": 0, "from": 3, "to": 3 },
+        "ioReadCallsCount": { "delta": 0, "from": 2, "to": 2 },
+        "ioWriteCallsCount": { "delta": 0, "from": 1, "to": 1 },
+        "loc": { "delta": 0, "from": 12, "to": 12 },
+        "loops": { "delta": 0, "from": 0, "to": 0 },
+        "maxNestingDepth": { "delta": 0, "from": 2, "to": 2 },
+        "returnCount": { "delta": 0, "from": 1, "to": 1 },
+        "sloc": { "delta": 0, "from": 10, "to": 10 },
+        "status": "modified",
+        "tokens": { "delta": 11, "from": 107, "to": 118 }
+      },
+      "saveReport": {
+        "cognitiveComplexity": { "delta": 0, "from": 1, "to": 1 },
+        "conditions": { "delta": 0, "from": 0, "to": 0 },
+        "cyclomaticComplexity": { "delta": 0, "from": 1, "to": 1 },
+        "ioCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "ioReadCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "ioWriteCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "loc": { "delta": 1, "from": 5, "to": 6 },
+        "loops": { "delta": 0, "from": 0, "to": 0 },
+        "maxNestingDepth": { "delta": 0, "from": 1, "to": 1 },
+        "returnCount": { "delta": 0, "from": 0, "to": 0 },
+        "sloc": { "delta": 1, "from": 5, "to": 6 },
+        "status": "modified",
+        "tokens": { "delta": 14, "from": 47, "to": 61 }
+      }
+    },
+    "import_files_list": { "added": [], "removed": [] },
+    "interface_map": {
+      "PaymentGateway": { "status": "modified" },
+      "PaymentRequest": { "status": "unchanged" }
+    },
+    "interfaces_code_map": {
+      "PaymentGateway": { "status": "modified" },
+      "PaymentRequest": { "status": "unchanged" }
+    },
+    "io_calls_count": {
+      "functions": {
+        "loadConfig": { "delta": 0, "from": 3, "to": 3 },
+        "status": "modified"
+      },
+      "methods": {
+        "billingServicecharge": { "delta": 0, "from": 2, "to": 2 },
+        "billingServiceloadStats": { "delta": 0, "from": 0, "to": 0 },
+        "billingServicelogFailure": { "delta": 0, "from": 0, "to": 0 },
+        "status": "modified"
+      }
+    },
+    "io_read_calls_count": {
+      "functions": {
+        "loadConfig": { "delta": 0, "from": 2, "to": 2 },
+        "status": "modified"
+      },
+      "methods": {
+        "billingServicecharge": { "delta": 0, "from": 1, "to": 1 },
+        "billingServiceloadStats": { "delta": 0, "from": 0, "to": 0 },
+        "billingServicelogFailure": { "delta": 0, "from": 0, "to": 0 },
+        "status": "modified"
+      }
+    },
+    "io_write_calls_count": {
+      "functions": {
+        "loadConfig": { "delta": 0, "from": 1, "to": 1 },
+        "status": "modified"
+      },
+      "methods": {
+        "billingServicecharge": { "delta": 0, "from": 1, "to": 1 },
+        "billingServiceloadStats": { "delta": 0, "from": 0, "to": 0 },
+        "billingServicelogFailure": { "delta": 0, "from": 0, "to": 0 },
+        "status": "modified"
+      }
+    },
+    "method_map": {
+      "billingServicecharge": {
+        "cognitiveComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "conditions": { "delta": 0, "from": 1, "to": 1 },
+        "cyclomaticComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "ioCallsCount": { "delta": 0, "from": 2, "to": 2 },
+        "ioReadCallsCount": { "delta": 0, "from": 1, "to": 1 },
+        "ioWriteCallsCount": { "delta": 0, "from": 1, "to": 1 },
+        "loc": { "delta": 0, "from": 10, "to": 10 },
+        "loops": { "delta": 0, "from": 0, "to": 0 },
+        "maxNestingDepth": { "delta": 0, "from": 2, "to": 2 },
+        "returnCount": { "delta": 0, "from": 1, "to": 1 },
+        "sloc": { "delta": 0, "from": 8, "to": 8 },
+        "status": "modified",
+        "tokens": { "delta": 0, "from": 81, "to": 81 }
+      },
+      "billingServiceloadStats": {
+        "cognitiveComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "conditions": { "delta": 0, "from": 1, "to": 1 },
+        "cyclomaticComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "ioCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "ioReadCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "ioWriteCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "loc": { "delta": 0, "from": 7, "to": 7 },
+        "loops": { "delta": 0, "from": 0, "to": 0 },
+        "maxNestingDepth": { "delta": 0, "from": 2, "to": 2 },
+        "returnCount": { "delta": 0, "from": 2, "to": 2 },
+        "sloc": { "delta": 0, "from": 7, "to": 7 },
+        "status": "modified",
+        "tokens": { "delta": 0, "from": 44, "to": 44 }
+      },
+      "billingServicelogFailure": {
+        "cognitiveComplexity": { "delta": 0, "from": 1, "to": 1 },
+        "conditions": { "delta": 0, "from": 0, "to": 0 },
+        "cyclomaticComplexity": { "delta": 0, "from": 1, "to": 1 },
+        "ioCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "ioReadCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "ioWriteCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "loc": { "delta": 0, "from": 4, "to": 4 },
+        "loops": { "delta": 0, "from": 0, "to": 0 },
+        "maxNestingDepth": { "delta": 0, "from": 1, "to": 1 },
+        "returnCount": { "delta": 0, "from": 0, "to": 0 },
+        "sloc": { "delta": 0, "from": 4, "to": 4 },
+        "status": "modified",
+        "tokens": { "delta": 2, "from": 27, "to": 29 }
+      },
+      "billingServicerefund": { "status": "added" }
+    },
+    "package_imports_list": { "added": [], "removed": [] },
+    "testcase_titles_list": {
+      "added": ["returns timeout for local source"],
+      "removed": ["returns zero for local source"]
+    }
+  },
+  "to": {
+    "filename": "testdata/determinism/wide-v2.ts",
+    "language": "typescript"
+  }
+}

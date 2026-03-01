@@ -1,0 +1,192 @@
+{
+  "filename": "testdata/determinism/wide-v1.ts",
+  "language": "typescript",
+  "rules": {
+    "class_map": {
+      "BillingService": {
+        "cognitiveComplexity": 3,
+        "cyclomaticComplexity": 3,
+        "implements": ["PaymentGateway"],
+        "loc": 25,
+        "maxNestingDepth": 3,
+        "methodCount": 3,
+        "modifiers": ["export"],
+        "sha256": "926d278b54d199e8256837e10d4da94ae51d137f8fc310731338dc2d88d3ed06",
+        "sloc": 21,
+        "tokens": 158
+      }
+    },
+    "code_hash": {
+      "algorithm": "sha256",
+      "file": "b61125e4103271b374780c925d10096ca45561c26c013ea3cd255f80e6b4cc72"
+    },
+    "env_names_list": ["API_TOKEN", "DATA_SOURCE"],
+    "error_messages_list": [
+      "charge failed",
+      "failed to persist report",
+      "missing API_TOKEN"
+    ],
+    "exception_messages_list": [
+      "amount must be positive",
+      "api token missing",
+      "charge crashed"
+    ],
+    "file_metrics": {
+      "cognitiveComplexity": 4,
+      "conditions": 3,
+      "cyclomaticComplexity": 4,
+      "loc": 73,
+      "loops": 0,
+      "maxNestingDepth": 3,
+      "sloc": 58,
+      "tokens": 485
+    },
+    "function_map": {
+      "loadConfig": {
+        "cognitiveComplexity": 2,
+        "conditions": 1,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 3,
+        "ioReadCallsCount": 2,
+        "ioWriteCallsCount": 1,
+        "loc": 12,
+        "loops": 0,
+        "maxNestingDepth": 2,
+        "modifiers": ["async", "export"],
+        "params": ["pathname: string"],
+        "returnCount": 1,
+        "returns": ["Promise<string>"],
+        "sha256": "7628431850de54bb581f3db2bdc23c74ee448a57c86014402d31b7787f4d8929",
+        "sloc": 10,
+        "tokens": 107
+      },
+      "saveReport": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 5,
+        "loops": 0,
+        "maxNestingDepth": 1,
+        "modifiers": ["async", "export"],
+        "params": ["content: string"],
+        "returnCount": 0,
+        "returns": ["Promise<void>"],
+        "sha256": "da98bd082f558af35637b1c4979765868e6276c97e63d29d4f79506ab152a693",
+        "sloc": 5,
+        "tokens": 47
+      }
+    },
+    "import_files_list": ["./local", "./polyfill", "axios", "node:fs"],
+    "interface_map": {
+      "PaymentGateway": {
+        "extends": [],
+        "methods": ["charge(req: PaymentRequest): Promise<string>"],
+        "modifiers": ["export"]
+      },
+      "PaymentRequest": {
+        "extends": [],
+        "methods": [],
+        "modifiers": ["export"]
+      }
+    },
+    "interfaces_code_map": {
+      "PaymentGateway": "interface PaymentGateway {\n  charge(req: PaymentRequest): Promise<string>;\n}",
+      "PaymentRequest": "interface PaymentRequest {\n  id: string;\n  amount: number;\n}"
+    },
+    "io_calls_count": {
+      "functions": { "loadConfig": 3 },
+      "methods": {
+        "billingServicecharge": 2,
+        "billingServiceloadStats": 0,
+        "billingServicelogFailure": 0
+      }
+    },
+    "io_read_calls_count": {
+      "functions": { "loadConfig": 2 },
+      "methods": {
+        "billingServicecharge": 1,
+        "billingServiceloadStats": 0,
+        "billingServicelogFailure": 0
+      }
+    },
+    "io_write_calls_count": {
+      "functions": { "loadConfig": 1 },
+      "methods": {
+        "billingServicecharge": 1,
+        "billingServiceloadStats": 0,
+        "billingServicelogFailure": 0
+      }
+    },
+    "method_map": {
+      "billingServicecharge": {
+        "cognitiveComplexity": 2,
+        "conditions": 1,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 2,
+        "ioReadCallsCount": 1,
+        "ioWriteCallsCount": 1,
+        "loc": 10,
+        "loops": 0,
+        "maxNestingDepth": 2,
+        "modifiers": ["async"],
+        "name": "charge",
+        "params": ["req: PaymentRequest"],
+        "receiver": "BillingService",
+        "returnCount": 1,
+        "returns": ["Promise<string>"],
+        "sha256": "14ae315ea91b1542683096ff9b4f140d13d1cec6bafcd8eb8330a1eaeee6e13c",
+        "sloc": 8,
+        "tokens": 81
+      },
+      "billingServiceloadStats": {
+        "cognitiveComplexity": 2,
+        "conditions": 1,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 7,
+        "loops": 0,
+        "maxNestingDepth": 2,
+        "modifiers": [],
+        "name": "loadStats",
+        "params": ["stats: Stats"],
+        "receiver": "BillingService",
+        "returnCount": 2,
+        "returns": ["number"],
+        "sha256": "7744181ff99798c985baeca19aa6f9ba7811530999f51174a7ec2e070cc73d84",
+        "sloc": 7,
+        "tokens": 44
+      },
+      "billingServicelogFailure": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 4,
+        "loops": 0,
+        "maxNestingDepth": 1,
+        "modifiers": [],
+        "name": "logFailure",
+        "params": [],
+        "receiver": "BillingService",
+        "returnCount": 0,
+        "returns": ["void"],
+        "sha256": "8e15df91c3651ae0cfa8b5ea7670a50aee5218ed495af7c321fdd334d128e6d2",
+        "sloc": 4,
+        "tokens": 27
+      }
+    },
+    "package_imports_list": ["axios", "node:fs"],
+    "testcase_titles_list": [
+      "BillingService",
+      "charges customer",
+      "returns zero for local source"
+    ]
+  }
+}

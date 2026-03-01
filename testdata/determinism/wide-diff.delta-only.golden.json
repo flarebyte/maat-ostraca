@@ -1,0 +1,186 @@
+{
+  "deltaOnly": true,
+  "from": {
+    "filename": "testdata/determinism/wide-v1.ts",
+    "language": "typescript"
+  },
+  "rules": {
+    "class_map": {
+      "BillingService": {
+        "cognitiveComplexity": 0,
+        "cyclomaticComplexity": 0,
+        "loc": 5,
+        "maxNestingDepth": 0,
+        "methodCount": 1,
+        "sloc": 4,
+        "status": "modified",
+        "tokens": 36
+      }
+    },
+    "code_hash": { "changed": true },
+    "env_names_list": {
+      "added": ["DATA_SOURCE_MODE", "SECONDARY_TOKEN"],
+      "removed": ["DATA_SOURCE"]
+    },
+    "error_messages_list": {
+      "added": [
+        "charge failed hard",
+        "failed to persist report v2",
+        "missing API credentials"
+      ],
+      "removed": [
+        "charge failed",
+        "failed to persist report",
+        "missing API_TOKEN"
+      ]
+    },
+    "exception_messages_list": {
+      "added": [
+        "amount must stay positive",
+        "api credential missing",
+        "charge crashed hard"
+      ],
+      "removed": [
+        "amount must be positive",
+        "api token missing",
+        "charge crashed"
+      ]
+    },
+    "file_metrics": {
+      "cognitiveComplexity": 0,
+      "conditions": 0,
+      "cyclomaticComplexity": 0,
+      "loc": 12,
+      "loops": 0,
+      "maxNestingDepth": 0,
+      "sloc": 10,
+      "tokens": 110
+    },
+    "function_map": {
+      "cleanupCache": { "status": "added" },
+      "loadConfig": {
+        "cognitiveComplexity": 0,
+        "conditions": 0,
+        "cyclomaticComplexity": 0,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 0,
+        "loops": 0,
+        "maxNestingDepth": 0,
+        "returnCount": 0,
+        "sloc": 0,
+        "status": "modified",
+        "tokens": 11
+      },
+      "saveReport": {
+        "cognitiveComplexity": 0,
+        "conditions": 0,
+        "cyclomaticComplexity": 0,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 1,
+        "loops": 0,
+        "maxNestingDepth": 0,
+        "returnCount": 0,
+        "sloc": 1,
+        "status": "modified",
+        "tokens": 14
+      }
+    },
+    "import_files_list": { "added": [], "removed": [] },
+    "interface_map": {
+      "PaymentGateway": { "status": "modified" },
+      "PaymentRequest": { "status": "unchanged" }
+    },
+    "interfaces_code_map": {
+      "PaymentGateway": { "status": "modified" },
+      "PaymentRequest": { "status": "unchanged" }
+    },
+    "io_calls_count": {
+      "functions": { "loadConfig": 0, "status": "modified" },
+      "methods": {
+        "billingServicecharge": 0,
+        "billingServiceloadStats": 0,
+        "billingServicelogFailure": 0,
+        "status": "modified"
+      }
+    },
+    "io_read_calls_count": {
+      "functions": { "loadConfig": 0, "status": "modified" },
+      "methods": {
+        "billingServicecharge": 0,
+        "billingServiceloadStats": 0,
+        "billingServicelogFailure": 0,
+        "status": "modified"
+      }
+    },
+    "io_write_calls_count": {
+      "functions": { "loadConfig": 0, "status": "modified" },
+      "methods": {
+        "billingServicecharge": 0,
+        "billingServiceloadStats": 0,
+        "billingServicelogFailure": 0,
+        "status": "modified"
+      }
+    },
+    "method_map": {
+      "billingServicecharge": {
+        "cognitiveComplexity": 0,
+        "conditions": 0,
+        "cyclomaticComplexity": 0,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 0,
+        "loops": 0,
+        "maxNestingDepth": 0,
+        "returnCount": 0,
+        "sloc": 0,
+        "status": "modified",
+        "tokens": 0
+      },
+      "billingServiceloadStats": {
+        "cognitiveComplexity": 0,
+        "conditions": 0,
+        "cyclomaticComplexity": 0,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 0,
+        "loops": 0,
+        "maxNestingDepth": 0,
+        "returnCount": 0,
+        "sloc": 0,
+        "status": "modified",
+        "tokens": 0
+      },
+      "billingServicelogFailure": {
+        "cognitiveComplexity": 0,
+        "conditions": 0,
+        "cyclomaticComplexity": 0,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 0,
+        "loops": 0,
+        "maxNestingDepth": 0,
+        "returnCount": 0,
+        "sloc": 0,
+        "status": "modified",
+        "tokens": 2
+      },
+      "billingServicerefund": { "status": "added" }
+    },
+    "package_imports_list": { "added": [], "removed": [] },
+    "testcase_titles_list": {
+      "added": ["returns timeout for local source"],
+      "removed": ["returns zero for local source"]
+    }
+  },
+  "to": {
+    "filename": "testdata/determinism/wide-v2.ts",
+    "language": "typescript"
+  }
+}

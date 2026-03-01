@@ -2,7 +2,13 @@ import type { JsonErrorOutput } from '../contracts/outputs.js';
 
 export type ExitCode = 2 | 1;
 
-type ErrorCode = 'E_USAGE' | 'E_IO' | 'E_INTERNAL';
+type ErrorCode =
+  | 'E_USAGE'
+  | 'E_IO'
+  | 'E_INTERNAL'
+  | 'E_SOURCE_TOO_LARGE'
+  | 'E_ANALYSIS_TIMEOUT'
+  | 'E_SYMBOL_LIMIT_EXCEEDED';
 
 interface ErrorDetails {
   details?: Record<string, unknown>;

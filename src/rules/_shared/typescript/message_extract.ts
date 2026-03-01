@@ -1,5 +1,6 @@
 import type { SgNode } from '@ast-grep/napi';
 import { kind, Lang, parse } from '@ast-grep/napi';
+import { runAstGrepWithTimeout } from '../../../core/astgrep/timeout.js';
 import type { Language } from '../../../core/contracts/language.js';
 import { InternalError } from '../../../core/errors/index.js';
 import { readLiteralString } from './string_literals.js';
@@ -40,64 +41,66 @@ const toAstLanguage = (language: Language): Lang => {
   );
 };
 
-export const extractExceptionMessages = (
+export const extractExceptionMessages = async (
   source: string,
   language: Language,
-): string[] => {
+): Promise<string[]> => {
   try {
-    const root = parse(toAstLanguage(language), source).root();
-    const throwNodes = root.findAll(kind(Lang.TypeScript, 'throw_statement'));
-    const messages: string[] = [];
+    return runAstGrepWithTimeout(async () => {
+      const root = parse(toAstLanguage(language), source).root();
+      const throwNodes = root.findAll(kind(Lang.TypeScript, 'throw_statement'));
+      const messages: string[] = [];
 
-    for (const throwNode of throwNodes) {
-      const thrown = throwNode
-        .children()
-        .find((child) => String(child.kind()) !== 'throw');
-
-      if (!thrown) {
-        continue;
-      }
-
-      const thrownKind = String(thrown.kind());
-      if (thrownKind === 'string' || thrownKind === 'template_string') {
-        const message = readLiteralString(thrown);
-        if (message !== undefined) {
-          messages.push(message);
-        }
-        continue;
-      }
-
-      if (thrownKind === 'new_expression') {
-        const ctor = thrown
+      for (const throwNode of throwNodes) {
+        const thrown = throwNode
           .children()
-          .find((child) => String(child.kind()) === 'identifier');
-        if (!ctor) {
+          .find((child) => String(child.kind()) !== 'throw');
+
+        if (!thrown) {
           continue;
         }
 
-        const message = firstLiteralArgumentFromCallLike(thrown);
-        if (message !== undefined) {
-          messages.push(message);
-        }
-        continue;
-      }
-
-      if (thrownKind === 'call_expression') {
-        const callee = thrown
-          .children()
-          .find((child) => String(child.kind()) === 'identifier');
-        if (!callee) {
+        const thrownKind = String(thrown.kind());
+        if (thrownKind === 'string' || thrownKind === 'template_string') {
+          const message = readLiteralString(thrown);
+          if (message !== undefined) {
+            messages.push(message);
+          }
           continue;
         }
 
-        const message = firstLiteralArgumentFromCallLike(thrown);
-        if (message !== undefined) {
-          messages.push(message);
+        if (thrownKind === 'new_expression') {
+          const ctor = thrown
+            .children()
+            .find((child) => String(child.kind()) === 'identifier');
+          if (!ctor) {
+            continue;
+          }
+
+          const message = firstLiteralArgumentFromCallLike(thrown);
+          if (message !== undefined) {
+            messages.push(message);
+          }
+          continue;
+        }
+
+        if (thrownKind === 'call_expression') {
+          const callee = thrown
+            .children()
+            .find((child) => String(child.kind()) === 'identifier');
+          if (!callee) {
+            continue;
+          }
+
+          const message = firstLiteralArgumentFromCallLike(thrown);
+          if (message !== undefined) {
+            messages.push(message);
+          }
         }
       }
-    }
 
-    return sortedDedup(messages);
+      return sortedDedup(messages);
+    });
   } catch (error: unknown) {
     if (error instanceof InternalError) {
       throw error;
@@ -117,35 +120,37 @@ const isErrorReporterCallee = (calleeText: string): boolean => {
   );
 };
 
-export const extractErrorMessages = (
+export const extractErrorMessages = async (
   source: string,
   language: Language,
-): string[] => {
+): Promise<string[]> => {
   try {
-    const root = parse(toAstLanguage(language), source).root();
-    const callNodes = root.findAll(kind(Lang.TypeScript, 'call_expression'));
-    const messages: string[] = [];
+    return runAstGrepWithTimeout(async () => {
+      const root = parse(toAstLanguage(language), source).root();
+      const callNodes = root.findAll(kind(Lang.TypeScript, 'call_expression'));
+      const messages: string[] = [];
 
-    for (const call of callNodes) {
-      const calleeNode = call
-        .children()
-        .find((child) => String(child.kind()) !== 'arguments');
-      if (!calleeNode) {
-        continue;
+      for (const call of callNodes) {
+        const calleeNode = call
+          .children()
+          .find((child) => String(child.kind()) !== 'arguments');
+        if (!calleeNode) {
+          continue;
+        }
+
+        const calleeText = calleeNode.text().trim();
+        if (!isErrorReporterCallee(calleeText)) {
+          continue;
+        }
+
+        const message = firstLiteralArgumentFromCallLike(call);
+        if (message !== undefined) {
+          messages.push(message);
+        }
       }
 
-      const calleeText = calleeNode.text().trim();
-      if (!isErrorReporterCallee(calleeText)) {
-        continue;
-      }
-
-      const message = firstLiteralArgumentFromCallLike(call);
-      if (message !== undefined) {
-        messages.push(message);
-      }
-    }
-
-    return sortedDedup(messages);
+      return sortedDedup(messages);
+    });
   } catch (error: unknown) {
     if (error instanceof InternalError) {
       throw error;

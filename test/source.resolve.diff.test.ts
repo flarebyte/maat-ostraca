@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
 import { UsageError } from '../src/core/errors/index.js';
+import { MAX_SOURCE_BYTES } from '../src/core/source/limits.js';
 import { resolveDiffSource } from '../src/core/source/resolve-diff.js';
 
 describe('source.resolve.diff', () => {
@@ -93,5 +94,27 @@ describe('source.resolve.diff', () => {
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
+  });
+
+  it('rejects oversized diff source from file by utf8 byte length', async () => {
+    const oversized = `${'a'.repeat(MAX_SOURCE_BYTES)}b`;
+
+    await assert.rejects(
+      () =>
+        resolveDiffSource(
+          {
+            fromPath: 'from.ts',
+            toPath: 'to.ts',
+            language: 'typescript',
+          },
+          {
+            readUtf8File: async () => oversized,
+          },
+        ),
+      new UsageError(
+        `source_too_large: source "from.ts" is ${MAX_SOURCE_BYTES + 1} bytes, limit is ${MAX_SOURCE_BYTES} bytes`,
+        { code: 'E_SOURCE_TOO_LARGE' },
+      ),
+    );
   });
 });

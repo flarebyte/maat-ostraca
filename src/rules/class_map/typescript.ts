@@ -23,7 +23,7 @@ export const run = async (
   input: RuleRunInput,
 ): Promise<Record<string, ClassMapEntry>> => {
   const output: Record<string, ClassMapEntry> = {};
-  const symbols = extractTypeScriptSymbols(input.source, input.language);
+  const symbols = await extractTypeScriptSymbols(input.source, input.language);
 
   for (const symbol of symbols.classes) {
     const metrics = await computeSymbolMetrics(symbol.code, input.language);
