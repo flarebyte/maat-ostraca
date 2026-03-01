@@ -16,7 +16,7 @@ export const run = async (
   input: RuleRunInput,
 ): Promise<Record<string, FunctionMapEntry>> => {
   const output: Record<string, FunctionMapEntry> = {};
-  const symbols = extractTypeScriptSymbols(input.source, input.language);
+  const symbols = await extractTypeScriptSymbols(input.source, input.language);
   const [ioAll, ioRead, ioWrite] = await Promise.all([
     countIoBySymbol(input.source, input.language, 'all'),
     countIoBySymbol(input.source, input.language, 'read'),

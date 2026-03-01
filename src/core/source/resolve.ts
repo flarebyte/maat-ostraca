@@ -5,6 +5,7 @@ import {
   type ReadUtf8File,
   readNormalizedFileOrThrowUsage,
 } from './io.js';
+import { ensureSourceWithinLimit } from './limits.js';
 import { normalizeSource } from './normalize.js';
 import { readStdinUtf8 } from './read-stdin.js';
 
@@ -32,9 +33,9 @@ export const resolveSource = async (
   const readStdin = deps.readStdin ?? readStdinUtf8;
 
   if (input.inPath) {
-    const source = await readNormalizedFileOrThrowUsage(
-      input.inPath,
-      readUtf8File,
+    const source = ensureSourceWithinLimit(
+      await readNormalizedFileOrThrowUsage(input.inPath, readUtf8File),
+      `source "${input.inPath}"`,
     );
     return {
       filename: input.inPath,
@@ -43,11 +44,14 @@ export const resolveSource = async (
     };
   }
 
-  const source = normalizeSource(
-    ensureNonEmptyStdinOrThrowUsage(
-      await readStdin(),
-      'stdin_empty: stdin is required when --in is omitted',
+  const source = ensureSourceWithinLimit(
+    normalizeSource(
+      ensureNonEmptyStdinOrThrowUsage(
+        await readStdin(),
+        'stdin_empty: stdin is required when --in is omitted',
+      ),
     ),
+    'stdin source',
   );
   return {
     source,

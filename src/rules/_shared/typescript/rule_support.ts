@@ -1,5 +1,6 @@
 import type { SgNode } from '@ast-grep/napi';
 import { Lang, parse } from '@ast-grep/napi';
+import { runAstGrepWithTimeout } from '../../../core/astgrep/timeout.js';
 import { InternalError } from '../../../core/errors/index.js';
 import type { RuleRunInput } from '../../dispatch.js';
 
@@ -28,7 +29,9 @@ export const runTypeScriptStringListRule = async ({
   }
 
   try {
-    const root = parse(Lang.TypeScript, input.source).root();
+    const root = await runAstGrepWithTimeout(async () =>
+      parse(Lang.TypeScript, input.source).root(),
+    );
     return sortedDedupStrings(extract(root));
   } catch (error: unknown) {
     if (error instanceof InternalError) {

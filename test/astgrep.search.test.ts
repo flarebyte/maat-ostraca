@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { search, searchByKind } from '../src/core/astgrep/search.js';
+import { InternalError } from '../src/core/errors/index.js';
 
 describe('astgrep.search', () => {
   it('returns matches for a simple TypeScript pattern', async () => {
@@ -28,5 +29,25 @@ describe('astgrep.search', () => {
       { text: 'export { x } from "pkg";' },
       { text: 'export * from "./local";' },
     ]);
+  });
+
+  it('fails with deterministic timeout when ast-grep execution does not resolve', async () => {
+    await assert.rejects(
+      () =>
+        search(
+          {
+            source: 'export const x = 1;\n',
+            language: 'typescript',
+            pattern: 'export $A',
+          },
+          {
+            timeoutMs: 1,
+            loadAstGrep: async () => new Promise(() => {}),
+          },
+        ),
+      new InternalError('analysis_timeout: ast-grep execution exceeded 1ms', {
+        code: 'E_ANALYSIS_TIMEOUT',
+      }),
+    );
   });
 });

@@ -10,6 +10,13 @@ declare class TextDecoder {
   decode(input?: Uint8Array, options?: { stream?: boolean }): string;
 }
 
+declare const Buffer: {
+  byteLength: (value: string, encoding: 'utf8') => number;
+};
+
+declare const setTimeout: (callback: () => void, delay: number) => unknown;
+declare const clearTimeout: (timeoutId: unknown) => void;
+
 declare module 'node:fs/promises' {
   export const readFile: (path: string, encoding: 'utf8') => Promise<string>;
 }
