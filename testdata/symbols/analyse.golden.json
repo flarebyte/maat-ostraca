@@ -4,24 +4,74 @@
   "rules": {
     "class_map": {
       "PaymentService": {
+        "cognitiveComplexity": 1,
+        "cyclomaticComplexity": 1,
         "extends": "BaseService",
         "implements": ["IChargeable", "ILogger"],
+        "loc": 14,
+        "maxNestingDepth": 2,
         "methodCount": 3,
-        "modifiers": ["default", "export"]
+        "modifiers": ["default", "export"],
+        "sha256": "ba0affd14b4c355652a3b524c8d886c2b993b722f86cf401f2a795a236d8aef9",
+        "sloc": 12,
+        "tokens": 47
       }
     },
     "function_map": {
       "alpha": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 1,
         "modifiers": ["async", "export"],
         "params": ["_a: string", "_b: number"],
-        "returns": ["Promise<void>"]
+        "returnCount": 1,
+        "returns": ["Promise<void>"],
+        "sha256": "3c1a5928759596f688e3eb0091adf9fbbcb9980744c5889016a02e812cb62008",
+        "sloc": 3,
+        "tokens": 21
       },
       "beta": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 1,
+        "loops": 0,
+        "maxNestingDepth": 0,
         "modifiers": ["export"],
         "params": ["_y", "x: Foo"],
-        "returns": ["Bar"]
+        "returnCount": 0,
+        "returns": ["Bar"],
+        "sha256": "91c85c0128e887839ec84da63ef78df1ef041b937f34bb649412c4a10ffbc50e",
+        "sloc": 1,
+        "tokens": 16
       },
-      "gamma": { "modifiers": [], "params": ["z: Baz"], "returns": ["Qux"] }
+      "gamma": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 1,
+        "loops": 0,
+        "maxNestingDepth": 0,
+        "modifiers": [],
+        "params": ["z: Baz"],
+        "returnCount": 0,
+        "returns": ["Qux"],
+        "sha256": "d48fb0883991775f1d11e0b03921596d2f048ec47d4603b938836abba26ce824",
+        "sloc": 1,
+        "tokens": 14
+      }
     },
     "interface_map": {
       "Chargeable": {
@@ -40,25 +90,64 @@
     },
     "method_map": {
       "paymentServiceCharge": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 1,
         "modifiers": ["async", "public"],
         "name": "Charge",
         "params": ["_amount: number"],
         "receiver": "PaymentService",
-        "returns": ["Promise<void>"]
+        "returnCount": 1,
+        "returns": ["Promise<void>"],
+        "sha256": "fc23799eb8afcd3712db8720d270a0c06fa4ae2f61e34a8a59528a4d34d118bf",
+        "sloc": 3,
+        "tokens": 17
       },
       "paymentServicecomputed": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 1,
+        "loops": 0,
+        "maxNestingDepth": 1,
         "modifiers": [],
         "name": "computed",
         "params": [],
         "receiver": "PaymentService",
-        "returns": []
+        "returnCount": 0,
+        "returns": [],
+        "sha256": "72f9958fee5b8d2a32e3c33fa48331cbe73e8912ed19b1a7f9cc3b6bcf8673b6",
+        "sloc": 1,
+        "tokens": 5
       },
       "paymentServicehelper": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 1,
         "modifiers": ["private", "static"],
         "name": "helper",
         "params": ["_a: string"],
         "receiver": "PaymentService",
-        "returns": ["number"]
+        "returnCount": 1,
+        "returns": ["number"],
+        "sha256": "1d904fc76d96375248796587bbb21a8aced56bf3e74a7bc0d4e723697b8ffc71",
+        "sloc": 3,
+        "tokens": 15
       }
     }
   }

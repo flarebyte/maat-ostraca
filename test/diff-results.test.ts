@@ -178,4 +178,34 @@ describe('diffResults', () => {
       ),
     );
   });
+
+  it('diffs map entries with mixed numeric and non-numeric fields', () => {
+    const from = base({
+      function_map: {
+        alpha: {
+          modifiers: ['export'],
+          params: ['a: string'],
+          returns: ['number'],
+          loc: 5,
+          tokens: 12,
+        },
+      },
+    });
+    const to = base({
+      function_map: {
+        alpha: {
+          modifiers: ['export'],
+          params: ['a: string'],
+          returns: ['number'],
+          loc: 8,
+          tokens: 20,
+        },
+      },
+    });
+
+    const diff = diffResults(from, to, { deltaOnly: true });
+    assert.deepEqual(diff.rules.function_map, {
+      alpha: { status: 'modified', loc: 3, tokens: 8 },
+    });
+  });
 });

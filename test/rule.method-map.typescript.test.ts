@@ -18,19 +18,25 @@ describe('rule method_map/typescript', () => {
       'paymentServiceCharge',
       'paymentServicehelper',
     ]);
-    assert.deepEqual(result.paymentServiceCharge, {
-      modifiers: ['async', 'public'],
-      receiver: 'PaymentService',
-      name: 'Charge',
-      params: ['amount: number'],
-      returns: ['Promise<void>'],
-    });
-    assert.deepEqual(result.paymentServicehelper, {
-      modifiers: ['private', 'static'],
-      receiver: 'PaymentService',
-      name: 'helper',
-      params: ['a: string'],
-      returns: ['number'],
-    });
+    assert.deepEqual(result.paymentServiceCharge.modifiers, [
+      'async',
+      'public',
+    ]);
+    assert.equal(result.paymentServiceCharge.receiver, 'PaymentService');
+    assert.equal(result.paymentServiceCharge.name, 'Charge');
+    assert.deepEqual(result.paymentServiceCharge.params, ['amount: number']);
+    assert.deepEqual(result.paymentServiceCharge.returns, ['Promise<void>']);
+    assert.equal(result.paymentServiceCharge.returnCount, 1);
+    assert.equal(result.paymentServiceCharge.ioCallsCount, 0);
+
+    assert.deepEqual(result.paymentServicehelper.modifiers, [
+      'private',
+      'static',
+    ]);
+    assert.equal(result.paymentServicehelper.receiver, 'PaymentService');
+    assert.equal(result.paymentServicehelper.name, 'helper');
+    assert.deepEqual(result.paymentServicehelper.params, ['a: string']);
+    assert.deepEqual(result.paymentServicehelper.returns, ['number']);
+    assert.equal(result.paymentServicehelper.returnCount, 1);
   });
 });

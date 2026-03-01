@@ -331,3 +331,68 @@ test('maat analyse symbol map rules match golden and are deterministic', () => {
   const goldenCanonical = `${canonicalStringify(JSON.parse(golden) as unknown)}\n`;
   expect(first.stdout).toBe(goldenCanonical);
 });
+
+test('maat analyse symbol metrics + io rules match golden and are deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/symbols_metrics/v1.ts',
+    '--rules',
+    'function_map,method_map,class_map,io_calls_count,io_read_calls_count,io_write_calls_count',
+    '--language',
+    'typescript',
+    '--json',
+  ];
+
+  const first = runCli(args);
+  const second = runCli(args);
+
+  expect(first.status).toBe(0);
+  expect(second.status).toBe(0);
+  expect(first.stdout).toBe(second.stdout);
+
+  const payload = JSON.parse(first.stdout) as unknown;
+  const parsed = AnalyseOutputSchema.safeParse(payload);
+  expect(parsed.success).toBeTrue();
+
+  const golden = readFileSync(
+    'testdata/symbols_metrics/analyse.golden.json',
+    'utf8',
+  );
+  const goldenCanonical = `${canonicalStringify(JSON.parse(golden) as unknown)}\n`;
+  expect(first.stdout).toBe(goldenCanonical);
+});
+
+test('maat diff function_map,file_metrics delta-only matches golden and is deterministic', () => {
+  const args = [
+    'diff',
+    '--from',
+    'testdata/symbols_metrics/v1.ts',
+    '--to',
+    'testdata/symbols_metrics/v2.ts',
+    '--rules',
+    'function_map,file_metrics',
+    '--language',
+    'typescript',
+    '--json',
+    '--delta-only',
+  ];
+
+  const first = runCli(args);
+  const second = runCli(args);
+
+  expect(first.status).toBe(0);
+  expect(second.status).toBe(0);
+  expect(first.stdout).toBe(second.stdout);
+
+  const payload = JSON.parse(first.stdout) as unknown;
+  const parsed = DiffOutputSchema.safeParse(payload);
+  expect(parsed.success).toBeTrue();
+
+  const golden = readFileSync(
+    'testdata/symbols_metrics/diff-function-map-file-metrics.delta-only.golden.json',
+    'utf8',
+  );
+  const goldenCanonical = `${canonicalStringify(JSON.parse(golden) as unknown)}\n`;
+  expect(first.stdout).toBe(goldenCanonical);
+});

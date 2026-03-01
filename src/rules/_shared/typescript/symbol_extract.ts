@@ -8,6 +8,7 @@ export interface FunctionSymbol {
   modifiers: string[];
   params: string[];
   returns: string[];
+  code: string;
 }
 
 export interface MethodSymbol {
@@ -17,6 +18,7 @@ export interface MethodSymbol {
   modifiers: string[];
   params: string[];
   returns: string[];
+  code: string;
 }
 
 export interface ClassSymbol {
@@ -25,6 +27,7 @@ export interface ClassSymbol {
   extendsName?: string;
   implementsNames: string[];
   methodCount: number;
+  code: string;
 }
 
 export interface InterfaceSymbol {
@@ -171,6 +174,7 @@ const collectFunctionDeclarationSymbols = (root: SgNode): FunctionSymbol[] => {
       modifiers: [...modifiers].sort(compareLex),
       params: parseParams(node),
       returns: parseReturns(node),
+      code: node.text(),
     });
   }
 
@@ -213,6 +217,7 @@ const collectVariableFunctionSymbols = (root: SgNode): FunctionSymbol[] => {
       modifiers: [...modifiers].sort(compareLex),
       params: parseParams(expressionNode),
       returns: parseReturns(expressionNode),
+      code: expressionNode.text(),
     });
   }
 
@@ -270,6 +275,7 @@ const collectMethodSymbols = (root: SgNode): MethodSymbol[] => {
       modifiers: [...modifiers].sort(compareLex),
       params: parseParams(node),
       returns: parseReturns(node),
+      code: node.text(),
     });
   }
 
@@ -343,6 +349,7 @@ const collectClassSymbols = (root: SgNode): ClassSymbol[] => {
       ...(extendsName ? { extendsName } : {}),
       implementsNames: [...implementsNames].sort(compareLex),
       methodCount,
+      code: node.text(),
     });
   }
 

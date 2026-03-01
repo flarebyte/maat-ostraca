@@ -102,9 +102,7 @@ const buildNumericFieldsDiff = (
     const toNumber = toObject[field];
 
     if (!isNumber(fromNumber) || !isNumber(toNumber)) {
-      throw new InternalError(
-        `diff_shape_error: ${rule}.${field} expects number on both sides`,
-      );
+      continue;
     }
 
     output[field] = numericDiff(fromNumber, toNumber, deltaOnly);
