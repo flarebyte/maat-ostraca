@@ -31,6 +31,7 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
     'exception_messages_list:typescript',
     () => import('./exception_messages_list/typescript.js'),
   ],
+  ['env_names_list:typescript', () => import('./env_names_list/typescript.js')],
   ['function_map:typescript', () => import('./function_map/typescript.js')],
   ['method_map:typescript', () => import('./method_map/typescript.js')],
   ['class_map:typescript', () => import('./class_map/typescript.js')],
