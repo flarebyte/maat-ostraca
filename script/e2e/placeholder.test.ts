@@ -452,3 +452,31 @@ test('maat analyse env names rule matches golden and is deterministic', () => {
   const goldenCanonical = `${canonicalStringify(JSON.parse(golden) as unknown)}\n`;
   expect(first.stdout).toBe(goldenCanonical);
 });
+
+test('maat analyse testcase titles rule matches golden and is deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/tests/analyse.ts',
+    '--rules',
+    'testcase_titles_list',
+    '--language',
+    'typescript',
+    '--json',
+  ];
+
+  const first = runCli(args);
+  const second = runCli(args);
+
+  expect(first.status).toBe(0);
+  expect(second.status).toBe(0);
+  expect(first.stdout).toBe(second.stdout);
+
+  const payload = JSON.parse(first.stdout) as unknown;
+  const parsed = AnalyseOutputSchema.safeParse(payload);
+  expect(parsed.success).toBeTrue();
+
+  const golden = readFileSync('testdata/tests/analyse.golden.json', 'utf8');
+  const goldenCanonical = `${canonicalStringify(JSON.parse(golden) as unknown)}\n`;
+  expect(first.stdout).toBe(goldenCanonical);
+});
