@@ -90,6 +90,23 @@ test('maat analyse via stdin succeeds and is deterministic', () => {
   parseWithSchema(first.stdout, AnalyseOutputSchema);
 });
 
+test('maat analyse multi-rule json output is byte-identical across repeated runs', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/symbols/analyse.ts',
+    '--rules',
+    'function_map,method_map,class_map,interface_map,interfaces_code_map,file_metrics,code_hash',
+    '--language',
+    'typescript',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+});
+
 test('maat diff uses stdin for to-source when --to is omitted', () => {
   const result = runCli(
     [
