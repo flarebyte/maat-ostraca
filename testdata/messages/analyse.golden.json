@@ -1,0 +1,8 @@
+{
+  "filename": "testdata/messages/analyse.ts",
+  "language": "typescript",
+  "rules": {
+    "error_messages_list": ["console-fail", "ctx-fail", "logger-fail"],
+    "exception_messages_list": ["fatal boom", "plain boom", "typed boom"]
+  }
+}

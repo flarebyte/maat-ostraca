@@ -1,0 +1,40 @@
+{
+  "deltaOnly": true,
+  "from": {
+    "filename": "testdata/symbols_metrics/v1.ts",
+    "language": "typescript"
+  },
+  "rules": {
+    "file_metrics": {
+      "cognitiveComplexity": 1,
+      "conditions": 1,
+      "cyclomaticComplexity": 1,
+      "loc": 4,
+      "loops": 0,
+      "maxNestingDepth": 0,
+      "sloc": 3,
+      "tokens": 15
+    },
+    "function_map": {
+      "processOrder": {
+        "cognitiveComplexity": 1,
+        "conditions": 1,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 4,
+        "loops": 0,
+        "maxNestingDepth": 0,
+        "returnCount": 1,
+        "sloc": 3,
+        "status": "modified",
+        "tokens": 15
+      }
+    }
+  },
+  "to": {
+    "filename": "testdata/symbols_metrics/v2.ts",
+    "language": "typescript"
+  }
+}

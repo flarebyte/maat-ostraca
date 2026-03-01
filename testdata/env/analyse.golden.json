@@ -1,0 +1,7 @@
+{
+  "filename": "testdata/env/analyse.ts",
+  "language": "typescript",
+  "rules": {
+    "env_names_list": ["API_KEY", "CACHE_TTL", "DB_HOST", "PORT", "SERVICE_URL"]
+  }
+}

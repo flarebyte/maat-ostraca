@@ -1,0 +1,19 @@
+{
+  "filename": "testdata/tests/analyse.ts",
+  "language": "typescript",
+  "rules": {
+    "testcase_titles_list": [
+      "auth suite",
+      "charges card",
+      "creates label",
+      "logs in",
+      "logs out",
+      "payments suite",
+      "refreshes token",
+      "resets password",
+      "revokes token",
+      "shipping suite",
+      "stores token"
+    ]
+  }
+}

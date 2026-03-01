@@ -1,0 +1,73 @@
+{
+  "filename": "testdata/symbols_metrics/v1.ts",
+  "language": "typescript",
+  "rules": {
+    "class_map": {
+      "BillingService": {
+        "cognitiveComplexity": 2,
+        "cyclomaticComplexity": 2,
+        "loc": 9,
+        "maxNestingDepth": 3,
+        "methodCount": 1,
+        "modifiers": [],
+        "sha256": "74e6de278eba5ee31b556528acd786b7d8a5884b5df3bf2948b7ae1479e68428",
+        "sloc": 8,
+        "tokens": 40
+      }
+    },
+    "function_map": {
+      "processOrder": {
+        "cognitiveComplexity": 2,
+        "conditions": 1,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 1,
+        "ioWriteCallsCount": 0,
+        "loc": 8,
+        "loops": 0,
+        "maxNestingDepth": 2,
+        "modifiers": ["export"],
+        "params": ["orderId: string"],
+        "returnCount": 2,
+        "returns": ["number"],
+        "sha256": "ad55cbd378584bd9f7d45f90159d5aba920c4332ae3439b242261d6e57ee7923",
+        "sloc": 7,
+        "tokens": 42
+      }
+    },
+    "io_calls_count": {
+      "functions": { "processOrder": 1 },
+      "methods": { "billingServiceCharge": 1 }
+    },
+    "io_read_calls_count": {
+      "functions": { "processOrder": 1 },
+      "methods": { "billingServiceCharge": 0 }
+    },
+    "io_write_calls_count": {
+      "functions": { "processOrder": 0 },
+      "methods": { "billingServiceCharge": 1 }
+    },
+    "method_map": {
+      "billingServiceCharge": {
+        "cognitiveComplexity": 2,
+        "conditions": 1,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 1,
+        "loc": 7,
+        "loops": 0,
+        "maxNestingDepth": 2,
+        "modifiers": [],
+        "name": "Charge",
+        "params": ["total: number"],
+        "receiver": "BillingService",
+        "returnCount": 1,
+        "returns": ["number"],
+        "sha256": "5111861159b4b966512e86564d4ca01a4a184f60adba7d6ae41dc198e9d79a55",
+        "sloc": 6,
+        "tokens": 36
+      }
+    }
+  }
+}

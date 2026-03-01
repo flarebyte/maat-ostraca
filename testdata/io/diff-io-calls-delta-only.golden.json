@@ -1,0 +1,11 @@
+{
+  "deltaOnly": true,
+  "from": { "filename": "testdata/io/diff-v1.ts", "language": "typescript" },
+  "rules": {
+    "io_calls_count": {
+      "functions": { "status": "modified", "syncData": 2 },
+      "methods": { "status": "unchanged" }
+    }
+  },
+  "to": { "filename": "testdata/io/diff-v2.ts", "language": "typescript" }
+}

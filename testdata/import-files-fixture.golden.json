@@ -1,0 +1,13 @@
+{
+  "filename": "testdata/import-files-fixture.ts",
+  "language": "typescript",
+  "rules": {
+    "import_files_list": [
+      "../bar",
+      "./side-effect",
+      "./types",
+      "node:fs",
+      "pkg-a"
+    ]
+  }
+}
