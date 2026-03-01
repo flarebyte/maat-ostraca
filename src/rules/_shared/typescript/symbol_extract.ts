@@ -27,6 +27,33 @@ export interface ExtractTypeScriptSymbolsOptions {
   maxSymbols?: number;
 }
 
+const countRegexMatches = (source: string, expression: RegExp): number => {
+  return source.match(expression)?.length ?? 0;
+};
+
+const estimateSymbolCount = (source: string): number => {
+  const functionDeclarations = countRegexMatches(
+    source,
+    /\bfunction\s+[A-Za-z_$][A-Za-z0-9_$]*\s*\(/g,
+  );
+  const variableFunctionDeclarations = countRegexMatches(
+    source,
+    /\b(?:const|let|var)\s+[A-Za-z_$][A-Za-z0-9_$]*\s*=\s*(?:async\s*)?(?:function\b|\([^)]*\)\s*=>|[A-Za-z_$][A-Za-z0-9_$]*\s*=>)/g,
+  );
+  const classes = countRegexMatches(
+    source,
+    /\b(?:abstract\s+)?class\s+[A-Za-z_$][A-Za-z0-9_$]*/g,
+  );
+  const interfaces = countRegexMatches(
+    source,
+    /\binterface\s+[A-Za-z_$][A-Za-z0-9_$]*/g,
+  );
+
+  return (
+    functionDeclarations + variableFunctionDeclarations + classes + interfaces
+  );
+};
+
 const ensureSymbolCountWithinLimit = (
   count: number,
   maxSymbols: number,
@@ -48,6 +75,7 @@ export const extractTypeScriptSymbols = async (
 ): Promise<ExtractedSymbols> => {
   try {
     const maxSymbols = options.maxSymbols ?? MAX_SYMBOLS_PER_FILE;
+    ensureSymbolCountWithinLimit(estimateSymbolCount(source), maxSymbols);
     const astLanguage = toAstLanguage(language);
     const root = await runAstGrepWithTimeout(async () =>
       parse(astLanguage, source).root(),

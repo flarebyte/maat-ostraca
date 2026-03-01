@@ -2,7 +2,10 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { describe, it } from 'node:test';
 import { UsageError } from '../src/core/errors/index.js';
-import { extractTypeScriptSymbols } from '../src/rules/_shared/typescript/symbol_extract.js';
+import {
+  extractTypeScriptSymbols,
+  MAX_SYMBOLS_PER_FILE,
+} from '../src/rules/_shared/typescript/symbol_extract.js';
 import { run } from '../src/rules/function_map/typescript.js';
 
 describe('rule function_map/typescript', () => {
@@ -53,17 +56,19 @@ describe('rule function_map/typescript', () => {
   });
 
   it('rejects symbol extraction beyond the maximum threshold', async () => {
-    const source = [
-      'function a(): number { return 1; }',
-      'function b(): number { return 2; }',
-      'function c(): number { return 3; }',
-    ].join('\n');
+    const source = Array.from(
+      { length: MAX_SYMBOLS_PER_FILE + 1 },
+      (_unused, index) => `function f${index}(): number { return ${index}; }`,
+    ).join('\n');
 
     await assert.rejects(
-      () => extractTypeScriptSymbols(source, 'typescript', { maxSymbols: 2 }),
-      new UsageError('symbol_limit_exceeded: extracted 3 symbols, limit is 2', {
-        code: 'E_SYMBOL_LIMIT_EXCEEDED',
-      }),
+      () => extractTypeScriptSymbols(source, 'typescript'),
+      new UsageError(
+        `symbol_limit_exceeded: extracted ${MAX_SYMBOLS_PER_FILE + 1} symbols, limit is ${MAX_SYMBOLS_PER_FILE}`,
+        {
+          code: 'E_SYMBOL_LIMIT_EXCEEDED',
+        },
+      ),
     );
   });
 });

@@ -45,7 +45,7 @@ describe('astgrep.search', () => {
             loadAstGrep: async () => new Promise(() => {}),
           },
         ),
-      new InternalError('analysis_timeout: ast-grep execution exceeded 1ms', {
+      new InternalError('analysis timed out', {
         code: 'E_ANALYSIS_TIMEOUT',
       }),
     );
