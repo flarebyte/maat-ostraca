@@ -1,0 +1,65 @@
+{
+  "filename": "testdata/symbols/analyse.ts",
+  "language": "typescript",
+  "rules": {
+    "class_map": {
+      "PaymentService": {
+        "extends": "BaseService",
+        "implements": ["IChargeable", "ILogger"],
+        "methodCount": 3,
+        "modifiers": ["default", "export"]
+      }
+    },
+    "function_map": {
+      "alpha": {
+        "modifiers": ["async", "export"],
+        "params": ["_a: string", "_b: number"],
+        "returns": ["Promise<void>"]
+      },
+      "beta": {
+        "modifiers": ["export"],
+        "params": ["_y", "x: Foo"],
+        "returns": ["Bar"]
+      },
+      "gamma": { "modifiers": [], "params": ["z: Baz"], "returns": ["Qux"] }
+    },
+    "interface_map": {
+      "Chargeable": {
+        "extends": ["A", "B"],
+        "methods": [
+          "charge(amount: number): Promise<void>",
+          "log(message: string): void"
+        ],
+        "modifiers": ["export"]
+      },
+      "Worker": { "extends": [], "methods": ["run(): void"], "modifiers": [] }
+    },
+    "interfaces_code_map": {
+      "Chargeable": "interface Chargeable extends B, A {\n  log(message: string): void;\n  charge(amount: number): Promise<void>;\n}",
+      "Worker": "interface Worker {\n  run(): void;\n}"
+    },
+    "method_map": {
+      "paymentServiceCharge": {
+        "modifiers": ["async", "public"],
+        "name": "Charge",
+        "params": ["_amount: number"],
+        "receiver": "PaymentService",
+        "returns": ["Promise<void>"]
+      },
+      "paymentServicecomputed": {
+        "modifiers": [],
+        "name": "computed",
+        "params": [],
+        "receiver": "PaymentService",
+        "returns": []
+      },
+      "paymentServicehelper": {
+        "modifiers": ["private", "static"],
+        "name": "helper",
+        "params": ["_a: string"],
+        "receiver": "PaymentService",
+        "returns": ["number"]
+      }
+    }
+  }
+}
