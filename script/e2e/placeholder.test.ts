@@ -234,6 +234,27 @@ test('maat analyse import_files_list for go matches golden json and is determini
   );
 });
 
+test('maat analyse import_files_list + package_imports_list for go matches golden and is deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/go/imports/analyse.go',
+    '--rules',
+    'import_files_list,package_imports_list',
+    '--language',
+    'go',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/go/imports/analyse-both.golden.json',
+  );
+});
+
 test('maat analyse import_files_list + package_imports_list matches golden and is deterministic', () => {
   const args = [
     'analyse',

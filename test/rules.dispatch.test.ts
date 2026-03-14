@@ -14,6 +14,16 @@ describe('rules.dispatch', () => {
     assert.deepEqual(value, ['fmt']);
   });
 
+  it('resolves known go package import rule-language module', async () => {
+    const run = await dispatchRule('package_imports_list', 'go');
+    const value = (await run({
+      source: 'package main\nimport "fmt"\n',
+      language: 'go',
+    })) as string[];
+
+    assert.deepEqual(value, ['fmt']);
+  });
+
   it('resolves known rule-language module', async () => {
     const run = await dispatchRule('code_hash', 'typescript');
     const value = (await run({
