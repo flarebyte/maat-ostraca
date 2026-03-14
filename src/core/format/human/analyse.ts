@@ -15,15 +15,19 @@ import {
   renderStringList,
   sortedEntries,
 } from './shared.js';
+import { summarizeListLines, summarizeMapLines } from './summary.js';
 
 const renderRuleValue = (value: unknown, style: HumanFormatStyle): string[] => {
   if (Array.isArray(value)) {
     return indentLines(
-      renderStringList(
-        value.map((entry) =>
-          typeof entry === 'string' ? entry : formatInlineValue(entry),
+      summarizeListLines(
+        renderStringList(
+          value.map((entry) =>
+            typeof entry === 'string' ? entry : formatInlineValue(entry),
+          ),
+          style,
         ),
-        style,
+        'items',
       ),
     );
   }
@@ -38,7 +42,9 @@ const renderRuleValue = (value: unknown, style: HumanFormatStyle): string[] => {
       }
 
       return indentLines(
-        entries.map(([key, entry]) => `${key}: ${formatInlineValue(entry)}`),
+        summarizeMapLines(
+          entries.map(([key, entry]) => `${key}: ${formatInlineValue(entry)}`),
+        ),
       );
     }
 
@@ -46,7 +52,7 @@ const renderRuleValue = (value: unknown, style: HumanFormatStyle): string[] => {
       return indentLines(['(none)']);
     }
 
-    return indentLines(renderObjectLines(value));
+    return indentLines(summarizeMapLines(renderObjectLines(value)));
   }
 
   return indentLines([formatInlineValue(value)]);

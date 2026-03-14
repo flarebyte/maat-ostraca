@@ -16,8 +16,49 @@ import {
 } from '../src/core/format/human/color.js';
 import { formatHumanDiff } from '../src/core/format/human/diff.js';
 import { formatHumanRules } from '../src/core/format/human/rules.js';
+import {
+  MAX_LIST_ITEMS_DISPLAY,
+  MAX_MAP_ENTRIES_DISPLAY,
+  summarizeListLines,
+  summarizeMapLines,
+} from '../src/core/format/human/summary.js';
 
 describe('human formatter', () => {
+  it('summary helper renders short lists fully', () => {
+    assert.deepEqual(summarizeListLines(['a', 'b'], 'items'), ['a', 'b']);
+  });
+
+  it('summary helper renders long lists with count and truncation', () => {
+    const entries = Array.from(
+      { length: 12 },
+      (_, index) => `item-${index + 1}`,
+    );
+    assert.deepEqual(summarizeListLines(entries, 'items'), [
+      'Count: 12 items total',
+      ...entries.slice(0, MAX_LIST_ITEMS_DISPLAY),
+      '... and 2 more',
+    ]);
+  });
+
+  it('summary helper renders short maps fully', () => {
+    assert.deepEqual(summarizeMapLines(['a: one', 'b: two']), [
+      'a: one',
+      'b: two',
+    ]);
+  });
+
+  it('summary helper renders long maps with count and truncation', () => {
+    const entries = Array.from(
+      { length: 12 },
+      (_, index) => `entry-${index + 1}: value`,
+    );
+    assert.deepEqual(summarizeMapLines(entries), [
+      'Count: 12 entries total',
+      ...entries.slice(0, MAX_MAP_ENTRIES_DISPLAY),
+      '... and 2 more',
+    ]);
+  });
+
   it('color helper wraps text only when enabled', () => {
     const enabled = createHumanFormatStyle(true);
     const disabled = createHumanFormatStyle(false);
@@ -148,6 +189,63 @@ describe('human formatter', () => {
     assert.equal(first, second);
   });
 
+  it('renders analyse output summaries for long list and map sections', () => {
+    const style = createHumanFormatStyle(false);
+    const output: AnalyseOutput = {
+      filename: 'summary.go',
+      language: 'go',
+      rules: {
+        function_map: Object.fromEntries(
+          Array.from({ length: 12 }, (_, index) => [
+            `func${String(index + 1).padStart(2, '0')}`,
+            { modifiers: [], params: [], returns: [] },
+          ]),
+        ),
+        import_files_list: Array.from(
+          { length: 12 },
+          (_, index) => `pkg/${String(index + 1).padStart(2, '0')}`,
+        ),
+      },
+    };
+
+    assert.equal(
+      formatHumanAnalyse(output, style),
+      [
+        'File: summary.go',
+        'Language: go',
+        '',
+        '[function_map]',
+        '  Count: 12 entries total',
+        '  func01: modifiers=[], params=[], returns=[]',
+        '  func02: modifiers=[], params=[], returns=[]',
+        '  func03: modifiers=[], params=[], returns=[]',
+        '  func04: modifiers=[], params=[], returns=[]',
+        '  func05: modifiers=[], params=[], returns=[]',
+        '  func06: modifiers=[], params=[], returns=[]',
+        '  func07: modifiers=[], params=[], returns=[]',
+        '  func08: modifiers=[], params=[], returns=[]',
+        '  func09: modifiers=[], params=[], returns=[]',
+        '  func10: modifiers=[], params=[], returns=[]',
+        '  ... and 2 more',
+        '',
+        '[import_files_list]',
+        '  Count: 12 items total',
+        '  - pkg/01',
+        '  - pkg/02',
+        '  - pkg/03',
+        '  - pkg/04',
+        '  - pkg/05',
+        '  - pkg/06',
+        '  - pkg/07',
+        '  - pkg/08',
+        '  - pkg/09',
+        '  - pkg/10',
+        '  ... and 2 more',
+        '',
+      ].join('\n'),
+    );
+  });
+
   it('renders diff output deterministically for list and numeric deltas', () => {
     const style = createHumanFormatStyle(false);
     const output: DiffOutput = {
@@ -180,14 +278,73 @@ describe('human formatter', () => {
         '  tokens: 10 -> 15 (delta +5)',
         '',
         '[import_files_list]',
-        '  Added:',
-        '    + package:flutter/material.dart',
-        '  Removed:',
-        '    - ./local.dart',
+        '  Added: + package:flutter/material.dart',
+        '  Removed: - ./local.dart',
         '',
       ].join('\n'),
     );
     assert.equal(first, second);
+  });
+
+  it('renders diff summaries for long added and map sections', () => {
+    const style = createHumanFormatStyle(false);
+    const output: DiffOutput = {
+      from: { filename: 'from.dart', language: 'dart' },
+      to: { filename: 'to.dart', language: 'dart' },
+      rules: {
+        function_map: Object.fromEntries(
+          Array.from({ length: 12 }, (_, index) => [
+            `func${String(index + 1).padStart(2, '0')}`,
+            { status: 'unchanged' },
+          ]),
+        ),
+        import_files_list: {
+          added: Array.from(
+            { length: 12 },
+            (_, index) => `pkg/${String(index + 1).padStart(2, '0')}`,
+          ),
+          removed: [],
+        },
+      },
+    };
+
+    assert.equal(
+      formatHumanDiff(output, style),
+      [
+        'From: from.dart',
+        'To: to.dart',
+        'Language: dart',
+        '',
+        '[function_map]',
+        '  Count: 12 entries total',
+        '  func01: unchanged',
+        '  func02: unchanged',
+        '  func03: unchanged',
+        '  func04: unchanged',
+        '  func05: unchanged',
+        '  func06: unchanged',
+        '  func07: unchanged',
+        '  func08: unchanged',
+        '  func09: unchanged',
+        '  func10: unchanged',
+        '  ... and 2 more',
+        '',
+        '[import_files_list]',
+        '  Count: 12 added items total',
+        '  Added: + pkg/01',
+        '  Added: + pkg/02',
+        '  Added: + pkg/03',
+        '  Added: + pkg/04',
+        '  Added: + pkg/05',
+        '  Added: + pkg/06',
+        '  Added: + pkg/07',
+        '  Added: + pkg/08',
+        '  Added: + pkg/09',
+        '  Added: + pkg/10',
+        '  ... and 2 more',
+        '',
+      ].join('\n'),
+    );
   });
 
   it('renders delta-only diff compactly and deterministically', () => {

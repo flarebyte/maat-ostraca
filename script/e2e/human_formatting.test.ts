@@ -13,16 +13,17 @@ test('maat rules human output is deterministic', () => {
   expect(output.length).toBeGreaterThan(0);
   expect(output).toContain('Language: typescript');
   expect(output).toContain('Rules:');
-  expect(output).toContain('- code_hash:');
+  expect(output).toContain('Count: 18 rules total');
+  expect(output).toContain('... and 8 more');
 });
 
 test('maat analyse human output is deterministic', () => {
   const args = [
     'analyse',
     '--in',
-    'testdata/go/imports/analyse.go',
+    'testdata/go/human_summary/analyse.go',
     '--rules',
-    'import_files_list,file_metrics',
+    'function_map,import_files_list',
     '--language',
     'go',
   ];
@@ -34,21 +35,24 @@ test('maat analyse human output is deterministic', () => {
 
   expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
   expect(output.length).toBeGreaterThan(0);
-  expect(output).toContain('File: testdata/go/imports/analyse.go');
+  expect(output).toContain('File: testdata/go/human_summary/analyse.go');
   expect(output).toContain('Language: go');
-  expect(output).toContain('[file_metrics]');
+  expect(output).toContain('[function_map]');
   expect(output).toContain('[import_files_list]');
+  expect(output).toContain('Count: 12 entries total');
+  expect(output).toContain('Count: 12 items total');
+  expect(output).toContain('... and 2 more');
 });
 
 test('maat diff human output is deterministic', () => {
   const args = [
     'diff',
     '--from',
-    'testdata/dart/metrics/v1.dart',
+    'testdata/dart/human_summary/v1.dart',
     '--to',
-    'testdata/dart/metrics/v2.dart',
+    'testdata/dart/human_summary/v2.dart',
     '--rules',
-    'file_metrics',
+    'function_map,file_metrics',
     '--language',
     'dart',
   ];
@@ -60,8 +64,10 @@ test('maat diff human output is deterministic', () => {
 
   expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
   expect(output.length).toBeGreaterThan(0);
-  expect(output).toContain('From: testdata/dart/metrics/v1.dart');
-  expect(output).toContain('To: testdata/dart/metrics/v2.dart');
+  expect(output).toContain('From: testdata/dart/human_summary/v1.dart');
+  expect(output).toContain('To: testdata/dart/human_summary/v2.dart');
+  expect(output).toContain('[function_map]');
   expect(output).toContain('[file_metrics]');
-  expect(output).toContain('loc:');
+  expect(output).toContain('Count: 12 entries total');
+  expect(output).toContain('... and 2 more');
 });

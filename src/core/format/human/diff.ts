@@ -15,6 +15,7 @@ import {
   isPlainObject,
   sortedEntries,
 } from './shared.js';
+import { summarizeListLines, summarizeMapLines } from './summary.js';
 
 const isNumericDelta = (
   value: unknown,
@@ -46,36 +47,43 @@ const isHashDiff = (
   return isPlainObject(value) && typeof candidate.changed === 'boolean';
 };
 
+const formatDeltaValue = (delta: number, style: HumanFormatStyle): string => {
+  const text = delta > 0 ? `+${delta}` : String(delta);
+  return colorDelta(text, style);
+};
+
+const renderDiffListSection = (
+  heading: 'Added' | 'Removed',
+  symbol: '+' | '-',
+  items: unknown[],
+  style: HumanFormatStyle,
+): string[] => {
+  if (items.length === 0) {
+    return [];
+  }
+
+  return summarizeListLines(
+    items.map(
+      (item) => `${heading}: ${colorDelta(symbol, style)} ${String(item)}`,
+    ),
+    `${heading.toLowerCase()} items`,
+  );
+};
+
 const renderListDiff = (
   value: { added: unknown[]; removed: unknown[] },
   style: HumanFormatStyle,
 ): string[] => {
-  const lines: string[] = [];
-
-  if (value.added.length > 0) {
-    lines.push('Added:');
-    for (const item of value.added) {
-      lines.push(`  ${colorDelta('+', style)} ${String(item)}`);
-    }
-  }
-
-  if (value.removed.length > 0) {
-    lines.push('Removed:');
-    for (const item of value.removed) {
-      lines.push(`  ${colorDelta('-', style)} ${String(item)}`);
-    }
-  }
+  const lines = [
+    ...renderDiffListSection('Added', '+', value.added, style),
+    ...renderDiffListSection('Removed', '-', value.removed, style),
+  ];
 
   if (lines.length === 0) {
     return ['(no changes)'];
   }
 
   return lines;
-};
-
-const formatDeltaValue = (delta: number, style: HumanFormatStyle): string => {
-  const text = delta > 0 ? `+${delta}` : String(delta);
-  return colorDelta(text, style);
 };
 
 const renderMapDiff = (
@@ -87,29 +95,31 @@ const renderMapDiff = (
   }
 
   return indentLines(
-    sortedEntries(value).map(([key, entry]) => {
-      const candidate = entry as Record<string, unknown>;
-      if (isPlainObject(entry) && typeof candidate.status === 'string') {
-        const details = sortedEntries(entry)
-          .filter(([field]) => field !== 'status')
-          .map(([field, fieldValue]) => {
-            if (isNumericDelta(fieldValue)) {
-              return `${field}=${fieldValue.from} -> ${fieldValue.to} (delta ${formatDeltaValue(fieldValue.delta, style)})`;
-            }
+    summarizeMapLines(
+      sortedEntries(value).map(([key, entry]) => {
+        const candidate = entry as Record<string, unknown>;
+        if (isPlainObject(entry) && typeof candidate.status === 'string') {
+          const details = sortedEntries(entry)
+            .filter(([field]) => field !== 'status')
+            .map(([field, fieldValue]) => {
+              if (isNumericDelta(fieldValue)) {
+                return `${field}=${fieldValue.from} -> ${fieldValue.to} (delta ${formatDeltaValue(fieldValue.delta, style)})`;
+              }
 
-            if (typeof fieldValue === 'number') {
-              return `${field}=delta ${formatDeltaValue(fieldValue, style)}`;
-            }
+              if (typeof fieldValue === 'number') {
+                return `${field}=delta ${formatDeltaValue(fieldValue, style)}`;
+              }
 
-            return `${field}=${formatInlineValue(fieldValue)}`;
-          });
+              return `${field}=${formatInlineValue(fieldValue)}`;
+            });
 
-        const suffix = details.length > 0 ? `, ${details.join(', ')}` : '';
-        return `${key}: ${colorDiffStatus(String(candidate.status), style)}${suffix}`;
-      }
+          const suffix = details.length > 0 ? `, ${details.join(', ')}` : '';
+          return `${key}: ${colorDiffStatus(String(candidate.status), style)}${suffix}`;
+        }
 
-      return `${key}: ${formatInlineValue(entry)}`;
-    }),
+        return `${key}: ${formatInlineValue(entry)}`;
+      }),
+    ),
   );
 };
 
@@ -139,22 +149,26 @@ const renderRuleValue = (
 
     if (allNumericDelta) {
       return indentLines(
-        entries.map(([key, entry]) => {
-          const numericEntry = entry as {
-            from: number;
-            to: number;
-            delta: number;
-          };
-          return `${key}: ${numericEntry.from} -> ${numericEntry.to} (delta ${formatDeltaValue(numericEntry.delta, style)})`;
-        }),
+        summarizeMapLines(
+          entries.map(([key, entry]) => {
+            const numericEntry = entry as {
+              from: number;
+              to: number;
+              delta: number;
+            };
+            return `${key}: ${numericEntry.from} -> ${numericEntry.to} (delta ${formatDeltaValue(numericEntry.delta, style)})`;
+          }),
+        ),
       );
     }
 
     if (deltaOnly && allNumbers) {
       return indentLines(
-        entries.map(
-          ([key, entry]) =>
-            `${key}: delta ${formatDeltaValue(entry as number, style)}`,
+        summarizeMapLines(
+          entries.map(
+            ([key, entry]) =>
+              `${key}: delta ${formatDeltaValue(entry as number, style)}`,
+          ),
         ),
       );
     }
