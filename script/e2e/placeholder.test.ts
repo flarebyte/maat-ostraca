@@ -918,6 +918,24 @@ test('maat analyse go env names rule matches golden and is deterministic', () =>
   expectCanonicalGolden(first.stdout, 'testdata/go/env/analyse.golden.json');
 });
 
+test('maat analyse dart env names rule matches golden and is deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/dart/env/analyse.dart',
+    '--rules',
+    'env_names_list',
+    '--language',
+    'dart',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(first.stdout, 'testdata/dart/env/analyse.golden.json');
+});
+
 test('maat analyse testcase titles rule matches golden and is deterministic', () => {
   const args = [
     'analyse',

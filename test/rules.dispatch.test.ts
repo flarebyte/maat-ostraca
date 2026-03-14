@@ -181,6 +181,17 @@ describe('rules.dispatch', () => {
     assert.deepEqual(exceptionMessages, ['x']);
   });
 
+  it('resolves known dart env names rule-language module', async () => {
+    const run = await dispatchRule('env_names_list', 'dart');
+    const value = (await run({
+      source:
+        'void demo() { Platform.environment["DB_HOST"]; Platform.environment.containsKey(\'API_KEY\'); }\n',
+      language: 'dart',
+    })) as string[];
+
+    assert.deepEqual(value, ['API_KEY', 'DB_HOST']);
+  });
+
   it('resolves known go rule-language module', async () => {
     const run = await dispatchRule('import_files_list', 'go');
     const value = (await run({
