@@ -1,4 +1,5 @@
 import { InternalError } from '../../../core/errors/index.js';
+import { computeMetricSummary, countIdentifierMatches } from '../common.js';
 import { sha256OfText } from '../typescript/metrics.js';
 import type { SymbolMetricsIoFields } from '../typescript/symbol_metrics_io.js';
 
@@ -165,28 +166,12 @@ const stripCommentsAndStrings = (source: string): string => {
 };
 
 const countKeyword = (source: string, keyword: string): number => {
-  let count = 0;
-  let index = 0;
-
-  while (index < source.length) {
-    if (!isIdentifierStart(source[index])) {
-      index += 1;
-      continue;
-    }
-
-    let end = index + 1;
-    while (isIdentifierPart(source[end])) {
-      end += 1;
-    }
-
-    if (source.slice(index, end) === keyword) {
-      count += 1;
-    }
-
-    index = end;
-  }
-
-  return count;
+  return countIdentifierMatches(
+    source,
+    isIdentifierStart,
+    isIdentifierPart,
+    (text) => text === keyword,
+  );
 };
 
 const previousNonWhitespaceOnLine = (
@@ -208,31 +193,13 @@ const previousNonWhitespaceOnLine = (
 };
 
 const countWhileLoops = (source: string): number => {
-  let count = 0;
-  let index = 0;
-
-  while (index < source.length) {
-    if (!isIdentifierStart(source[index])) {
-      index += 1;
-      continue;
-    }
-
-    let end = index + 1;
-    while (isIdentifierPart(source[end])) {
-      end += 1;
-    }
-
-    if (source.slice(index, end) === 'while') {
-      const previous = previousNonWhitespaceOnLine(source, index);
-      if (previous !== '}') {
-        count += 1;
-      }
-    }
-
-    index = end;
-  }
-
-  return count;
+  return countIdentifierMatches(
+    source,
+    isIdentifierStart,
+    isIdentifierPart,
+    (text, start) =>
+      text === 'while' && previousNonWhitespaceOnLine(source, start) !== '}',
+  );
 };
 
 const countTernaryOperators = (source: string): number => {
@@ -313,27 +280,6 @@ const countTernaryOperators = (source: string): number => {
   return count;
 };
 
-const computeMaxNestingDepth = (source: string): number => {
-  let depth = 0;
-  let maxDepth = 0;
-
-  for (const char of source) {
-    if (char === '{') {
-      depth += 1;
-      if (depth > maxDepth) {
-        maxDepth = depth;
-      }
-      continue;
-    }
-
-    if (char === '}') {
-      depth = Math.max(0, depth - 1);
-    }
-  }
-
-  return maxDepth;
-};
-
 // Deterministic Dart metric definitions:
 // - loc: number of lines in the normalized source string.
 // - sloc: number of non-empty lines after trimming whitespace.
@@ -348,23 +294,7 @@ const computeMaxNestingDepth = (source: string): number => {
 // - tokens: lexical heuristic over the comment/string-stripped source.
 export const computeDartMetrics = (source: string): DartMetrics => {
   try {
-    if (source.length === 0) {
-      return {
-        loc: 0,
-        sloc: 0,
-        cyclomaticComplexity: 0,
-        cognitiveComplexity: 0,
-        maxNestingDepth: 0,
-        tokens: 0,
-        loops: 0,
-        conditions: 0,
-      };
-    }
-
     const normalized = stripCommentsAndStrings(source);
-    const lines = source.split('\n');
-    const loc = lines.length;
-    const sloc = lines.filter((line) => line.trim().length > 0).length;
     const loops =
       countKeyword(normalized, 'for') +
       countKeyword(normalized, 'do') +
@@ -373,21 +303,10 @@ export const computeDartMetrics = (source: string): DartMetrics => {
       countKeyword(normalized, 'if') +
       countKeyword(normalized, 'case') +
       countTernaryOperators(normalized);
-    const cyclomaticComplexity = 1 + loops + conditions;
-    const cognitiveComplexity = cyclomaticComplexity;
-    const maxNestingDepth = computeMaxNestingDepth(normalized);
-    const tokens = normalized.match(TOKEN_PATTERN)?.length ?? 0;
-
-    return {
-      loc,
-      sloc,
-      cyclomaticComplexity,
-      cognitiveComplexity,
-      maxNestingDepth,
-      tokens,
+    return computeMetricSummary(source, normalized, TOKEN_PATTERN, {
       loops,
       conditions,
-    };
+    });
   } catch {
     throw new InternalError('metrics_error: failed to compute metrics');
   }

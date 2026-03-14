@@ -1,6 +1,12 @@
 import { InternalError } from '../../../core/errors/index.js';
+import { computeMetricSummary, countIdentifierMatches } from '../common.js';
 import { sha256OfText } from '../typescript/metrics.js';
-import type { SymbolMetricsIoFields } from '../typescript/symbol_metrics_io.js';
+import {
+  buildSymbolMetricsIoFieldsFromMetrics,
+  type IoCounts,
+  type SymbolMetricsIoFields,
+} from '../typescript/symbol_metrics_io.js';
+import { isGoIdentifierPart, isGoIdentifierStart } from './lexing.js';
 
 export interface GoMetrics {
   loc: number;
@@ -14,21 +20,7 @@ export interface GoMetrics {
   returnCount: number;
 }
 
-interface IoCounts {
-  all: number;
-  read: number;
-  write: number;
-}
-
 const TOKEN_PATTERN = /[A-Za-z_][A-Za-z0-9_]*|\d+|[^\s]/g;
-
-const isIdentifierStart = (char: string | undefined): boolean => {
-  return char !== undefined && /[A-Za-z_]/.test(char);
-};
-
-const isIdentifierPart = (char: string | undefined): boolean => {
-  return char !== undefined && /[A-Za-z0-9_]/.test(char);
-};
 
 const stripCommentsAndStrings = (source: string): string => {
   let output = '';
@@ -115,50 +107,12 @@ const stripCommentsAndStrings = (source: string): string => {
 };
 
 const countKeyword = (source: string, keyword: string): number => {
-  let count = 0;
-  let index = 0;
-
-  while (index < source.length) {
-    const char = source[index];
-    if (!isIdentifierStart(char)) {
-      index += 1;
-      continue;
-    }
-
-    let end = index + 1;
-    while (isIdentifierPart(source[end])) {
-      end += 1;
-    }
-
-    if (source.slice(index, end) === keyword) {
-      count += 1;
-    }
-
-    index = end;
-  }
-
-  return count;
-};
-
-const computeMaxNestingDepth = (source: string): number => {
-  let depth = 0;
-  let maxDepth = 0;
-
-  for (const char of source) {
-    if (char === '{') {
-      depth += 1;
-      if (depth > maxDepth) {
-        maxDepth = depth;
-      }
-      continue;
-    }
-
-    if (char === '}') {
-      depth = Math.max(0, depth - 1);
-    }
-  }
-
-  return maxDepth;
+  return countIdentifierMatches(
+    source,
+    isGoIdentifierStart,
+    isGoIdentifierPart,
+    (text) => text === keyword,
+  );
 };
 
 // Deterministic Go metric definitions:
@@ -177,44 +131,23 @@ const computeMaxNestingDepth = (source: string): number => {
 //   literals inside the extracted declaration text.
 export const computeGoMetrics = (source: string): GoMetrics => {
   try {
-    if (source.length === 0) {
-      return {
-        loc: 0,
-        sloc: 0,
-        cyclomaticComplexity: 0,
-        cognitiveComplexity: 0,
-        maxNestingDepth: 0,
-        tokens: 0,
-        loops: 0,
-        conditions: 0,
-        returnCount: 0,
-      };
-    }
-
     const normalized = stripCommentsAndStrings(source);
-    const lines = source.split('\n');
-    const loc = lines.length;
-    const sloc = lines.filter((line) => line.trim().length > 0).length;
     const loops = countKeyword(normalized, 'for');
     const conditions =
       countKeyword(normalized, 'if') + countKeyword(normalized, 'case');
-    const cyclomaticComplexity = 1 + loops + conditions;
-    const cognitiveComplexity = cyclomaticComplexity;
-    const maxNestingDepth = computeMaxNestingDepth(normalized);
-    const tokens = normalized.match(TOKEN_PATTERN)?.length ?? 0;
-    const returnCount = countKeyword(normalized, 'return');
-
-    return {
-      loc,
-      sloc,
-      cyclomaticComplexity,
-      cognitiveComplexity,
-      maxNestingDepth,
-      tokens,
-      loops,
-      conditions,
-      returnCount,
-    };
+    return computeMetricSummary(
+      source,
+      normalized,
+      TOKEN_PATTERN,
+      {
+        loops,
+        conditions,
+      },
+      {
+        returnCount:
+          source.length === 0 ? 0 : countKeyword(normalized, 'return'),
+      },
+    );
   } catch {
     throw new InternalError('metrics_error: failed to compute metrics');
   }
@@ -225,20 +158,9 @@ export const buildGoSymbolMetricsIoFields = (
   ioCounts: IoCounts,
 ): SymbolMetricsIoFields => {
   const metrics = computeGoMetrics(code);
-
-  return {
-    loc: metrics.loc,
-    sloc: metrics.sloc,
-    cyclomaticComplexity: metrics.cyclomaticComplexity,
-    cognitiveComplexity: metrics.cognitiveComplexity,
-    maxNestingDepth: metrics.maxNestingDepth,
-    tokens: metrics.tokens,
-    sha256: sha256OfText(code),
-    loops: metrics.loops,
-    conditions: metrics.conditions,
-    returnCount: metrics.returnCount,
-    ioCallsCount: ioCounts.all,
-    ioReadCallsCount: ioCounts.read,
-    ioWriteCallsCount: ioCounts.write,
-  };
+  return buildSymbolMetricsIoFieldsFromMetrics(
+    metrics,
+    sha256OfText(code),
+    ioCounts,
+  );
 };

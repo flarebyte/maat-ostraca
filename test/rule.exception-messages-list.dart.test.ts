@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { canonicalStringify } from '../src/core/format/canonical-json.js';
 import { run } from '../src/rules/exception_messages_list/dart.js';
+import { expectDeterministicStringList } from './helpers.js';
 
 describe('rule exception_messages_list/dart', () => {
   it('includes only static-string throw messages', async () => {
@@ -43,10 +43,9 @@ describe('rule exception_messages_list/dart', () => {
       '',
     ].join('\n');
 
-    const first = await run({ source, language: 'dart' });
-    const second = await run({ source, language: 'dart' });
-
-    assert.deepEqual(first, ['a', 'b']);
-    assert.equal(canonicalStringify(first), canonicalStringify(second));
+    await expectDeterministicStringList(
+      () => run({ source, language: 'dart' }),
+      ['a', 'b'],
+    );
   });
 });

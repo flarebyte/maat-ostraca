@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { canonicalStringify } from '../src/core/format/canonical-json.js';
 import { run } from '../src/rules/class_map/dart.js';
+import { expectCanonicalDeterminism } from './helpers.js';
 
 describe('rule class_map/dart', () => {
   it('extracts classes, extends/implements, modifiers, and methodCount', async () => {
@@ -42,9 +42,6 @@ describe('rule class_map/dart', () => {
       '',
     ].join('\n');
 
-    const first = await run({ source, language: 'dart' });
-    const second = await run({ source, language: 'dart' });
-
-    assert.equal(canonicalStringify(first), canonicalStringify(second));
+    await expectCanonicalDeterminism(() => run({ source, language: 'dart' }));
   });
 });

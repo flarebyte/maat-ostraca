@@ -4,7 +4,7 @@ import type { RuleRunInput } from '../../dispatch.js';
 const IMPORT_PATTERN =
   /^\s*import\s+(['"])([^'"\r\n]+)\1(?:[^;\r\n]*|\r?\n\s+[^;\r\n]*)*;/gm;
 
-const sortDedup = (values: readonly string[]): string[] => {
+const sortUniqueImportUris = (values: readonly string[]): string[] => {
   return [...new Set(values)].sort((left, right) => left.localeCompare(right));
 };
 
@@ -32,7 +32,7 @@ export const listDartImportUris = (
   }
 
   try {
-    return sortDedup(extractDartImportUris(input.source));
+    return sortUniqueImportUris(extractDartImportUris(input.source));
   } catch {
     throw new InternalError('astgrep_error: failed to extract dart imports');
   }
@@ -49,7 +49,7 @@ export const listDartPackageImportUris = (
   }
 
   try {
-    return sortDedup(
+    return sortUniqueImportUris(
       extractDartImportUris(input.source).filter((uri) =>
         uri.startsWith('package:'),
       ),

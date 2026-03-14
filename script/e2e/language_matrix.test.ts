@@ -1,12 +1,13 @@
 import { expect, test } from 'bun:test';
-import { readFileSync } from 'node:fs';
 import {
-  AnalyseOutputSchema,
-  DiffOutputSchema,
-  JsonErrorOutputSchema,
-} from '../../src/core/contracts/schemas.js';
-import { canonicalStringify } from '../../src/core/format/canonical-json.js';
-import { asUtf8, equalBytes, type runCli, runTwice } from './helpers.js';
+  equalBytes,
+  expectRepeatedAnalyseGolden,
+  expectRepeatedDiffGolden,
+  expectSuccess,
+  parseDiffOutput,
+  parseJsonErrorOutput,
+  runTwice,
+} from './helpers.js';
 
 const COMMON_RULES = [
   'import_files_list',
@@ -43,47 +44,6 @@ const MATRIX = [
   },
 ] as const;
 
-const expectSuccess = (result: ReturnType<typeof runCli>): Buffer => {
-  expect(result.exitCode).toBe(0);
-  expect(result.stderr.length).toBe(0);
-  expect(result.stdout.length).toBeGreaterThan(0);
-  return result.stdout;
-};
-
-const expectAnalyseSchema = (stdout: Buffer) => {
-  const parsed = AnalyseOutputSchema.safeParse(JSON.parse(asUtf8(stdout)));
-  expect(parsed.success).toBeTrue();
-  if (!parsed.success) {
-    throw new Error('AnalyseOutputSchema parse failed');
-  }
-};
-
-const expectDiffSchema = (stdout: Buffer) => {
-  const parsed = DiffOutputSchema.safeParse(JSON.parse(asUtf8(stdout)));
-  expect(parsed.success).toBeTrue();
-  if (!parsed.success) {
-    throw new Error('DiffOutputSchema parse failed');
-  }
-};
-
-const expectJsonErrorSchema = (stdout: Buffer) => {
-  const parsed = JsonErrorOutputSchema.safeParse(JSON.parse(asUtf8(stdout)));
-  expect(parsed.success).toBeTrue();
-  if (!parsed.success) {
-    throw new Error('JsonErrorOutputSchema parse failed');
-  }
-  return parsed.data;
-};
-
-const expectGolden = (stdout: Buffer, goldenPath: string) => {
-  const golden = readFileSync(goldenPath, 'utf8');
-  const expected = Buffer.from(
-    `${canonicalStringify(JSON.parse(golden) as unknown)}\n`,
-    'utf8',
-  );
-  expect(equalBytes(stdout, expected)).toBeTrue();
-};
-
 for (const entry of MATRIX) {
   test(`${entry.language} analyse common-rule matrix output matches schema, golden, and repeated-run bytes`, () => {
     const args = [
@@ -97,14 +57,7 @@ for (const entry of MATRIX) {
       '--json',
     ];
 
-    const { first, second } = runTwice(args);
-    const firstStdout = expectSuccess(first);
-    const secondStdout = expectSuccess(second);
-
-    expectAnalyseSchema(firstStdout);
-    expectAnalyseSchema(secondStdout);
-    expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
-    expectGolden(firstStdout, entry.analyseGolden);
+    expectRepeatedAnalyseGolden(args, entry.analyseGolden);
   });
 
   test(`${entry.language} diff common-rule matrix output matches schema, golden, and repeated-run bytes`, () => {
@@ -121,14 +74,7 @@ for (const entry of MATRIX) {
       '--json',
     ];
 
-    const { first, second } = runTwice(args);
-    const firstStdout = expectSuccess(first);
-    const secondStdout = expectSuccess(second);
-
-    expectDiffSchema(firstStdout);
-    expectDiffSchema(secondStdout);
-    expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
-    expectGolden(firstStdout, entry.diffGolden);
+    expectRepeatedDiffGolden(args, entry.diffGolden);
   });
 
   test(`${entry.language} diff common-rule delta-only output is byte-identical across repeated runs`, () => {
@@ -150,10 +96,8 @@ for (const entry of MATRIX) {
     const firstStdout = expectSuccess(first);
     const secondStdout = expectSuccess(second);
 
-    const firstParsed = DiffOutputSchema.parse(JSON.parse(asUtf8(firstStdout)));
-    const secondParsed = DiffOutputSchema.parse(
-      JSON.parse(asUtf8(secondStdout)),
-    );
+    const firstParsed = parseDiffOutput(firstStdout);
+    const secondParsed = parseDiffOutput(secondStdout);
 
     expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
     expect(firstParsed.deltaOnly).toBeTrue();
@@ -179,8 +123,8 @@ for (const entry of MATRIX) {
     expect(second.stderr.length).toBe(0);
     expect(equalBytes(first.stdout, second.stdout)).toBeTrue();
 
-    const firstParsed = expectJsonErrorSchema(first.stdout);
-    const secondParsed = expectJsonErrorSchema(second.stdout);
+    const firstParsed = parseJsonErrorOutput(first.stdout);
+    const secondParsed = parseJsonErrorOutput(second.stdout);
 
     expect(firstParsed.error.code).toBe('E_USAGE');
     expect(secondParsed.error.code).toBe('E_USAGE');

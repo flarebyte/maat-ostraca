@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { canonicalStringify } from '../src/core/format/canonical-json.js';
 import { run } from '../src/rules/error_messages_list/go.js';
+import { expectDeterministicStringList } from './helpers.js';
 
 describe('rule error_messages_list/go', () => {
   it('includes explicit go error/reporting calls and excludes non-literals', async () => {
@@ -47,10 +47,9 @@ describe('rule error_messages_list/go', () => {
       '',
     ].join('\n');
 
-    const first = await run({ source, language: 'go' });
-    const second = await run({ source, language: 'go' });
-
-    assert.deepEqual(first, ['a', 'b']);
-    assert.equal(canonicalStringify(first), canonicalStringify(second));
+    await expectDeterministicStringList(
+      () => run({ source, language: 'go' }),
+      ['a', 'b'],
+    );
   });
 });
