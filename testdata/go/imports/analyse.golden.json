@@ -1,0 +1,14 @@
+{
+  "filename": "testdata/go/imports/analyse.go",
+  "language": "go",
+  "rules": {
+    "import_files_list": [
+      "fmt",
+      "github.com/acme/lib",
+      "math",
+      "net/http",
+      "net/http/pprof",
+      "os"
+    ]
+  }
+}

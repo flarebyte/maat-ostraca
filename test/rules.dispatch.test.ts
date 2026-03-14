@@ -4,6 +4,16 @@ import { UsageError } from '../src/core/errors/index.js';
 import { dispatchRule } from '../src/rules/dispatch.js';
 
 describe('rules.dispatch', () => {
+  it('resolves known go rule-language module', async () => {
+    const run = await dispatchRule('import_files_list', 'go');
+    const value = (await run({
+      source: 'package main\nimport "fmt"\n',
+      language: 'go',
+    })) as string[];
+
+    assert.deepEqual(value, ['fmt']);
+  });
+
   it('resolves known rule-language module', async () => {
     const run = await dispatchRule('code_hash', 'typescript');
     const value = (await run({

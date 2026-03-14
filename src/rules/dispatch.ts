@@ -15,6 +15,7 @@ interface RuleModule {
 }
 
 const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
+  ['import_files_list:go', () => import('./import_files_list/go.js')],
   [
     'import_files_list:typescript',
     () => import('./import_files_list/typescript.js'),
