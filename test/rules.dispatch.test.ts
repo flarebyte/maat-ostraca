@@ -14,6 +14,16 @@ describe('rules.dispatch', () => {
     assert.deepEqual(value, ['dart:io']);
   });
 
+  it('resolves known dart package import rule-language module', async () => {
+    const run = await dispatchRule('package_imports_list', 'dart');
+    const value = (await run({
+      source: "import 'dart:io';\nimport 'package:flutter/material.dart';\n",
+      language: 'dart',
+    })) as string[];
+
+    assert.deepEqual(value, ['package:flutter/material.dart']);
+  });
+
   it('resolves known go rule-language module', async () => {
     const run = await dispatchRule('import_files_list', 'go');
     const value = (await run({

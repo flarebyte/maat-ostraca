@@ -21,6 +21,7 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
     'import_files_list:typescript',
     () => import('./import_files_list/typescript.js'),
   ],
+  ['package_imports_list:dart', () => import('./package_imports_list/dart.js')],
   [
     'package_imports_list:typescript',
     () => import('./package_imports_list/typescript.js'),
