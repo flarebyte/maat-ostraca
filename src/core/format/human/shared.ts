@@ -1,3 +1,5 @@
+import type { HumanFormatStyle } from './color.js';
+
 const compareStrings = (left: string, right: string): number => {
   return left.localeCompare(right);
 };
@@ -55,7 +57,14 @@ export const appendSection = (
   lines.push(...body);
 };
 
-export const renderStringList = (items: string[]): string[] => {
+export const indentLines = (lines: string[], prefix = '  '): string[] => {
+  return lines.map((line) => `${prefix}${line}`);
+};
+
+export const renderStringList = (
+  items: string[],
+  _style?: HumanFormatStyle,
+): string[] => {
   if (items.length === 0) {
     return ['(none)'];
   }

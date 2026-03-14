@@ -71,8 +71,20 @@ const writeResult = (
   result: AnalyseOutput | DiffOutput | RulesListOutput,
   io: CliIo,
 ): void => {
+  const runtimeProcess = globalThis as typeof globalThis & {
+    process?: {
+      env?: Record<string, string | undefined>;
+      stdout?: { isTTY?: boolean };
+    };
+  };
+
   validateOutputOrThrow(kind, result);
-  io.stdout(formatOutput(kind, result, json));
+  io.stdout(
+    formatOutput(kind, result, json, {
+      env: runtimeProcess.process?.env,
+      isTTY: runtimeProcess.process?.stdout?.isTTY ?? false,
+    }),
+  );
 };
 
 const normalizeError = (error: unknown): unknown => {

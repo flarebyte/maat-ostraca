@@ -1,8 +1,17 @@
 import type { DiffOutput } from '../../contracts/outputs.js';
 import {
+  colorDelta,
+  colorDiffStatus,
+  colorRuleName,
+  colorSection,
+  createHumanFormatStyle,
+  type HumanFormatStyle,
+} from './color.js';
+import {
   appendSection,
   compareStrings,
   formatInlineValue,
+  indentLines,
   isPlainObject,
   sortedEntries,
 } from './shared.js';
@@ -10,47 +19,50 @@ import {
 const isNumericDelta = (
   value: unknown,
 ): value is { from: number; to: number; delta: number } => {
+  const candidate = value as Record<string, unknown>;
   return (
     isPlainObject(value) &&
-    typeof value.from === 'number' &&
-    typeof value.to === 'number' &&
-    typeof value.delta === 'number'
+    typeof candidate.from === 'number' &&
+    typeof candidate.to === 'number' &&
+    typeof candidate.delta === 'number'
   );
 };
 
 const isListDiff = (
   value: unknown,
 ): value is { added: unknown[]; removed: unknown[] } => {
+  const candidate = value as Record<string, unknown>;
   return (
     isPlainObject(value) &&
-    Array.isArray(value.added) &&
-    Array.isArray(value.removed)
+    Array.isArray(candidate.added) &&
+    Array.isArray(candidate.removed)
   );
 };
 
 const isHashDiff = (
   value: unknown,
 ): value is { from?: string; to?: string; changed: boolean } => {
-  return isPlainObject(value) && typeof value.changed === 'boolean';
+  const candidate = value as Record<string, unknown>;
+  return isPlainObject(value) && typeof candidate.changed === 'boolean';
 };
 
-const renderListDiff = (value: {
-  added: unknown[];
-  removed: unknown[];
-}): string[] => {
+const renderListDiff = (
+  value: { added: unknown[]; removed: unknown[] },
+  style: HumanFormatStyle,
+): string[] => {
   const lines: string[] = [];
 
   if (value.added.length > 0) {
     lines.push('Added:');
     for (const item of value.added) {
-      lines.push(`+ ${String(item)}`);
+      lines.push(`  ${colorDelta('+', style)} ${String(item)}`);
     }
   }
 
   if (value.removed.length > 0) {
     lines.push('Removed:');
     for (const item of value.removed) {
-      lines.push(`- ${String(item)}`);
+      lines.push(`  ${colorDelta('-', style)} ${String(item)}`);
     }
   }
 
@@ -61,46 +73,63 @@ const renderListDiff = (value: {
   return lines;
 };
 
-const renderMapDiff = (value: Record<string, unknown>): string[] => {
-  if (Object.keys(value).length === 0) {
-    return ['(none)'];
-  }
-
-  return sortedEntries(value).map(([key, entry]) => {
-    if (isPlainObject(entry) && typeof entry.status === 'string') {
-      const details = sortedEntries(entry)
-        .filter(([field]) => field !== 'status')
-        .map(([field, fieldValue]) => {
-          if (isNumericDelta(fieldValue)) {
-            return `${field}=${fieldValue.from} -> ${fieldValue.to} (delta ${fieldValue.delta})`;
-          }
-
-          if (typeof fieldValue === 'number') {
-            return `${field}=delta ${fieldValue}`;
-          }
-
-          return `${field}=${formatInlineValue(fieldValue)}`;
-        });
-
-      const suffix = details.length > 0 ? `, ${details.join(', ')}` : '';
-      return `${key}: ${entry.status}${suffix}`;
-    }
-
-    return `${key}: ${formatInlineValue(entry)}`;
-  });
+const formatDeltaValue = (delta: number, style: HumanFormatStyle): string => {
+  const text = delta > 0 ? `+${delta}` : String(delta);
+  return colorDelta(text, style);
 };
 
-const renderRuleValue = (value: unknown, deltaOnly: boolean): string[] => {
+const renderMapDiff = (
+  value: Record<string, unknown>,
+  style: HumanFormatStyle,
+): string[] => {
+  if (Object.keys(value).length === 0) {
+    return indentLines(['(none)']);
+  }
+
+  return indentLines(
+    sortedEntries(value).map(([key, entry]) => {
+      const candidate = entry as Record<string, unknown>;
+      if (isPlainObject(entry) && typeof candidate.status === 'string') {
+        const details = sortedEntries(entry)
+          .filter(([field]) => field !== 'status')
+          .map(([field, fieldValue]) => {
+            if (isNumericDelta(fieldValue)) {
+              return `${field}=${fieldValue.from} -> ${fieldValue.to} (delta ${formatDeltaValue(fieldValue.delta, style)})`;
+            }
+
+            if (typeof fieldValue === 'number') {
+              return `${field}=delta ${formatDeltaValue(fieldValue, style)}`;
+            }
+
+            return `${field}=${formatInlineValue(fieldValue)}`;
+          });
+
+        const suffix = details.length > 0 ? `, ${details.join(', ')}` : '';
+        return `${key}: ${colorDiffStatus(String(candidate.status), style)}${suffix}`;
+      }
+
+      return `${key}: ${formatInlineValue(entry)}`;
+    }),
+  );
+};
+
+const renderRuleValue = (
+  value: unknown,
+  deltaOnly: boolean,
+  style: HumanFormatStyle,
+): string[] => {
   if (isListDiff(value)) {
-    return renderListDiff(value);
+    return indentLines(renderListDiff(value, style));
   }
 
   if (isHashDiff(value)) {
     if (typeof value.from === 'string' && typeof value.to === 'string') {
-      return [`file: ${value.from} -> ${value.to} (changed ${value.changed})`];
+      return indentLines([
+        `file: ${value.from} -> ${value.to} (changed ${value.changed})`,
+      ]);
     }
 
-    return [`changed: ${value.changed}`];
+    return indentLines([`changed: ${value.changed}`]);
   }
 
   if (isPlainObject(value)) {
@@ -109,31 +138,43 @@ const renderRuleValue = (value: unknown, deltaOnly: boolean): string[] => {
     const allNumbers = entries.every(([, entry]) => typeof entry === 'number');
 
     if (allNumericDelta) {
-      return entries.map(([key, entry]) => {
-        const numericEntry = entry as {
-          from: number;
-          to: number;
-          delta: number;
-        };
-        return `${key}: ${numericEntry.from} -> ${numericEntry.to} (delta ${numericEntry.delta})`;
-      });
+      return indentLines(
+        entries.map(([key, entry]) => {
+          const numericEntry = entry as {
+            from: number;
+            to: number;
+            delta: number;
+          };
+          return `${key}: ${numericEntry.from} -> ${numericEntry.to} (delta ${formatDeltaValue(numericEntry.delta, style)})`;
+        }),
+      );
     }
 
     if (deltaOnly && allNumbers) {
-      return entries.map(([key, entry]) => `${key}: delta ${entry}`);
+      return indentLines(
+        entries.map(
+          ([key, entry]) =>
+            `${key}: delta ${formatDeltaValue(entry as number, style)}`,
+        ),
+      );
     }
 
-    return renderMapDiff(value);
+    return renderMapDiff(value, style);
   }
 
   if (typeof value === 'number') {
-    return [deltaOnly ? `delta: ${value}` : String(value)];
+    return indentLines([
+      deltaOnly ? `delta: ${formatDeltaValue(value, style)}` : String(value),
+    ]);
   }
 
-  return [formatInlineValue(value)];
+  return indentLines([formatInlineValue(value)]);
 };
 
-export const formatHumanDiff = (output: DiffOutput): string => {
+export const formatHumanDiff = (
+  output: DiffOutput,
+  style: HumanFormatStyle = createHumanFormatStyle(),
+): string => {
   const lines = [
     `From: ${output.from.filename}`,
     `To: ${output.to.filename ?? '<stdin>'}`,
@@ -148,8 +189,8 @@ export const formatHumanDiff = (output: DiffOutput): string => {
   for (const ruleName of ruleNames) {
     appendSection(
       lines,
-      `[${ruleName}]`,
-      renderRuleValue(output.rules[ruleName], Boolean(output.deltaOnly)),
+      colorSection(`[${colorRuleName(ruleName, style)}]`, style),
+      renderRuleValue(output.rules[ruleName], Boolean(output.deltaOnly), style),
     );
   }
 

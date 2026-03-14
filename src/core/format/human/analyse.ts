@@ -1,19 +1,29 @@
 import type { AnalyseOutput } from '../../contracts/outputs.js';
 import {
+  colorRuleName,
+  colorSection,
+  createHumanFormatStyle,
+  type HumanFormatStyle,
+} from './color.js';
+import {
   appendSection,
   compareStrings,
   formatInlineValue,
+  indentLines,
   isPlainObject,
   renderObjectLines,
   renderStringList,
   sortedEntries,
 } from './shared.js';
 
-const renderRuleValue = (value: unknown): string[] => {
+const renderRuleValue = (value: unknown, style: HumanFormatStyle): string[] => {
   if (Array.isArray(value)) {
-    return renderStringList(
-      value.map((entry) =>
-        typeof entry === 'string' ? entry : formatInlineValue(entry),
+    return indentLines(
+      renderStringList(
+        value.map((entry) =>
+          typeof entry === 'string' ? entry : formatInlineValue(entry),
+        ),
+        style,
       ),
     );
   }
@@ -24,25 +34,28 @@ const renderRuleValue = (value: unknown): string[] => {
 
     if (allObjectValues) {
       if (entries.length === 0) {
-        return ['(none)'];
+        return indentLines(['(none)']);
       }
 
-      return entries.map(
-        ([key, entry]) => `${key}: ${formatInlineValue(entry)}`,
+      return indentLines(
+        entries.map(([key, entry]) => `${key}: ${formatInlineValue(entry)}`),
       );
     }
 
     if (entries.length === 0) {
-      return ['(none)'];
+      return indentLines(['(none)']);
     }
 
-    return renderObjectLines(value);
+    return indentLines(renderObjectLines(value));
   }
 
-  return [formatInlineValue(value)];
+  return indentLines([formatInlineValue(value)]);
 };
 
-export const formatHumanAnalyse = (output: AnalyseOutput): string => {
+export const formatHumanAnalyse = (
+  output: AnalyseOutput,
+  style: HumanFormatStyle = createHumanFormatStyle(),
+): string => {
   const lines = [`Language: ${output.language}`];
 
   if (output.filename) {
@@ -53,8 +66,8 @@ export const formatHumanAnalyse = (output: AnalyseOutput): string => {
   for (const ruleName of ruleNames) {
     appendSection(
       lines,
-      `[${ruleName}]`,
-      renderRuleValue(output.rules[ruleName]),
+      colorSection(`[${colorRuleName(ruleName, style)}]`, style),
+      renderRuleValue(output.rules[ruleName], style),
     );
   }
 
