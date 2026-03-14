@@ -47,6 +47,8 @@ test('maat diff help is deterministic', () => {
   expect(output).toContain('read target source from stdin');
   expect(output).toContain('Optional. Emit canonical JSON output');
   expect(output).toContain('Requires --json');
+  expect(output).toContain('Exit 3 when the computed diff');
+  expect(output).toContain('contains effective changes');
   expect(output).toContain('typescript|go|dart');
 });
 

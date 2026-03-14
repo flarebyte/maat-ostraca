@@ -21,7 +21,7 @@ import { summarizeListLines, summarizeMapLines } from './summary.js';
 const isNumericDelta = (
   value: unknown,
 ): value is { from: number; to: number; delta: number } => {
-  const candidate = value as Record<string, unknown>;
+  const candidate = value as { from?: unknown; to?: unknown; delta?: unknown };
   return (
     isPlainObject(value) &&
     typeof candidate.from === 'number' &&
@@ -33,7 +33,7 @@ const isNumericDelta = (
 const isListDiff = (
   value: unknown,
 ): value is { added: unknown[]; removed: unknown[] } => {
-  const candidate = value as Record<string, unknown>;
+  const candidate = value as { added?: unknown; removed?: unknown };
   return (
     isPlainObject(value) &&
     Array.isArray(candidate.added) &&
@@ -44,7 +44,7 @@ const isListDiff = (
 const isHashDiff = (
   value: unknown,
 ): value is { from?: string; to?: string; changed: boolean } => {
-  const candidate = value as Record<string, unknown>;
+  const candidate = value as { changed?: unknown };
   return isPlainObject(value) && typeof candidate.changed === 'boolean';
 };
 
@@ -98,7 +98,7 @@ const renderMapDiff = (
   return indentLines(
     summarizeMapLines(
       sortedEntries(value).map(([key, entry]) => {
-        const candidate = entry as Record<string, unknown>;
+        const candidate = entry as { status?: unknown };
         if (isPlainObject(entry) && typeof candidate.status === 'string') {
           const details = sortedEntries(entry)
             .filter(([field]) => field !== 'status')

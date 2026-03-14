@@ -5,11 +5,13 @@ import { compareStrings, isPlainObject } from './shared.js';
 const isHashResult = (
   value: unknown,
 ): value is { algorithm: string; file?: string } => {
-  const candidate = value as Record<string, unknown>;
+  const candidate = value as { algorithm?: unknown };
   return isPlainObject(value) && typeof candidate.algorithm === 'string';
 };
 
-const isMetricsResult = (value: unknown): value is Record<string, unknown> => {
+const isMetricsResult = (
+  value: unknown,
+): value is { loc?: number; tokens?: number } & Record<string, number> => {
   if (!isPlainObject(value)) {
     return false;
   }

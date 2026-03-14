@@ -1,4 +1,10 @@
-type ProcessEnvShape = Record<string, string | undefined>;
+type ProcessEnvShape = {
+  NO_COLOR?: string | undefined;
+  FORCE_COLOR?: string | undefined;
+  CI?: string | undefined;
+  TERM?: string | undefined;
+  COLORTERM?: string | undefined;
+} & Record<string, string | undefined>;
 type RuntimeProcess = {
   env?: ProcessEnvShape;
 };

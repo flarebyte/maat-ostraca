@@ -26,7 +26,7 @@ const packageJson = JSON.parse(
 export const packagedBinPath =
   typeof packageJson.bin === 'string' ? packageJson.bin : packageJson.bin?.maat;
 
-export const runCli = (args: string[], input?: string): CliResult => {
+export const runCli = (args: string[], input?: string | Buffer): CliResult => {
   const result = spawnSync(
     'node',
     ['--import', 'tsx', 'src/cmd/maat/index.ts', ...args],
@@ -44,7 +44,10 @@ export const runCli = (args: string[], input?: string): CliResult => {
   };
 };
 
-export const runBuiltCli = (args: string[], input?: string): CliResult => {
+export const runBuiltCli = (
+  args: string[],
+  input?: string | Buffer,
+): CliResult => {
   const result = spawnSync('node', [packagedBinPath ?? '', ...args], {
     cwd: process.cwd(),
     encoding: 'buffer',
@@ -60,7 +63,7 @@ export const runBuiltCli = (args: string[], input?: string): CliResult => {
 
 export const runTwice = (
   args: string[],
-  input?: string,
+  input?: string | Buffer,
 ): { first: CliResult; second: CliResult } => {
   return {
     first: runCli(args, input),
@@ -70,7 +73,7 @@ export const runTwice = (
 
 export const runBuiltTwice = (
   args: string[],
-  input?: string,
+  input?: string | Buffer,
 ): { first: CliResult; second: CliResult } => {
   return {
     first: runBuiltCli(args, input),

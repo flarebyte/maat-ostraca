@@ -5,6 +5,7 @@ import {
   Option,
 } from 'commander';
 import type { JsonErrorOutput } from '../../core/contracts/outputs.js';
+import { hasDiffChanges } from '../../core/diff/has_changes.js';
 import { formatOutput } from '../../core/format/output.js';
 import {
   type AnalyseOutput,
@@ -37,6 +38,10 @@ interface CliDeps {
   resolveRules: typeof resolveRules;
   resolveSource: typeof resolveSource;
   resolveDiffSource: typeof resolveDiffSource;
+}
+
+interface CliRuntime {
+  setSuccessExitCode?: (code: number) => void;
 }
 
 const defaultDeps: CliDeps = {
@@ -109,6 +114,7 @@ const fallbackInternalJsonError: JsonErrorOutput = {
 export const createProgram = (
   io: CliIo,
   deps: CliDeps = defaultDeps,
+  runtime: CliRuntime = {},
 ): Command => {
   const program = new Command();
   program
@@ -203,6 +209,10 @@ export const createProgram = (
       '--delta-only',
       'Optional. Emit delta-only JSON output. Requires --json',
     )
+    .option(
+      '--exit-code-on-change',
+      'Optional. Exit 3 when the computed diff contains effective changes',
+    )
     .action(
       async (options: {
         from: string;
@@ -211,6 +221,7 @@ export const createProgram = (
         language: Language;
         json?: boolean;
         deltaOnly?: boolean;
+        exitCodeOnChange?: boolean;
       }) => {
         if (options.deltaOnly && !options.json) {
           throw new UsageError('--delta-only requires --json');
@@ -250,6 +261,9 @@ export const createProgram = (
           deltaOnly: Boolean(diffArgs.deltaOnly),
         });
         writeResult('diff', Boolean(options.json), result, io);
+        if (options.exitCodeOnChange) {
+          runtime.setSuccessExitCode?.(hasDiffChanges(result) ? 3 : 0);
+        }
       },
     );
 
@@ -285,7 +299,12 @@ export const runCli = async (
   },
   deps: CliDeps = defaultDeps,
 ): Promise<number> => {
-  const program = createProgram(io, deps);
+  let successExitCode = 0;
+  const program = createProgram(io, deps, {
+    setSuccessExitCode: (code) => {
+      successExitCode = code;
+    },
+  });
   const jsonOutput = argv.includes('--json');
 
   // Error behavior contract:
@@ -295,7 +314,7 @@ export const runCli = async (
   // - unknown/non-Error throws are normalized to deterministic InternalError
   try {
     await program.parseAsync(argv, { from: 'user' });
-    return 0;
+    return successExitCode;
   } catch (error) {
     if (
       error instanceof CommanderError &&

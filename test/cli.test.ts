@@ -65,6 +65,8 @@ describe('maat cli parsing', () => {
     assert.match(first.stdout, /Optional\. Emit canonical JSON output/);
     assert.match(first.stdout, /Optional\. Emit delta-only JSON output\./);
     assert.match(first.stdout, /Requires --json/);
+    assert.match(first.stdout, /Exit 3 when the computed diff/);
+    assert.match(first.stdout, /contains effective changes/);
     assert.match(first.stdout, /typescript, go,/);
     assert.match(first.stdout, /dart/);
   });
@@ -241,6 +243,73 @@ describe('maat cli parsing', () => {
     assert.equal(result.status, 0);
     const payload = JSON.parse(result.stdout) as { deltaOnly?: boolean };
     assert.equal(payload.deltaOnly, true);
+  });
+
+  it('diff --exit-code-on-change returns 0 for identical fixtures and keeps stdout unchanged in json mode', () => {
+    const baseArgs = [
+      'diff',
+      '--from',
+      'testdata/diff-from.ts',
+      '--rules',
+      'import_files_list,file_metrics,code_hash',
+      '--language',
+      'typescript',
+      '--json',
+    ];
+
+    const withoutFlag = runCli(baseArgs, 'export const value = 1;\n');
+    const withFlag = runCli(
+      [...baseArgs, '--exit-code-on-change'],
+      'export const value = 1;\n',
+    );
+
+    assert.equal(withoutFlag.status, 0);
+    assert.equal(withFlag.status, 0);
+    assert.equal(withFlag.stdout, withoutFlag.stdout);
+  });
+
+  it('diff --exit-code-on-change returns 3 for changed fixtures and keeps stdout unchanged in json mode', () => {
+    const baseArgs = [
+      'diff',
+      '--from',
+      'testdata/go/hash/v1.go',
+      '--to',
+      'testdata/go/hash/v2.go',
+      '--rules',
+      'code_hash',
+      '--language',
+      'go',
+      '--json',
+    ];
+
+    const withoutFlag = runCli(baseArgs);
+    const withFlag = runCli([...baseArgs, '--exit-code-on-change']);
+
+    assert.equal(withoutFlag.status, 0);
+    assert.equal(withFlag.status, 3);
+    assert.equal(withFlag.stdout, withoutFlag.stdout);
+  });
+
+  it('diff --exit-code-on-change returns 3 for changed fixtures and keeps stdout unchanged in human mode', () => {
+    const baseArgs = [
+      'diff',
+      '--from',
+      'testdata/diff-from.ts',
+      '--rules',
+      'import_files_list,file_metrics,code_hash',
+      '--language',
+      'typescript',
+    ];
+
+    const withoutFlag = runCli(baseArgs, 'export const value = 2;\n');
+    const withFlag = runCli(
+      [...baseArgs, '--exit-code-on-change'],
+      'export const value = 2;\n',
+    );
+
+    assert.equal(withoutFlag.status, 0);
+    assert.equal(withFlag.status, 3);
+    assert.equal(withFlag.stdout, withoutFlag.stdout);
   });
 
   it('json success output is byte-identical across runs', () => {

@@ -5,7 +5,7 @@ import { compareStrings, isPlainObject, sortedEntries } from './shared.js';
 const isListDiff = (
   value: unknown,
 ): value is { added: unknown[]; removed: unknown[] } => {
-  const candidate = value as Record<string, unknown>;
+  const candidate = value as { added?: unknown; removed?: unknown };
   return (
     isPlainObject(value) &&
     Array.isArray(candidate.added) &&
@@ -14,14 +14,14 @@ const isListDiff = (
 };
 
 const isHashDiff = (value: unknown): value is { changed: boolean } => {
-  const candidate = value as Record<string, unknown>;
+  const candidate = value as { changed?: unknown };
   return isPlainObject(value) && typeof candidate.changed === 'boolean';
 };
 
 const isNumericDelta = (
   value: unknown,
 ): value is { from: number; to: number; delta: number } => {
-  const candidate = value as Record<string, unknown>;
+  const candidate = value as { from?: unknown; to?: unknown; delta?: unknown };
   return (
     isPlainObject(value) &&
     typeof candidate.from === 'number' &&
@@ -33,7 +33,7 @@ const isNumericDelta = (
 const isStatusEntry = (
   value: unknown,
 ): value is { status: 'added' | 'removed' | 'modified' | 'unchanged' } => {
-  const candidate = value as Record<string, unknown>;
+  const candidate = value as { status?: unknown };
   return (
     isPlainObject(value) &&
     (candidate.status === 'added' ||
