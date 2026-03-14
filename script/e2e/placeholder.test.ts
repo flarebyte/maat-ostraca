@@ -234,6 +234,27 @@ test('maat analyse import_files_list for go matches golden json and is determini
   );
 });
 
+test('maat analyse import_files_list for dart matches golden json and is deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/dart/imports/analyse.dart',
+    '--rules',
+    'import_files_list',
+    '--language',
+    'dart',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/dart/imports/analyse.golden.json',
+  );
+});
+
 test('maat analyse import_files_list + package_imports_list for go matches golden and is deterministic', () => {
   const args = [
     'analyse',

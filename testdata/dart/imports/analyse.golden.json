@@ -1,0 +1,14 @@
+{
+  "filename": "testdata/dart/imports/analyse.dart",
+  "language": "dart",
+  "rules": {
+    "import_files_list": [
+      "./local.dart",
+      "dart:io",
+      "package:collection/collection.dart",
+      "package:flutter/material.dart",
+      "package:flutter/widgets.dart",
+      "package:my_app/foo.dart"
+    ]
+  }
+}

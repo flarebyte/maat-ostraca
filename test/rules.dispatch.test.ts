@@ -4,6 +4,16 @@ import { UsageError } from '../src/core/errors/index.js';
 import { dispatchRule } from '../src/rules/dispatch.js';
 
 describe('rules.dispatch', () => {
+  it('resolves known dart rule-language module', async () => {
+    const run = await dispatchRule('import_files_list', 'dart');
+    const value = (await run({
+      source: "import 'dart:io';\n",
+      language: 'dart',
+    })) as string[];
+
+    assert.deepEqual(value, ['dart:io']);
+  });
+
   it('resolves known go rule-language module', async () => {
     const run = await dispatchRule('import_files_list', 'go');
     const value = (await run({
