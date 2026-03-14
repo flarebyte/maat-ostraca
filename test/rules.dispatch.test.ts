@@ -49,6 +49,40 @@ describe('rules.dispatch', () => {
     );
   });
 
+  it('resolves known go function map rule-language module', async () => {
+    const run = await dispatchRule('function_map', 'go');
+    const value = (await run({
+      source: 'package main\n\nfunc Charge() error { return nil }\n',
+      language: 'go',
+    })) as Record<string, { params: string[]; returns: string[] }>;
+
+    assert.deepEqual(value, {
+      Charge: { modifiers: [], params: [], returns: ['error'] },
+    });
+  });
+
+  it('resolves known go method map rule-language module', async () => {
+    const run = await dispatchRule('method_map', 'go');
+    const value = (await run({
+      source:
+        'package main\n\ntype PaymentService struct{}\n\nfunc (s *PaymentService) Charge() error { return nil }\n',
+      language: 'go',
+    })) as Record<
+      string,
+      { receiver: string; name: string; params: string[]; returns: string[] }
+    >;
+
+    assert.deepEqual(value, {
+      paymentServiceCharge: {
+        modifiers: [],
+        receiver: 'PaymentService',
+        name: 'Charge',
+        params: [],
+        returns: ['error'],
+      },
+    });
+  });
+
   it('resolves known rule-language module', async () => {
     const run = await dispatchRule('code_hash', 'typescript');
     const value = (await run({

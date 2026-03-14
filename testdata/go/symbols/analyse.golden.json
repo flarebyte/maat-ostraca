@@ -1,0 +1,34 @@
+{
+  "filename": "testdata/go/symbols/analyse.go",
+  "language": "go",
+  "rules": {
+    "function_map": {
+      "Charge": {
+        "modifiers": [],
+        "params": ["ctx context.Context", "req ChargeRequest"],
+        "returns": ["error"]
+      },
+      "Refund": {
+        "modifiers": [],
+        "params": ["req RefundRequest"],
+        "returns": ["ChargeResponse", "error"]
+      }
+    },
+    "method_map": {
+      "paymentServiceCharge": {
+        "modifiers": [],
+        "name": "Charge",
+        "params": ["ctx context.Context", "req ChargeRequest"],
+        "receiver": "PaymentService",
+        "returns": ["error"]
+      },
+      "paymentServiceRefund": {
+        "modifiers": [],
+        "name": "Refund",
+        "params": ["req RefundRequest"],
+        "receiver": "PaymentService",
+        "returns": ["ChargeResponse", "error"]
+      }
+    }
+  }
+}

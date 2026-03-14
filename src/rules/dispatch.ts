@@ -39,7 +39,9 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
     () => import('./testcase_titles_list/typescript.js'),
   ],
   ['function_map:typescript', () => import('./function_map/typescript.js')],
+  ['function_map:go', () => import('./function_map/go.js')],
   ['method_map:typescript', () => import('./method_map/typescript.js')],
+  ['method_map:go', () => import('./method_map/go.js')],
   ['class_map:typescript', () => import('./class_map/typescript.js')],
   ['interface_map:typescript', () => import('./interface_map/typescript.js')],
   [

@@ -360,6 +360,27 @@ test('maat diff go code_hash matches golden and is deterministic', () => {
   expectCanonicalGolden(first.stdout, 'testdata/go/hash/diff.golden.json');
 });
 
+test('maat analyse go function_map and method_map match golden and are deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/go/symbols/analyse.go',
+    '--rules',
+    'function_map,method_map',
+    '--language',
+    'go',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/go/symbols/analyse.golden.json',
+  );
+});
+
 test('maat analyse io count rules match golden and are deterministic', () => {
   const args = [
     'analyse',
