@@ -1,0 +1,10 @@
+{
+  "filename": "testdata/go/hash/v1.go",
+  "language": "go",
+  "rules": {
+    "code_hash": {
+      "algorithm": "sha256",
+      "file": "91642aea182475a5864efca7903aab02d03d8443a3df946947cdc37b4914866c"
+    }
+  }
+}

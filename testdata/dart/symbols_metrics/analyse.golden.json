@@ -1,0 +1,145 @@
+{
+  "filename": "testdata/dart/symbols_metrics/analyse.dart",
+  "language": "dart",
+  "rules": {
+    "class_map": {
+      "ApiClient": {
+        "cognitiveComplexity": 2,
+        "cyclomaticComplexity": 2,
+        "extends": "BaseClient",
+        "implements": ["Reader"],
+        "loc": 16,
+        "maxNestingDepth": 3,
+        "methodCount": 3,
+        "modifiers": [],
+        "sha256": "54a57997f4413fc7931c6fbee5e0c4567ef7b2d3240b56e6354ae9723d9c640f",
+        "sloc": 14,
+        "tokens": 65
+      }
+    },
+    "function_map": {
+      "loadData": {
+        "cognitiveComplexity": 2,
+        "conditions": 1,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 1,
+        "ioWriteCallsCount": 0,
+        "loc": 7,
+        "loops": 0,
+        "maxNestingDepth": 2,
+        "modifiers": ["async"],
+        "params": ["bool flag"],
+        "returnCount": 2,
+        "returns": ["Future<int>"],
+        "sha256": "9cbafc03c0316d06fdbd7e5fa801c015919142988d807f9d4e631fefb0a92a54",
+        "sloc": 7,
+        "tokens": 33
+      },
+      "saveData": {
+        "cognitiveComplexity": 2,
+        "conditions": 0,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 1,
+        "loc": 5,
+        "loops": 1,
+        "maxNestingDepth": 2,
+        "modifiers": ["async"],
+        "params": ["List<int> values"],
+        "returnCount": 0,
+        "returns": ["Future<void>"],
+        "sha256": "a2f92107f8c7c21096be742ae23edd5e7397a852db0fa2ef8a27ada191e0c2c0",
+        "sloc": 5,
+        "tokens": 29
+      }
+    },
+    "io_calls_count": {
+      "functions": { "loadData": 1, "saveData": 1 },
+      "methods": {
+        "apiClientFetch": 1,
+        "apiClientHelper": 0,
+        "apiClientPush": 2
+      }
+    },
+    "io_read_calls_count": {
+      "functions": { "loadData": 1, "saveData": 0 },
+      "methods": {
+        "apiClientFetch": 1,
+        "apiClientHelper": 0,
+        "apiClientPush": 0
+      }
+    },
+    "io_write_calls_count": {
+      "functions": { "loadData": 0, "saveData": 1 },
+      "methods": {
+        "apiClientFetch": 0,
+        "apiClientHelper": 0,
+        "apiClientPush": 2
+      }
+    },
+    "method_map": {
+      "apiClientFetch": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 1,
+        "ioWriteCallsCount": 0,
+        "loc": 4,
+        "loops": 0,
+        "maxNestingDepth": 1,
+        "modifiers": ["async"],
+        "name": "fetch",
+        "params": [],
+        "receiver": "ApiClient",
+        "returnCount": 1,
+        "returns": ["Future<String>"],
+        "sha256": "b852ea029ecc6984474644158b383ce154fe879b7acafe5d7fd2792ee57893e1",
+        "sloc": 4,
+        "tokens": 19
+      },
+      "apiClientHelper": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 1,
+        "loops": 0,
+        "maxNestingDepth": 0,
+        "modifiers": ["external", "static"],
+        "name": "helper",
+        "params": [],
+        "receiver": "ApiClient",
+        "returnCount": 0,
+        "returns": ["String"],
+        "sha256": "35ee7c38717c872338f4ee542ca21dd37a0b428c3eca314a5de3cfd2085db697",
+        "sloc": 1,
+        "tokens": 7
+      },
+      "apiClientPush": {
+        "cognitiveComplexity": 2,
+        "conditions": 1,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 2,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 2,
+        "loc": 7,
+        "loops": 0,
+        "maxNestingDepth": 2,
+        "modifiers": ["async"],
+        "name": "push",
+        "params": ["bool enabled"],
+        "receiver": "ApiClient",
+        "returnCount": 1,
+        "returns": ["Future<void>"],
+        "sha256": "7c27cc44603cfc89a0f797597fb9d6150d9d27bc907bb62771590604a8de5983",
+        "sloc": 7,
+        "tokens": 31
+      }
+    }
+  }
+}

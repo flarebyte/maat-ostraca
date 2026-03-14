@@ -1,0 +1,54 @@
+{
+  "from": {
+    "filename": "testdata/go/metrics/v1.go",
+    "language": "go"
+  },
+  "to": {
+    "filename": "testdata/go/metrics/v2.go",
+    "language": "go"
+  },
+  "rules": {
+    "file_metrics": {
+      "cognitiveComplexity": {
+        "from": 5,
+        "to": 9,
+        "delta": 4
+      },
+      "conditions": {
+        "from": 3,
+        "to": 6,
+        "delta": 3
+      },
+      "cyclomaticComplexity": {
+        "from": 5,
+        "to": 9,
+        "delta": 4
+      },
+      "loc": {
+        "from": 27,
+        "to": 36,
+        "delta": 9
+      },
+      "loops": {
+        "from": 1,
+        "to": 2,
+        "delta": 1
+      },
+      "maxNestingDepth": {
+        "from": 3,
+        "to": 3,
+        "delta": 0
+      },
+      "sloc": {
+        "from": 21,
+        "to": 29,
+        "delta": 8
+      },
+      "tokens": {
+        "from": 84,
+        "to": 129,
+        "delta": 45
+      }
+    }
+  }
+}

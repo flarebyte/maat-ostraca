@@ -5,13 +5,18 @@ import {
   Option,
 } from 'commander';
 import type { JsonErrorOutput } from '../../core/contracts/outputs.js';
+import { hasDiffChanges } from '../../core/diff/has_changes.js';
+import { formatOutput } from '../../core/format/output.js';
 import {
+  type AnalyseOutput,
   canonicalStringify,
+  type DiffOutput,
   diffResults,
   formatError,
   InternalError,
   type Language,
   type OutputKind,
+  type RulesListOutput,
   runAnalyse,
   runRulesList,
   SUPPORTED_LANGUAGES,
@@ -33,6 +38,10 @@ interface CliDeps {
   resolveRules: typeof resolveRules;
   resolveSource: typeof resolveSource;
   resolveDiffSource: typeof resolveDiffSource;
+}
+
+interface CliRuntime {
+  setSuccessExitCode?: (code: number) => void;
 }
 
 const defaultDeps: CliDeps = {
@@ -63,18 +72,24 @@ const parseRulesCsv = (value: string): string => {
 
 const writeResult = (
   kind: OutputKind,
-  commandName: string,
   json: boolean,
-  result: object,
+  result: AnalyseOutput | DiffOutput | RulesListOutput,
   io: CliIo,
 ): void => {
-  if (json) {
-    validateOutputOrThrow(kind, result);
-    io.stdout(`${canonicalStringify(result)}\n`);
-    return;
-  }
+  const runtimeProcess = globalThis as typeof globalThis & {
+    process?: {
+      env?: Record<string, string | undefined>;
+      stdout?: { isTTY?: boolean };
+    };
+  };
 
-  io.stdout(`${commandName}: ok\n`);
+  validateOutputOrThrow(kind, result);
+  io.stdout(
+    formatOutput(kind, result, json, {
+      env: runtimeProcess.process?.env,
+      isTTY: runtimeProcess.process?.stdout?.isTTY ?? false,
+    }),
+  );
 };
 
 const normalizeError = (error: unknown): unknown => {
@@ -99,14 +114,17 @@ const fallbackInternalJsonError: JsonErrorOutput = {
 export const createProgram = (
   io: CliIo,
   deps: CliDeps = defaultDeps,
+  runtime: CliRuntime = {},
 ): Command => {
   const program = new Command();
   program
     .name('maat')
-    .description('MAAT CLI walking skeleton')
+    .description('Analyse source snapshots and diffs with deterministic output')
     .showHelpAfterError(false)
     .configureOutput({
-      writeOut: () => {},
+      writeOut: (message) => {
+        io.stdout(message);
+      },
       writeErr: () => {},
       outputError: () => {},
     })
@@ -114,18 +132,27 @@ export const createProgram = (
 
   program
     .command('analyse')
+    .description(
+      'Analyse one source snapshot from --in or, when omitted, from stdin',
+    )
     .requiredOption(
       '--rules <csv>',
-      'Comma-separated rule identifiers',
+      'Required. Comma-separated rule identifiers',
       parseRulesCsv,
     )
     .addOption(
-      new Option('--language <go|typescript|dart>', 'Language for analysis')
+      new Option(
+        '--language <typescript|go|dart>',
+        'Required. Source language: typescript, go, dart',
+      )
         .argParser(parseLanguage)
         .makeOptionMandatory(true),
     )
-    .option('--in <path>', 'Input file path. If omitted, stdin is used')
-    .option('--json', 'Print JSON output')
+    .option(
+      '--in <path>',
+      'Optional. Input file path. If omitted, read source from stdin',
+    )
+    .option('--json', 'Optional. Emit canonical JSON output')
     .action(
       async (options: {
         in?: string;
@@ -150,26 +177,42 @@ export const createProgram = (
         const result = await deps.runAnalyse({
           ...analyseArgs,
         });
-        writeResult('analyse', 'analyse', Boolean(options.json), result, io);
+        writeResult('analyse', Boolean(options.json), result, io);
       },
     );
 
   program
     .command('diff')
-    .requiredOption('--from <path>', 'Source baseline path')
-    .option('--to <path>', 'Target path. If omitted, stdin is used')
+    .description(
+      'Diff two source snapshots from --from and --to or, when --to is omitted, from stdin',
+    )
+    .requiredOption('--from <path>', 'Required. Baseline source path')
+    .option(
+      '--to <path>',
+      'Optional. Target source path. If omitted, read target source from stdin',
+    )
     .requiredOption(
       '--rules <csv>',
-      'Comma-separated rule identifiers',
+      'Required. Comma-separated rule identifiers',
       parseRulesCsv,
     )
     .addOption(
-      new Option('--language <go|typescript|dart>', 'Language for diff')
+      new Option(
+        '--language <typescript|go|dart>',
+        'Required. Source language: typescript, go, dart',
+      )
         .argParser(parseLanguage)
         .makeOptionMandatory(true),
     )
-    .option('--json', 'Print JSON output')
-    .option('--delta-only', 'Output delta only (requires --json)')
+    .option('--json', 'Optional. Emit canonical JSON output')
+    .option(
+      '--delta-only',
+      'Optional. Emit delta-only JSON output. Requires --json',
+    )
+    .option(
+      '--exit-code-on-change',
+      'Optional. Exit 3 when the computed diff contains effective changes',
+    )
     .action(
       async (options: {
         from: string;
@@ -178,6 +221,7 @@ export const createProgram = (
         language: Language;
         json?: boolean;
         deltaOnly?: boolean;
+        exitCodeOnChange?: boolean;
       }) => {
         if (options.deltaOnly && !options.json) {
           throw new UsageError('--delta-only requires --json');
@@ -216,22 +260,43 @@ export const createProgram = (
         const result = diffResults(fromSnapshot, toSnapshot, {
           deltaOnly: Boolean(diffArgs.deltaOnly),
         });
-        writeResult('diff', 'diff', Boolean(options.json), result, io);
+        writeResult('diff', Boolean(options.json), result, io);
+        if (options.exitCodeOnChange) {
+          runtime.setSuccessExitCode?.(hasDiffChanges(result) ? 3 : 0);
+        }
       },
     );
 
   program
     .command('rules')
+    .description('List available rules for one supported language')
     .addOption(
-      new Option('--language <go|typescript|dart>', 'Language for rule listing')
+      new Option(
+        '--language <typescript|go|dart>',
+        'Required. Source language: typescript, go, dart',
+      )
         .argParser(parseLanguage)
         .makeOptionMandatory(true),
     )
-    .option('--json', 'Print JSON output')
-    .action(async (options: { language: Language; json?: boolean }) => {
-      const result = await deps.runRulesList({ language: options.language });
-      writeResult('rules', 'rules', Boolean(options.json), result, io);
-    });
+    .option(
+      '--match <csv>',
+      'Optional. Filter rules by exact rule names only',
+      parseRulesCsv,
+    )
+    .option('--json', 'Optional. Emit canonical JSON output')
+    .action(
+      async (options: {
+        language: Language;
+        match?: string;
+        json?: boolean;
+      }) => {
+        const result = await deps.runRulesList({
+          language: options.language,
+          ...(options.match ? { match: options.match } : {}),
+        });
+        writeResult('rules', Boolean(options.json), result, io);
+      },
+    );
 
   return program;
 };
@@ -248,7 +313,12 @@ export const runCli = async (
   },
   deps: CliDeps = defaultDeps,
 ): Promise<number> => {
-  const program = createProgram(io, deps);
+  let successExitCode = 0;
+  const program = createProgram(io, deps, {
+    setSuccessExitCode: (code) => {
+      successExitCode = code;
+    },
+  });
   const jsonOutput = argv.includes('--json');
 
   // Error behavior contract:
@@ -258,8 +328,15 @@ export const runCli = async (
   // - unknown/non-Error throws are normalized to deterministic InternalError
   try {
     await program.parseAsync(argv, { from: 'user' });
-    return 0;
+    return successExitCode;
   } catch (error) {
+    if (
+      error instanceof CommanderError &&
+      error.code === 'commander.helpDisplayed'
+    ) {
+      return 0;
+    }
+
     const normalized = normalizeError(error);
     const normalizedError =
       normalized instanceof Error

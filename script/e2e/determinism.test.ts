@@ -1,11 +1,15 @@
 import { expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
-import {
-  AnalyseOutputSchema,
-  DiffOutputSchema,
-} from '../../src/core/contracts/schemas.js';
 import { canonicalStringify } from '../../src/core/format/canonical-json.js';
-import { asUtf8, equalBytes, runCli, runTwice } from './helpers.js';
+import {
+  asUtf8,
+  equalBytes,
+  expectSuccess,
+  parseAnalyseOutput,
+  parseDiffOutput,
+  runCli,
+  runTwice,
+} from './helpers.js';
 
 const WIDE_RULES = [
   'import_files_list',
@@ -86,32 +90,6 @@ const DIFF_ARGS = [
 
 const DIFF_DELTA_ONLY_ARGS = [...DIFF_ARGS, '--delta-only'];
 
-const expectSuccess = (result: ReturnType<typeof runCli>) => {
-  expect(result.exitCode).toBe(0);
-  expect(result.stderr.length).toBe(0);
-  expect(result.stdout.length).toBeGreaterThan(0);
-};
-
-const parseAnalyse = (stdout: Buffer) => {
-  const payload = JSON.parse(asUtf8(stdout)) as unknown;
-  const parsed = AnalyseOutputSchema.safeParse(payload);
-  expect(parsed.success).toBeTrue();
-  if (!parsed.success) {
-    throw new Error('AnalyseOutputSchema parse failed');
-  }
-  return parsed.data;
-};
-
-const parseDiff = (stdout: Buffer) => {
-  const payload = JSON.parse(asUtf8(stdout)) as unknown;
-  const parsed = DiffOutputSchema.safeParse(payload);
-  expect(parsed.success).toBeTrue();
-  if (!parsed.success) {
-    throw new Error('DiffOutputSchema parse failed');
-  }
-  return parsed.data;
-};
-
 const expectGolden = (stdout: Buffer, goldenPath: string) => {
   const golden = readFileSync(goldenPath);
   const expected = Buffer.from(
@@ -126,8 +104,8 @@ test('analyse json output is deterministic across repeated runs', () => {
 
   expectSuccess(first);
   expectSuccess(second);
-  parseAnalyse(first.stdout);
-  parseAnalyse(second.stdout);
+  parseAnalyseOutput(first.stdout);
+  parseAnalyseOutput(second.stdout);
   expect(equalBytes(first.stdout, second.stdout)).toBeTrue();
   expectGolden(first.stdout, 'testdata/determinism/wide-analyse.golden.json');
 });
@@ -137,8 +115,8 @@ test('diff json output is deterministic across repeated runs', () => {
 
   expectSuccess(first);
   expectSuccess(second);
-  parseDiff(first.stdout);
-  parseDiff(second.stdout);
+  parseDiffOutput(first.stdout);
+  parseDiffOutput(second.stdout);
   expect(equalBytes(first.stdout, second.stdout)).toBeTrue();
   expectGolden(first.stdout, 'testdata/determinism/wide-diff.golden.json');
 });
@@ -167,8 +145,8 @@ test('analyse output bytes are invariant to rule order with wildcard + explicit 
 
   expectSuccess(first);
   expectSuccess(second);
-  parseAnalyse(first.stdout);
-  parseAnalyse(second.stdout);
+  parseAnalyseOutput(first.stdout);
+  parseAnalyseOutput(second.stdout);
   expect(equalBytes(first.stdout, second.stdout)).toBeTrue();
 });
 
@@ -180,9 +158,9 @@ test('diff delta-only output is deterministic and preserves delta-only shape che
   expectSuccess(first);
   expectSuccess(second);
 
-  const standardParsed = parseDiff(standard.stdout);
-  const firstParsed = parseDiff(first.stdout);
-  parseDiff(second.stdout);
+  const standardParsed = parseDiffOutput(standard.stdout);
+  const firstParsed = parseDiffOutput(first.stdout);
+  parseDiffOutput(second.stdout);
 
   expect(equalBytes(first.stdout, second.stdout)).toBeTrue();
   expectGolden(

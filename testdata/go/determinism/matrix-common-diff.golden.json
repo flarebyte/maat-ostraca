@@ -1,0 +1,26 @@
+{
+  "from": {
+    "filename": "testdata/go/determinism/wide-v1.go",
+    "language": "go"
+  },
+  "rules": {
+    "code_hash": {
+      "changed": true,
+      "from": "fb27545429c7006cbecf92e21e08dfbaf483e059492a45799c5ff25690e0b3c2",
+      "to": "a2359f265044be025e87d1399e22855b54a5d210178e9721e615b0f66826c760"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": { "delta": 1, "from": 4, "to": 5 },
+      "conditions": { "delta": 1, "from": 2, "to": 3 },
+      "cyclomaticComplexity": { "delta": 1, "from": 4, "to": 5 },
+      "loc": { "delta": 7, "from": 73, "to": 80 },
+      "loops": { "delta": 0, "from": 1, "to": 1 },
+      "maxNestingDepth": { "delta": 0, "from": 2, "to": 2 },
+      "sloc": { "delta": 6, "from": 58, "to": 64 },
+      "tokens": { "delta": 42, "from": 287, "to": 329 }
+    },
+    "import_files_list": { "added": [], "removed": [] },
+    "package_imports_list": { "added": [], "removed": [] }
+  },
+  "to": { "filename": "testdata/go/determinism/wide-v2.go", "language": "go" }
+}

@@ -1,0 +1,18 @@
+{
+  "filename": "testdata/go/io/analyse.go",
+  "language": "go",
+  "rules": {
+    "io_calls_count": {
+      "functions": { "LoadConfig": 2, "SaveConfig": 3 },
+      "methods": { "clientFetch": 2, "clientFlush": 0 }
+    },
+    "io_read_calls_count": {
+      "functions": { "LoadConfig": 2, "SaveConfig": 0 },
+      "methods": { "clientFetch": 1, "clientFlush": 0 }
+    },
+    "io_write_calls_count": {
+      "functions": { "LoadConfig": 0, "SaveConfig": 3 },
+      "methods": { "clientFetch": 1, "clientFlush": 0 }
+    }
+  }
+}

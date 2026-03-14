@@ -1,0 +1,7 @@
+{
+  "filename": "testdata/go/tests/analyse.go",
+  "language": "go",
+  "rules": {
+    "testcase_titles_list": ["bench-a", "case-a", "case-b"]
+  }
+}

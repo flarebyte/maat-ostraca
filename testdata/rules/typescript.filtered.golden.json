@@ -1,0 +1,13 @@
+{
+  "language": "typescript",
+  "rules": [
+    {
+      "name": "code_hash",
+      "description": "Compute deterministic code-level content hash."
+    },
+    {
+      "name": "function_map",
+      "description": "Map function declarations and signatures."
+    }
+  ]
+}

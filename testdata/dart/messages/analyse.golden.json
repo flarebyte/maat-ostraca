@@ -1,0 +1,22 @@
+{
+  "filename": "testdata/dart/messages/analyse.dart",
+  "language": "dart",
+  "rules": {
+    "error_messages_list": [
+      "argument fail",
+      "debug fail",
+      "exception fail",
+      "flutter fail",
+      "format fail",
+      "print fail",
+      "state fail"
+    ],
+    "exception_messages_list": [
+      "argument fail",
+      "exception fail",
+      "flutter fail",
+      "format fail",
+      "state fail"
+    ]
+  }
+}

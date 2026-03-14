@@ -1,0 +1,16 @@
+{
+  "from": { "filename": "testdata/dart/metrics/v1.dart", "language": "dart" },
+  "rules": {
+    "file_metrics": {
+      "cognitiveComplexity": { "delta": 3, "from": 2, "to": 5 },
+      "conditions": { "delta": 2, "from": 1, "to": 3 },
+      "cyclomaticComplexity": { "delta": 3, "from": 2, "to": 5 },
+      "loc": { "delta": 4, "from": 8, "to": 12 },
+      "loops": { "delta": 1, "from": 0, "to": 1 },
+      "maxNestingDepth": { "delta": 2, "from": 2, "to": 4 },
+      "sloc": { "delta": 4, "from": 6, "to": 10 },
+      "tokens": { "delta": 29, "from": 22, "to": 51 }
+    }
+  },
+  "to": { "filename": "testdata/dart/metrics/v2.dart", "language": "dart" }
+}

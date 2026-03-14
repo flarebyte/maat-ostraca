@@ -1,6 +1,7 @@
 import { UsageError } from '../core/errors/index.js';
 import type { Language } from '../core/types.js';
 import { RULE_CATALOG, type RuleName } from './catalog.js';
+import { IMPLEMENTED_RULES_BY_LANGUAGE } from './dispatch.js';
 
 export interface ResolveRulesInput {
   rules: string;
@@ -10,6 +11,9 @@ export interface ResolveRulesInput {
 const isTrailingWildcard = (token: string): boolean => token.endsWith('*');
 
 const byName = new Map(RULE_CATALOG.map((entry) => [entry.name, entry]));
+const allImplementedRulesForLanguage = (language: Language): RuleName[] => {
+  return IMPLEMENTED_RULES_BY_LANGUAGE.get(language) ?? [];
+};
 
 export const resolveRules = ({
   rules,
@@ -23,6 +27,22 @@ export const resolveRules = ({
   const resolved = new Set<RuleName>();
 
   for (const token of tokens) {
+    if (token === '*') {
+      const matches = allImplementedRulesForLanguage(language);
+
+      if (matches.length === 0) {
+        throw new UsageError(
+          `wildcard selector "*" matched no rules for language "${language}"`,
+        );
+      }
+
+      for (const match of matches) {
+        resolved.add(match);
+      }
+
+      continue;
+    }
+
     if (isTrailingWildcard(token)) {
       const prefix = token.slice(0, -1);
       const matches = RULE_CATALOG.filter(

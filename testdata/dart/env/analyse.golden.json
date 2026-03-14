@@ -1,0 +1,5 @@
+{
+  "filename": "testdata/dart/env/analyse.dart",
+  "language": "dart",
+  "rules": { "env_names_list": ["API_TOKEN", "DB_HOST", "DB_USER"] }
+}

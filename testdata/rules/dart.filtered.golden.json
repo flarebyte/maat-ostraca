@@ -1,0 +1,13 @@
+{
+  "language": "dart",
+  "rules": [
+    {
+      "name": "class_map",
+      "description": "Map class declarations and members."
+    },
+    {
+      "name": "testcase_titles_list",
+      "description": "List detected test case titles."
+    }
+  ]
+}

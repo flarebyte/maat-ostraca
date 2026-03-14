@@ -1,0 +1,11 @@
+{
+  "deltaOnly": true,
+  "from": { "filename": "testdata/go/io/diff-v1.go", "language": "go" },
+  "rules": {
+    "io_calls_count": {
+      "functions": { "status": "modified", "SyncData": 2 },
+      "methods": { "status": "unchanged" }
+    }
+  },
+  "to": { "filename": "testdata/go/io/diff-v2.go", "language": "go" }
+}

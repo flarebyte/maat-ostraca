@@ -1,0 +1,25 @@
+{
+  "filename": "testdata/go/interfaces/analyse.go",
+  "language": "go",
+  "rules": {
+    "interface_map": {
+      "PaymentProvider": {
+        "modifiers": [],
+        "extends": ["io.Closer", "Reader"],
+        "methods": [
+          "Charge(ctx context.Context, req ChargeRequest) (ChargeResponse, error)",
+          "Close() error"
+        ]
+      },
+      "Reader": {
+        "modifiers": [],
+        "extends": [],
+        "methods": ["Read(p []byte) (int, error)"]
+      }
+    },
+    "interfaces_code_map": {
+      "PaymentProvider": "type PaymentProvider interface {\n\tio.Closer\n\tReader\n\tCharge(ctx context.Context, req ChargeRequest) (ChargeResponse, error)\n\tClose() error\n}",
+      "Reader": "type Reader interface {\n\tRead(p []byte) (int, error)\n}"
+    }
+  }
+}

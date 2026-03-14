@@ -1,0 +1,41 @@
+{
+  "deltaOnly": true,
+  "from": { "filename": "testdata/go/symbols_metrics/v1.go", "language": "go" },
+  "rules": {
+    "function_map": {
+      "Load": {
+        "cognitiveComplexity": 1,
+        "conditions": 1,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 1,
+        "returnCount": 1,
+        "sloc": 3,
+        "status": "modified",
+        "tokens": 6
+      }
+    },
+    "method_map": {
+      "serviceSync": {
+        "cognitiveComplexity": 1,
+        "conditions": 1,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 1,
+        "ioWriteCallsCount": 0,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 1,
+        "returnCount": 0,
+        "sloc": 3,
+        "status": "modified",
+        "tokens": 15
+      }
+    }
+  },
+  "to": { "filename": "testdata/go/symbols_metrics/v2.go", "language": "go" }
+}

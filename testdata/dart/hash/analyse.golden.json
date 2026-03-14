@@ -1,0 +1,10 @@
+{
+  "filename": "testdata/dart/hash/v1.dart",
+  "language": "dart",
+  "rules": {
+    "code_hash": {
+      "algorithm": "sha256",
+      "file": "02d63b1db14a8a2484c7e96a6fcc3cedfad35b86c7e12fec26d241fee74f406f"
+    }
+  }
+}

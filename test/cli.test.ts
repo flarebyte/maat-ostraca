@@ -19,6 +19,78 @@ const runCli = (args: string[], input?: string) => {
 };
 
 describe('maat cli parsing', () => {
+  it('root help exits 0 and documents supported commands deterministically', () => {
+    const first = runCli(['--help']);
+    const second = runCli(['--help']);
+
+    assert.equal(first.status, 0);
+    assert.equal(second.status, 0);
+    assert.equal(first.stderr, '');
+    assert.equal(second.stderr, '');
+    assert.equal(first.stdout, second.stdout);
+    assert.match(first.stdout, /Usage: maat/);
+    assert.match(first.stdout, /analyse/);
+    assert.match(first.stdout, /diff/);
+    assert.match(first.stdout, /rules/);
+  });
+
+  it('analyse help exits 0 and documents stdin, json, and languages', () => {
+    const first = runCli(['analyse', '--help']);
+    const second = runCli(['analyse', '--help']);
+
+    assert.equal(first.status, 0);
+    assert.equal(second.status, 0);
+    assert.equal(first.stderr, '');
+    assert.equal(second.stderr, '');
+    assert.equal(first.stdout, second.stdout);
+    assert.match(first.stdout, /Required\. Comma-separated rule identifiers/);
+    assert.match(first.stdout, /If omitted,/);
+    assert.match(first.stdout, /source from stdin/);
+    assert.match(first.stdout, /Optional\. Emit canonical JSON output/);
+    assert.match(first.stdout, /typescript, go,/);
+    assert.match(first.stdout, /dart/);
+  });
+
+  it('diff help exits 0 and documents stdin, json, delta-only, and languages', () => {
+    const first = runCli(['diff', '--help']);
+    const second = runCli(['diff', '--help']);
+
+    assert.equal(first.status, 0);
+    assert.equal(second.status, 0);
+    assert.equal(first.stderr, '');
+    assert.equal(second.stderr, '');
+    assert.equal(first.stdout, second.stdout);
+    assert.match(first.stdout, /If omitted,/);
+    assert.match(first.stdout, /read target source from stdin/);
+    assert.match(first.stdout, /Optional\. Emit canonical JSON output/);
+    assert.match(first.stdout, /Optional\. Emit delta-only JSON output\./);
+    assert.match(first.stdout, /Requires --json/);
+    assert.match(first.stdout, /Exit 3 when the computed diff/);
+    assert.match(first.stdout, /contains effective changes/);
+    assert.match(first.stdout, /typescript, go,/);
+    assert.match(first.stdout, /dart/);
+  });
+
+  it('rules help exits 0 and documents json and languages', () => {
+    const first = runCli(['rules', '--help']);
+    const second = runCli(['rules', '--help']);
+
+    assert.equal(first.status, 0);
+    assert.equal(second.status, 0);
+    assert.equal(first.stderr, '');
+    assert.equal(second.stderr, '');
+    assert.equal(first.stdout, second.stdout);
+    assert.match(
+      first.stdout,
+      /List available rules for one supported language/,
+    );
+    assert.match(first.stdout, /Filter rules by exact rule names/);
+    assert.match(first.stdout, /only/);
+    assert.match(first.stdout, /Optional\. Emit canonical JSON output/);
+    assert.match(first.stdout, /typescript, go,/);
+    assert.match(first.stdout, /dart/);
+  });
+
   it('returns exit code 2 when required flags are missing', () => {
     const result = runCli(['analyse', '--language', 'go']);
 
@@ -102,6 +174,52 @@ describe('maat cli parsing', () => {
     assert.ok(names.includes('import_files_list'));
   });
 
+  it('rules --match filters the json manifest deterministically', () => {
+    const result = runCli([
+      'rules',
+      '--language',
+      'typescript',
+      '--match',
+      'function_map,code_hash',
+      '--json',
+    ]);
+
+    assert.equal(result.status, 0);
+
+    const payload = JSON.parse(result.stdout) as unknown;
+    const parsed = RulesListOutputSchema.safeParse(payload);
+    assert.equal(parsed.success, true);
+    if (!parsed.success) {
+      return;
+    }
+
+    assert.deepEqual(
+      parsed.data.rules.map((rule) => rule.name),
+      ['code_hash', 'function_map'],
+    );
+  });
+
+  it('rules --match human output is deterministic', () => {
+    const args = [
+      'rules',
+      '--language',
+      'typescript',
+      '--match',
+      'function_map,code_hash',
+    ];
+    const first = runCli(args);
+    const second = runCli(args);
+
+    assert.equal(first.status, 0);
+    assert.equal(second.status, 0);
+    assert.equal(first.stderr, '');
+    assert.equal(second.stderr, '');
+    assert.equal(first.stdout, second.stdout);
+    assert.match(first.stdout, /Language: typescript/);
+    assert.match(first.stdout, /code_hash/);
+    assert.match(first.stdout, /function_map/);
+  });
+
   it('analyse json includes deterministic outputs for implemented rules', () => {
     const result = runCli(
       [
@@ -173,6 +291,73 @@ describe('maat cli parsing', () => {
     assert.equal(result.status, 0);
     const payload = JSON.parse(result.stdout) as { deltaOnly?: boolean };
     assert.equal(payload.deltaOnly, true);
+  });
+
+  it('diff --exit-code-on-change returns 0 for identical fixtures and keeps stdout unchanged in json mode', () => {
+    const baseArgs = [
+      'diff',
+      '--from',
+      'testdata/diff-from.ts',
+      '--rules',
+      'import_files_list,file_metrics,code_hash',
+      '--language',
+      'typescript',
+      '--json',
+    ];
+
+    const withoutFlag = runCli(baseArgs, 'export const value = 1;\n');
+    const withFlag = runCli(
+      [...baseArgs, '--exit-code-on-change'],
+      'export const value = 1;\n',
+    );
+
+    assert.equal(withoutFlag.status, 0);
+    assert.equal(withFlag.status, 0);
+    assert.equal(withFlag.stdout, withoutFlag.stdout);
+  });
+
+  it('diff --exit-code-on-change returns 3 for changed fixtures and keeps stdout unchanged in json mode', () => {
+    const baseArgs = [
+      'diff',
+      '--from',
+      'testdata/go/hash/v1.go',
+      '--to',
+      'testdata/go/hash/v2.go',
+      '--rules',
+      'code_hash',
+      '--language',
+      'go',
+      '--json',
+    ];
+
+    const withoutFlag = runCli(baseArgs);
+    const withFlag = runCli([...baseArgs, '--exit-code-on-change']);
+
+    assert.equal(withoutFlag.status, 0);
+    assert.equal(withFlag.status, 3);
+    assert.equal(withFlag.stdout, withoutFlag.stdout);
+  });
+
+  it('diff --exit-code-on-change returns 3 for changed fixtures and keeps stdout unchanged in human mode', () => {
+    const baseArgs = [
+      'diff',
+      '--from',
+      'testdata/diff-from.ts',
+      '--rules',
+      'import_files_list,file_metrics,code_hash',
+      '--language',
+      'typescript',
+    ];
+
+    const withoutFlag = runCli(baseArgs, 'export const value = 2;\n');
+    const withFlag = runCli(
+      [...baseArgs, '--exit-code-on-change'],
+      'export const value = 2;\n',
+    );
+
+    assert.equal(withoutFlag.status, 0);
+    assert.equal(withFlag.status, 3);
+    assert.equal(withFlag.stdout, withoutFlag.stdout);
   });
 
   it('json success output is byte-identical across runs', () => {

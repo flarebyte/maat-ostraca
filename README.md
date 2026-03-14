@@ -1,7 +1,7 @@
 # maat-ostraca
 
-`maat-ostraca` is a TypeScript CLI that analyzes source files and returns
-structured, machine-friendly insights.
+`maat-ostraca` is a CLI that analyzes source files and returns structured,
+machine-friendly insights.
 
 At a high level, the CLI is designed to:
 
@@ -34,14 +34,38 @@ Basic commands:
 
 ```bash
 # Analyse one file
-maat analyse --in testdata/analyse-input.ts --rules code_hash,file_metrics --language typescript --json
+maat analyse --in testdata/determinism/wide-v1.ts --rules import_files_list,file_metrics,code_hash --language typescript --json
 
-# Analyse from stdin
-cat testdata/analyse-input.ts | maat analyse --rules code_hash --language typescript --json
+# Analyse all rules for one language
+maat analyse --in testdata/go/determinism/wide-v1.go --rules '*' --language go --json
 
 # Diff two snapshots
-maat diff --from testdata/metrics/v1.ts --to testdata/metrics/v2.ts --rules file_metrics --language typescript --json
+maat diff --from testdata/go/hash/v1.go --to testdata/go/hash/v2.go --rules code_hash --language go --json
+
+# List rules for one language
+maat rules --language dart --json
+
+# Analyse from stdin when --in is omitted
+cat testdata/dart/env/analyse.dart | maat analyse --rules env_names_list --language dart --json
 ```
 
-Determinism:
-- For the same inputs and rule selection, JSON output is deterministic with stable key ordering.
+## Supported Commands
+
+- `analyse`
+- `diff`
+- `rules`
+
+## Language Support Matrix
+
+- `typescript`: imports, metrics, code hash, symbol maps, I/O counts, messages, env names, testcase titles
+- `go`: imports, metrics, code hash, symbol maps, I/O counts, messages, env names, testcase titles
+- `dart`: imports, metrics, code hash, symbol maps, I/O counts, messages, env names, testcase titles
+
+## Determinism Guarantees
+
+- Canonical JSON output with stable key ordering
+- Sorted and deduped list outputs where applicable
+- Golden-test coverage across analyse and diff flows
+- Repeated-run byte stability for the same inputs and rule selection
+
+JSON output is the machine contract. Non-JSON output is human-oriented, but remains deterministic for the same command input.

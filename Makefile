@@ -30,6 +30,8 @@ typecheck:
 e2e:
 	npm run test:e2e
 
+review: format test e2e lint
+
 release: build
 	@printf "Artifacts in ./build (checksums.txt included)\n"
 

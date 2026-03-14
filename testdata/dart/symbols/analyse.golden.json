@@ -1,0 +1,116 @@
+{
+  "filename": "testdata/dart/symbols/analyse.dart",
+  "language": "dart",
+  "rules": {
+    "class_map": {
+      "PaymentService": {
+        "cognitiveComplexity": 1,
+        "cyclomaticComplexity": 1,
+        "extends": "BaseService",
+        "implements": ["Chargeable", "Logger"],
+        "loc": 15,
+        "maxNestingDepth": 2,
+        "methodCount": 2,
+        "modifiers": ["abstract"],
+        "sha256": "397e2a805144bf36782242ef6ea178d819a0fa7ae967414d972cb0cedcdf98a8",
+        "sloc": 12,
+        "tokens": 63
+      },
+      "Worker": {
+        "cognitiveComplexity": 1,
+        "cyclomaticComplexity": 1,
+        "loc": 1,
+        "maxNestingDepth": 1,
+        "methodCount": 0,
+        "modifiers": [],
+        "sha256": "5b16067970ada97d0c64e1a7eb871de4c7ad33b02920aa36799649859e1896b5",
+        "sloc": 1,
+        "tokens": 4
+      }
+    },
+    "function_map": {
+      "boot": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 1,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 1,
+        "modifiers": ["async"],
+        "params": ["BuildContext context"],
+        "returnCount": 0,
+        "returns": ["Future<void>"],
+        "sha256": "84a0cef68b25119352d829f95fc0cf83017729a3e5e7615846fd542254f60b32",
+        "sloc": 3,
+        "tokens": 17
+      },
+      "lookup": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 1,
+        "loops": 0,
+        "maxNestingDepth": 0,
+        "modifiers": ["external"],
+        "params": ["String id"],
+        "returnCount": 0,
+        "returns": ["String"],
+        "sha256": "e331ead58ec0a29b2adc2a184b758b6be2b1017a412879e1cfec61fb2af73483",
+        "sloc": 1,
+        "tokens": 8
+      }
+    },
+    "method_map": {
+      "paymentServiceCharge": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 1,
+        "loc": 6,
+        "loops": 0,
+        "maxNestingDepth": 1,
+        "modifiers": ["async"],
+        "name": "charge",
+        "params": [
+          "BuildContext context",
+          "int count = 0",
+          "required String id"
+        ],
+        "receiver": "PaymentService",
+        "returnCount": 0,
+        "returns": ["Future<void>"],
+        "sha256": "75e6c497a94c646331dde53f23997e4d6eb38ba135a40fa81672433845b3c561",
+        "sloc": 6,
+        "tokens": 29
+      },
+      "paymentServiceHelper": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 1,
+        "loops": 0,
+        "maxNestingDepth": 0,
+        "modifiers": ["external", "static"],
+        "name": "helper",
+        "params": [],
+        "receiver": "PaymentService",
+        "returnCount": 0,
+        "returns": ["String"],
+        "sha256": "35ee7c38717c872338f4ee542ca21dd37a0b428c3eca314a5de3cfd2085db697",
+        "sloc": 1,
+        "tokens": 7
+      }
+    }
+  }
+}
