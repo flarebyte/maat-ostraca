@@ -299,6 +299,29 @@ test('maat diff file_metrics matches golden and is deterministic', () => {
   );
 });
 
+test('maat diff go file_metrics matches golden and is deterministic', () => {
+  const args = [
+    'diff',
+    '--from',
+    'testdata/go/metrics/v1.go',
+    '--to',
+    'testdata/go/metrics/v2.go',
+    '--rules',
+    'file_metrics',
+    '--language',
+    'go',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, DiffOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/go/metrics/diff-file-metrics.golden.json',
+  );
+});
+
 test('maat analyse io count rules match golden and are deterministic', () => {
   const args = [
     'analyse',

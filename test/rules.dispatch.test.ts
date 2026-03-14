@@ -24,6 +24,17 @@ describe('rules.dispatch', () => {
     assert.deepEqual(value, ['fmt']);
   });
 
+  it('resolves known go file metrics rule-language module', async () => {
+    const run = await dispatchRule('file_metrics', 'go');
+    const value = (await run({
+      source: 'package main\n\nfunc main() {}\n',
+      language: 'go',
+    })) as { loc: number; sloc: number };
+
+    assert.equal(value.loc, 4);
+    assert.equal(value.sloc, 2);
+  });
+
   it('resolves known rule-language module', async () => {
     const run = await dispatchRule('code_hash', 'typescript');
     const value = (await run({
