@@ -35,6 +35,20 @@ describe('rules.dispatch', () => {
     assert.equal(value.sloc, 2);
   });
 
+  it('resolves known go code hash rule-language module', async () => {
+    const run = await dispatchRule('code_hash', 'go');
+    const value = (await run({
+      source: 'package main\n',
+      language: 'go',
+    })) as { algorithm: string; file: string };
+
+    assert.equal(value.algorithm, 'sha256');
+    assert.equal(
+      value.file,
+      'df1d036cbbf3df46e2045071e082245ece204c7f53ecf0a4e022bff9bb228f47',
+    );
+  });
+
   it('resolves known rule-language module', async () => {
     const run = await dispatchRule('code_hash', 'typescript');
     const value = (await run({

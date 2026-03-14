@@ -57,6 +57,7 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
   ],
   ['file_metrics:go', () => import('./file_metrics/go.js')],
   ['file_metrics:typescript', () => import('./file_metrics/typescript.js')],
+  ['code_hash:go', () => import('./code_hash/go.js')],
   ['code_hash:typescript', () => import('./code_hash/typescript.js')],
 ]);
 

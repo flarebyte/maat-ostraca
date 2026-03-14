@@ -1,0 +1,17 @@
+{
+  "from": {
+    "filename": "testdata/go/hash/v1.go",
+    "language": "go"
+  },
+  "to": {
+    "filename": "testdata/go/hash/v2.go",
+    "language": "go"
+  },
+  "rules": {
+    "code_hash": {
+      "from": "91642aea182475a5864efca7903aab02d03d8443a3df946947cdc37b4914866c",
+      "to": "26b55b30d0f2340cb765430e48d6e86941ecf0ae5a01ce70a077a43d112f975a",
+      "changed": true
+    }
+  }
+}
