@@ -158,6 +158,17 @@ describe('rules.dispatch', () => {
     assert.deepEqual(exceptionMessages, ['boom']);
   });
 
+  it('resolves known go env names rule-language module', async () => {
+    const run = await dispatchRule('env_names_list', 'go');
+    const value = (await run({
+      source:
+        'package main\n\nfunc demo() { _ = os.Getenv("DB_HOST"); _, _ = os.LookupEnv("API_KEY") }\n',
+      language: 'go',
+    })) as string[];
+
+    assert.deepEqual(value, ['API_KEY', 'DB_HOST']);
+  });
+
   it('resolves known rule-language module', async () => {
     const run = await dispatchRule('code_hash', 'typescript');
     const value = (await run({

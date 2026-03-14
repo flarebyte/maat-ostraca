@@ -1,0 +1,7 @@
+{
+  "filename": "testdata/go/env/analyse.go",
+  "language": "go",
+  "rules": {
+    "env_names_list": ["API_KEY", "DB_HOST", "SERVICE_URL"]
+  }
+}
