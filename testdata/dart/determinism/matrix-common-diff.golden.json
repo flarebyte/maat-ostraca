@@ -1,0 +1,29 @@
+{
+  "from": {
+    "filename": "testdata/dart/determinism/wide-v1.dart",
+    "language": "dart"
+  },
+  "rules": {
+    "code_hash": {
+      "changed": true,
+      "from": "51476936cc7aa6754f28c4bbbfa028cfe1b4fe2341b55d15f95692658742475b",
+      "to": "580eaadcf80254ccc6b4c0d25ec6cc29b6d9e3dd4d60875152c964d784feb6f3"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": { "delta": 2, "from": 3, "to": 5 },
+      "conditions": { "delta": 2, "from": 2, "to": 4 },
+      "cyclomaticComplexity": { "delta": 2, "from": 3, "to": 5 },
+      "loc": { "delta": 5, "from": 55, "to": 60 },
+      "loops": { "delta": 0, "from": 0, "to": 0 },
+      "maxNestingDepth": { "delta": 0, "from": 3, "to": 3 },
+      "sloc": { "delta": 5, "from": 45, "to": 50 },
+      "tokens": { "delta": 23, "from": 223, "to": 246 }
+    },
+    "import_files_list": { "added": [], "removed": [] },
+    "package_imports_list": { "added": [], "removed": [] }
+  },
+  "to": {
+    "filename": "testdata/dart/determinism/wide-v2.dart",
+    "language": "dart"
+  }
+}

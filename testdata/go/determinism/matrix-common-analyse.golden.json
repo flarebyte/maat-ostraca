@@ -1,0 +1,42 @@
+{
+  "filename": "testdata/go/determinism/wide-v1.go",
+  "language": "go",
+  "rules": {
+    "code_hash": {
+      "algorithm": "sha256",
+      "file": "fb27545429c7006cbecf92e21e08dfbaf483e059492a45799c5ff25690e0b3c2"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": 4,
+      "conditions": 2,
+      "cyclomaticComplexity": 4,
+      "loc": 73,
+      "loops": 1,
+      "maxNestingDepth": 2,
+      "sloc": 58,
+      "tokens": 287
+    },
+    "import_files_list": [
+      "context",
+      "errors",
+      "fmt",
+      "github.com/acme/lib",
+      "io",
+      "log",
+      "net/http",
+      "os",
+      "testing"
+    ],
+    "package_imports_list": [
+      "context",
+      "errors",
+      "fmt",
+      "github.com/acme/lib",
+      "io",
+      "log",
+      "net/http",
+      "os",
+      "testing"
+    ]
+  }
+}

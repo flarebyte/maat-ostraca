@@ -1,0 +1,31 @@
+{
+  "filename": "testdata/dart/determinism/wide-v1.dart",
+  "language": "dart",
+  "rules": {
+    "code_hash": {
+      "algorithm": "sha256",
+      "file": "51476936cc7aa6754f28c4bbbfa028cfe1b4fe2341b55d15f95692658742475b"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": 3,
+      "conditions": 2,
+      "cyclomaticComplexity": 3,
+      "loc": 55,
+      "loops": 0,
+      "maxNestingDepth": 3,
+      "sloc": 45,
+      "tokens": 223
+    },
+    "import_files_list": [
+      "dart:io",
+      "package:flutter/material.dart",
+      "package:flutter/widgets.dart",
+      "package:my_app/foo.dart"
+    ],
+    "package_imports_list": [
+      "package:flutter/material.dart",
+      "package:flutter/widgets.dart",
+      "package:my_app/foo.dart"
+    ]
+  }
+}

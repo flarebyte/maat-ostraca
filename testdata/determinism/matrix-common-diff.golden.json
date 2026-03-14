@@ -1,0 +1,29 @@
+{
+  "from": {
+    "filename": "testdata/determinism/wide-v1.ts",
+    "language": "typescript"
+  },
+  "rules": {
+    "code_hash": {
+      "changed": true,
+      "from": "b61125e4103271b374780c925d10096ca45561c26c013ea3cd255f80e6b4cc72",
+      "to": "428d648274e787d5c48ba12f5897a3f0ad93ef2fb9faa88a7a79f1de7e601f11"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": { "delta": 0, "from": 4, "to": 4 },
+      "conditions": { "delta": 0, "from": 3, "to": 3 },
+      "cyclomaticComplexity": { "delta": 0, "from": 4, "to": 4 },
+      "loc": { "delta": 12, "from": 73, "to": 85 },
+      "loops": { "delta": 0, "from": 0, "to": 0 },
+      "maxNestingDepth": { "delta": 0, "from": 3, "to": 3 },
+      "sloc": { "delta": 10, "from": 58, "to": 68 },
+      "tokens": { "delta": 110, "from": 485, "to": 595 }
+    },
+    "import_files_list": { "added": [], "removed": [] },
+    "package_imports_list": { "added": [], "removed": [] }
+  },
+  "to": {
+    "filename": "testdata/determinism/wide-v2.ts",
+    "language": "typescript"
+  }
+}

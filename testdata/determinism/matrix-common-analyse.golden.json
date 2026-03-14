@@ -1,0 +1,22 @@
+{
+  "filename": "testdata/determinism/wide-v1.ts",
+  "language": "typescript",
+  "rules": {
+    "code_hash": {
+      "algorithm": "sha256",
+      "file": "b61125e4103271b374780c925d10096ca45561c26c013ea3cd255f80e6b4cc72"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": 4,
+      "conditions": 3,
+      "cyclomaticComplexity": 4,
+      "loc": 73,
+      "loops": 0,
+      "maxNestingDepth": 3,
+      "sloc": 58,
+      "tokens": 485
+    },
+    "import_files_list": ["./local", "./polyfill", "axios", "node:fs"],
+    "package_imports_list": ["axios", "node:fs"]
+  }
+}
