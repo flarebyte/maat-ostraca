@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { spawnSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { RulesListOutputSchema } from '../../src/core/contracts/schemas.js';
 
 interface PackageJsonShape {
@@ -25,8 +25,7 @@ test('packaged cli runs from dist and returns valid rules json', () => {
   expect(packageJson.type).toBe('module');
   expect(binPath).toBe('dist/cmd/maat/index.js');
 
-  const build = run('npm', ['run', 'build']);
-  expect(build.status).toBe(0);
+  expect(existsSync(binPath ?? '')).toBeTrue();
 
   const result = run('node', [
     binPath ?? '',

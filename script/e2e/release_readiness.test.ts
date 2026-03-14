@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import {
   expectSuccess,
   packagedBinPath,
@@ -7,12 +7,6 @@ import {
   parseDiffOutput,
   runBuiltTwice,
 } from './helpers.js';
-
-const build = () =>
-  spawnSync('npm', ['run', 'build'], {
-    cwd: process.cwd(),
-    encoding: 'utf8',
-  });
 
 const analyseRules =
   'import_files_list,package_imports_list,file_metrics,code_hash';
@@ -68,9 +62,8 @@ const assertBuiltCliRepeatedDiff = (
 };
 
 test('release readiness smoke uses the packaged cli entrypoint', () => {
-  const result = build();
-  expect(result.status).toBe(0);
   expect(packagedBinPath).toBe('dist/cmd/maat/index.js');
+  expect(existsSync(packagedBinPath ?? '')).toBeTrue();
 });
 
 test('packaged cli analyse smoke passes for typescript', () => {

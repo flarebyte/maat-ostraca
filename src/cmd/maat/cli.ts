@@ -5,13 +5,17 @@ import {
   Option,
 } from 'commander';
 import type { JsonErrorOutput } from '../../core/contracts/outputs.js';
+import { formatOutput } from '../../core/format/output.js';
 import {
+  type AnalyseOutput,
   canonicalStringify,
+  type DiffOutput,
   diffResults,
   formatError,
   InternalError,
   type Language,
   type OutputKind,
+  type RulesListOutput,
   runAnalyse,
   runRulesList,
   SUPPORTED_LANGUAGES,
@@ -63,18 +67,12 @@ const parseRulesCsv = (value: string): string => {
 
 const writeResult = (
   kind: OutputKind,
-  commandName: string,
   json: boolean,
-  result: object,
+  result: AnalyseOutput | DiffOutput | RulesListOutput,
   io: CliIo,
 ): void => {
-  if (json) {
-    validateOutputOrThrow(kind, result);
-    io.stdout(`${canonicalStringify(result)}\n`);
-    return;
-  }
-
-  io.stdout(`${commandName}: ok\n`);
+  validateOutputOrThrow(kind, result);
+  io.stdout(formatOutput(kind, result, json));
 };
 
 const normalizeError = (error: unknown): unknown => {
@@ -150,7 +148,7 @@ export const createProgram = (
         const result = await deps.runAnalyse({
           ...analyseArgs,
         });
-        writeResult('analyse', 'analyse', Boolean(options.json), result, io);
+        writeResult('analyse', Boolean(options.json), result, io);
       },
     );
 
@@ -216,7 +214,7 @@ export const createProgram = (
         const result = diffResults(fromSnapshot, toSnapshot, {
           deltaOnly: Boolean(diffArgs.deltaOnly),
         });
-        writeResult('diff', 'diff', Boolean(options.json), result, io);
+        writeResult('diff', Boolean(options.json), result, io);
       },
     );
 
@@ -230,7 +228,7 @@ export const createProgram = (
     .option('--json', 'Print JSON output')
     .action(async (options: { language: Language; json?: boolean }) => {
       const result = await deps.runRulesList({ language: options.language });
-      writeResult('rules', 'rules', Boolean(options.json), result, io);
+      writeResult('rules', Boolean(options.json), result, io);
     });
 
   return program;
