@@ -113,10 +113,12 @@ export const createProgram = (
   const program = new Command();
   program
     .name('maat')
-    .description('MAAT CLI walking skeleton')
+    .description('Analyse source snapshots and diffs with deterministic output')
     .showHelpAfterError(false)
     .configureOutput({
-      writeOut: () => {},
+      writeOut: (message) => {
+        io.stdout(message);
+      },
       writeErr: () => {},
       outputError: () => {},
     })
@@ -124,18 +126,27 @@ export const createProgram = (
 
   program
     .command('analyse')
+    .description(
+      'Analyse one source snapshot from --in or, when omitted, from stdin',
+    )
     .requiredOption(
       '--rules <csv>',
-      'Comma-separated rule identifiers',
+      'Required. Comma-separated rule identifiers',
       parseRulesCsv,
     )
     .addOption(
-      new Option('--language <go|typescript|dart>', 'Language for analysis')
+      new Option(
+        '--language <typescript|go|dart>',
+        'Required. Source language: typescript, go, dart',
+      )
         .argParser(parseLanguage)
         .makeOptionMandatory(true),
     )
-    .option('--in <path>', 'Input file path. If omitted, stdin is used')
-    .option('--json', 'Print JSON output')
+    .option(
+      '--in <path>',
+      'Optional. Input file path. If omitted, read source from stdin',
+    )
+    .option('--json', 'Optional. Emit canonical JSON output')
     .action(
       async (options: {
         in?: string;
@@ -166,20 +177,32 @@ export const createProgram = (
 
   program
     .command('diff')
-    .requiredOption('--from <path>', 'Source baseline path')
-    .option('--to <path>', 'Target path. If omitted, stdin is used')
+    .description(
+      'Diff two source snapshots from --from and --to or, when --to is omitted, from stdin',
+    )
+    .requiredOption('--from <path>', 'Required. Baseline source path')
+    .option(
+      '--to <path>',
+      'Optional. Target source path. If omitted, read target source from stdin',
+    )
     .requiredOption(
       '--rules <csv>',
-      'Comma-separated rule identifiers',
+      'Required. Comma-separated rule identifiers',
       parseRulesCsv,
     )
     .addOption(
-      new Option('--language <go|typescript|dart>', 'Language for diff')
+      new Option(
+        '--language <typescript|go|dart>',
+        'Required. Source language: typescript, go, dart',
+      )
         .argParser(parseLanguage)
         .makeOptionMandatory(true),
     )
-    .option('--json', 'Print JSON output')
-    .option('--delta-only', 'Output delta only (requires --json)')
+    .option('--json', 'Optional. Emit canonical JSON output')
+    .option(
+      '--delta-only',
+      'Optional. Emit delta-only JSON output. Requires --json',
+    )
     .action(
       async (options: {
         from: string;
@@ -232,12 +255,16 @@ export const createProgram = (
 
   program
     .command('rules')
+    .description('List available rules for one supported language')
     .addOption(
-      new Option('--language <go|typescript|dart>', 'Language for rule listing')
+      new Option(
+        '--language <typescript|go|dart>',
+        'Required. Source language: typescript, go, dart',
+      )
         .argParser(parseLanguage)
         .makeOptionMandatory(true),
     )
-    .option('--json', 'Print JSON output')
+    .option('--json', 'Optional. Emit canonical JSON output')
     .action(async (options: { language: Language; json?: boolean }) => {
       const result = await deps.runRulesList({ language: options.language });
       writeResult('rules', Boolean(options.json), result, io);
@@ -270,6 +297,13 @@ export const runCli = async (
     await program.parseAsync(argv, { from: 'user' });
     return 0;
   } catch (error) {
+    if (
+      error instanceof CommanderError &&
+      error.code === 'commander.helpDisplayed'
+    ) {
+      return 0;
+    }
+
     const normalized = normalizeError(error);
     const normalizedError =
       normalized instanceof Error

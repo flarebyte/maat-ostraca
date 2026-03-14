@@ -19,6 +19,74 @@ const runCli = (args: string[], input?: string) => {
 };
 
 describe('maat cli parsing', () => {
+  it('root help exits 0 and documents supported commands deterministically', () => {
+    const first = runCli(['--help']);
+    const second = runCli(['--help']);
+
+    assert.equal(first.status, 0);
+    assert.equal(second.status, 0);
+    assert.equal(first.stderr, '');
+    assert.equal(second.stderr, '');
+    assert.equal(first.stdout, second.stdout);
+    assert.match(first.stdout, /Usage: maat/);
+    assert.match(first.stdout, /analyse/);
+    assert.match(first.stdout, /diff/);
+    assert.match(first.stdout, /rules/);
+  });
+
+  it('analyse help exits 0 and documents stdin, json, and languages', () => {
+    const first = runCli(['analyse', '--help']);
+    const second = runCli(['analyse', '--help']);
+
+    assert.equal(first.status, 0);
+    assert.equal(second.status, 0);
+    assert.equal(first.stderr, '');
+    assert.equal(second.stderr, '');
+    assert.equal(first.stdout, second.stdout);
+    assert.match(first.stdout, /Required\. Comma-separated rule identifiers/);
+    assert.match(first.stdout, /If omitted,/);
+    assert.match(first.stdout, /source from stdin/);
+    assert.match(first.stdout, /Optional\. Emit canonical JSON output/);
+    assert.match(first.stdout, /typescript, go,/);
+    assert.match(first.stdout, /dart/);
+  });
+
+  it('diff help exits 0 and documents stdin, json, delta-only, and languages', () => {
+    const first = runCli(['diff', '--help']);
+    const second = runCli(['diff', '--help']);
+
+    assert.equal(first.status, 0);
+    assert.equal(second.status, 0);
+    assert.equal(first.stderr, '');
+    assert.equal(second.stderr, '');
+    assert.equal(first.stdout, second.stdout);
+    assert.match(first.stdout, /If omitted,/);
+    assert.match(first.stdout, /read target source from stdin/);
+    assert.match(first.stdout, /Optional\. Emit canonical JSON output/);
+    assert.match(first.stdout, /Optional\. Emit delta-only JSON output\./);
+    assert.match(first.stdout, /Requires --json/);
+    assert.match(first.stdout, /typescript, go,/);
+    assert.match(first.stdout, /dart/);
+  });
+
+  it('rules help exits 0 and documents json and languages', () => {
+    const first = runCli(['rules', '--help']);
+    const second = runCli(['rules', '--help']);
+
+    assert.equal(first.status, 0);
+    assert.equal(second.status, 0);
+    assert.equal(first.stderr, '');
+    assert.equal(second.stderr, '');
+    assert.equal(first.stdout, second.stdout);
+    assert.match(
+      first.stdout,
+      /List available rules for one supported language/,
+    );
+    assert.match(first.stdout, /Optional\. Emit canonical JSON output/);
+    assert.match(first.stdout, /typescript, go,/);
+    assert.match(first.stdout, /dart/);
+  });
+
   it('returns exit code 2 when required flags are missing', () => {
     const result = runCli(['analyse', '--language', 'go']);
 

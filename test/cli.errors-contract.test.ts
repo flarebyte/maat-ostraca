@@ -197,7 +197,7 @@ describe('cli error contract', () => {
   it('rules usage error without --json routes to stderr with exit 2 and deterministic bytes', async () => {
     await assertUsageTextContract(
       ['rules', '--language', 'invalid'],
-      "error: option '--language <go|typescript|dart>' argument 'invalid' is invalid. language must be one of: go, typescript, dart\n",
+      "error: option '--language <typescript|go|dart>' argument 'invalid' is invalid. language must be one of: go, typescript, dart\n",
     );
   });
 
