@@ -381,6 +381,68 @@ test('maat analyse go function_map and method_map match golden and are determini
   );
 });
 
+test('maat analyse go enriched function_map and method_map align with io rules and match golden', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/go/symbols_metrics/analyse.go',
+    '--rules',
+    'function_map,method_map,io_calls_count,io_read_calls_count,io_write_calls_count',
+    '--language',
+    'go',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  const data = parseWithSchema(first.stdout, AnalyseOutputSchema);
+  const functionMap = data.rules.function_map as Record<
+    string,
+    {
+      ioCallsCount: number;
+      ioReadCallsCount: number;
+      ioWriteCallsCount: number;
+    }
+  >;
+  const methodMap = data.rules.method_map as Record<
+    string,
+    {
+      ioCallsCount: number;
+      ioReadCallsCount: number;
+      ioWriteCallsCount: number;
+    }
+  >;
+  const ioAll = data.rules.io_calls_count as {
+    functions: Record<string, number>;
+    methods: Record<string, number>;
+  };
+  const ioRead = data.rules.io_read_calls_count as {
+    functions: Record<string, number>;
+    methods: Record<string, number>;
+  };
+  const ioWrite = data.rules.io_write_calls_count as {
+    functions: Record<string, number>;
+    methods: Record<string, number>;
+  };
+
+  for (const key of Object.keys(functionMap)) {
+    expect(functionMap[key]?.ioCallsCount).toBe(ioAll.functions[key]);
+    expect(functionMap[key]?.ioReadCallsCount).toBe(ioRead.functions[key]);
+    expect(functionMap[key]?.ioWriteCallsCount).toBe(ioWrite.functions[key]);
+  }
+
+  for (const key of Object.keys(methodMap)) {
+    expect(methodMap[key]?.ioCallsCount).toBe(ioAll.methods[key]);
+    expect(methodMap[key]?.ioReadCallsCount).toBe(ioRead.methods[key]);
+    expect(methodMap[key]?.ioWriteCallsCount).toBe(ioWrite.methods[key]);
+  }
+
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/go/symbols_metrics/analyse.golden.json',
+  );
+});
+
 test('maat analyse go interface_map and interfaces_code_map match golden and are deterministic', () => {
   const args = [
     'analyse',
@@ -436,6 +498,30 @@ test('maat analyse go io count rules match golden and are deterministic', () => 
   expectDeterministicSuccess(first, second);
   parseWithSchema(first.stdout, AnalyseOutputSchema);
   expectCanonicalGolden(first.stdout, 'testdata/go/io/analyse.golden.json');
+});
+
+test('maat diff go enriched function_map and method_map delta-only matches golden and is deterministic', () => {
+  const args = [
+    'diff',
+    '--from',
+    'testdata/go/symbols_metrics/v1.go',
+    '--to',
+    'testdata/go/symbols_metrics/v2.go',
+    '--rules',
+    'function_map,method_map',
+    '--language',
+    'go',
+    '--json',
+    '--delta-only',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, DiffOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/go/symbols_metrics/diff.delta-only.golden.json',
+  );
 });
 
 test('maat diff io_calls_count delta-only matches golden and is deterministic', () => {

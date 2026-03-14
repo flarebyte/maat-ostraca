@@ -1,0 +1,98 @@
+{
+  "filename": "testdata/go/symbols_metrics/analyse.go",
+  "language": "go",
+  "rules": {
+    "function_map": {
+      "Load": {
+        "cognitiveComplexity": 2,
+        "conditions": 1,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 1,
+        "ioWriteCallsCount": 0,
+        "loc": 7,
+        "loops": 0,
+        "maxNestingDepth": 2,
+        "modifiers": [],
+        "params": ["flag bool"],
+        "returnCount": 2,
+        "returns": ["error"],
+        "sha256": "aba8a46a5a9745a84e9691b110db4f70bb2b7f2430306abb385658ac9c5da6c7",
+        "sloc": 7,
+        "tokens": 22
+      },
+      "Save": {
+        "cognitiveComplexity": 2,
+        "conditions": 0,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 1,
+        "loc": 5,
+        "loops": 1,
+        "maxNestingDepth": 2,
+        "modifiers": [],
+        "params": ["items []string"],
+        "returnCount": 0,
+        "returns": [],
+        "sha256": "d89d0b81ea220932848f0e2716a3b50fb59f674e53dbe6cf52cec32b6c65d792",
+        "sloc": 5,
+        "tokens": 20
+      }
+    },
+    "io_calls_count": {
+      "functions": { "Load": 1, "Save": 1 },
+      "methods": { "serviceFlush": 1, "serviceSync": 2 }
+    },
+    "io_read_calls_count": {
+      "functions": { "Load": 1, "Save": 0 },
+      "methods": { "serviceFlush": 0, "serviceSync": 1 }
+    },
+    "io_write_calls_count": {
+      "functions": { "Load": 0, "Save": 1 },
+      "methods": { "serviceFlush": 1, "serviceSync": 1 }
+    },
+    "method_map": {
+      "serviceFlush": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 1,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 1,
+        "modifiers": [],
+        "name": "Flush",
+        "params": [],
+        "receiver": "Service",
+        "returnCount": 0,
+        "returns": [],
+        "sha256": "679163df6b42aec22830b3d938be0b0a46807cac8e3b1044b4ac734224d64c70",
+        "sloc": 3,
+        "tokens": 24
+      },
+      "serviceSync": {
+        "cognitiveComplexity": 2,
+        "conditions": 1,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 2,
+        "ioReadCallsCount": 1,
+        "ioWriteCallsCount": 1,
+        "loc": 7,
+        "loops": 0,
+        "maxNestingDepth": 2,
+        "modifiers": [],
+        "name": "Sync",
+        "params": ["buf []byte", "reader io.Reader"],
+        "receiver": "Service",
+        "returnCount": 1,
+        "returns": ["error"],
+        "sha256": "f9d6573aa0c335445a951b3db9934132d420acdb1164cd11b9d9f172e120f923",
+        "sloc": 7,
+        "tokens": 44
+      }
+    }
+  }
+}

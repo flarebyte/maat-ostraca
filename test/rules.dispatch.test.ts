@@ -54,11 +54,24 @@ describe('rules.dispatch', () => {
     const value = (await run({
       source: 'package main\n\nfunc Charge() error { return nil }\n',
       language: 'go',
-    })) as Record<string, { params: string[]; returns: string[] }>;
+    })) as Record<
+      string,
+      {
+        modifiers: string[];
+        params: string[];
+        returns: string[];
+        loc: number;
+        returnCount: number;
+        sha256: string;
+      }
+    >;
 
-    assert.deepEqual(value, {
-      Charge: { modifiers: [], params: [], returns: ['error'] },
-    });
+    assert.deepEqual(value.Charge?.modifiers, []);
+    assert.deepEqual(value.Charge?.params, []);
+    assert.deepEqual(value.Charge?.returns, ['error']);
+    assert.equal(value.Charge?.loc, 1);
+    assert.equal(value.Charge?.returnCount, 1);
+    assert.equal(value.Charge?.sha256.length, 64);
   });
 
   it('resolves known go method map rule-language module', async () => {
@@ -69,18 +82,25 @@ describe('rules.dispatch', () => {
       language: 'go',
     })) as Record<
       string,
-      { receiver: string; name: string; params: string[]; returns: string[] }
+      {
+        receiver: string;
+        name: string;
+        params: string[];
+        returns: string[];
+        loc: number;
+        returnCount: number;
+        sha256: string;
+      }
     >;
 
-    assert.deepEqual(value, {
-      paymentServiceCharge: {
-        modifiers: [],
-        receiver: 'PaymentService',
-        name: 'Charge',
-        params: [],
-        returns: ['error'],
-      },
-    });
+    assert.deepEqual(value.paymentServiceCharge?.modifiers, []);
+    assert.equal(value.paymentServiceCharge?.receiver, 'PaymentService');
+    assert.equal(value.paymentServiceCharge?.name, 'Charge');
+    assert.deepEqual(value.paymentServiceCharge?.params, []);
+    assert.deepEqual(value.paymentServiceCharge?.returns, ['error']);
+    assert.equal(value.paymentServiceCharge?.loc, 1);
+    assert.equal(value.paymentServiceCharge?.returnCount, 1);
+    assert.equal(value.paymentServiceCharge?.sha256.length, 64);
   });
 
   it('resolves known go interface map rule-language module', async () => {

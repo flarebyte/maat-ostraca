@@ -4,30 +4,82 @@
   "rules": {
     "function_map": {
       "Charge": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 1,
         "modifiers": [],
         "params": ["ctx context.Context", "req ChargeRequest"],
-        "returns": ["error"]
+        "returnCount": 1,
+        "returns": ["error"],
+        "sha256": "32087e3d84fe985b1d03b6e15c10b8d657af992152818c39aeba9a31fe08c035",
+        "sloc": 3,
+        "tokens": 16
       },
       "Refund": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 2,
         "modifiers": [],
         "params": ["req RefundRequest"],
-        "returns": ["ChargeResponse", "error"]
+        "returnCount": 1,
+        "returns": ["ChargeResponse", "error"],
+        "sha256": "808175f09947eefed4034e23a317759bc64b33be2b39b16f93a950ce5ce9cee6",
+        "sloc": 3,
+        "tokens": 19
       }
     },
     "method_map": {
       "paymentServiceCharge": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 1,
         "modifiers": [],
         "name": "Charge",
         "params": ["ctx context.Context", "req ChargeRequest"],
         "receiver": "PaymentService",
-        "returns": ["error"]
+        "returnCount": 1,
+        "returns": ["error"],
+        "sha256": "c680bf5b8f0414ebccfaa45a60499a41370a36286c3448840a0cc89ad36477b8",
+        "sloc": 3,
+        "tokens": 21
       },
       "paymentServiceRefund": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 2,
         "modifiers": [],
         "name": "Refund",
         "params": ["req RefundRequest"],
         "receiver": "PaymentService",
-        "returns": ["ChargeResponse", "error"]
+        "returnCount": 1,
+        "returns": ["ChargeResponse", "error"],
+        "sha256": "6567a4a4b5751451c5db3f0f07ebff22d6cb6e9c87a7590431337251610c2cb5",
+        "sloc": 3,
+        "tokens": 23
       }
     }
   }
