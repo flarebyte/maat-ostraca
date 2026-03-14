@@ -192,6 +192,17 @@ describe('rules.dispatch', () => {
     assert.deepEqual(value, ['API_KEY', 'DB_HOST']);
   });
 
+  it('resolves known dart testcase titles rule-language module', async () => {
+    const run = await dispatchRule('testcase_titles_list', 'dart');
+    const value = (await run({
+      source:
+        'void main() { test("case-a", () {}); testWidgets("case-b", (tester) async {}); }\n',
+      language: 'dart',
+    })) as string[];
+
+    assert.deepEqual(value, ['case-a', 'case-b']);
+  });
+
   it('resolves known go rule-language module', async () => {
     const run = await dispatchRule('import_files_list', 'go');
     const value = (await run({

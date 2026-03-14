@@ -1,0 +1,5 @@
+{
+  "filename": "testdata/dart/tests/analyse.dart",
+  "language": "dart",
+  "rules": { "testcase_titles_list": ["auth", "logs in", "shows home"] }
+}

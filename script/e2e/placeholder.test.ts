@@ -971,3 +971,24 @@ test('maat analyse go testcase titles rule matches golden and is deterministic',
   parseWithSchema(first.stdout, AnalyseOutputSchema);
   expectCanonicalGolden(first.stdout, 'testdata/go/tests/analyse.golden.json');
 });
+
+test('maat analyse dart testcase titles rule matches golden and is deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/dart/tests/analyse.dart',
+    '--rules',
+    'testcase_titles_list',
+    '--language',
+    'dart',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/dart/tests/analyse.golden.json',
+  );
+});
