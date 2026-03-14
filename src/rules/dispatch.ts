@@ -31,7 +31,12 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
     'error_messages_list:typescript',
     () => import('./error_messages_list/typescript.js'),
   ],
+  ['error_messages_list:dart', () => import('./error_messages_list/dart.js')],
   ['error_messages_list:go', () => import('./error_messages_list/go.js')],
+  [
+    'exception_messages_list:dart',
+    () => import('./exception_messages_list/dart.js'),
+  ],
   [
     'exception_messages_list:typescript',
     () => import('./exception_messages_list/typescript.js'),

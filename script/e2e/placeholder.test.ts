@@ -861,6 +861,27 @@ test('maat analyse go exception/error messages rules match golden and are determ
   );
 });
 
+test('maat analyse dart exception/error messages rules match golden and are deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/dart/messages/analyse.dart',
+    '--rules',
+    'exception_messages_list,error_messages_list',
+    '--language',
+    'dart',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/dart/messages/analyse.golden.json',
+  );
+});
+
 test('maat analyse env names rule matches golden and is deterministic', () => {
   const args = [
     'analyse',

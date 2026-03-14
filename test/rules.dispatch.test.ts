@@ -162,6 +162,25 @@ describe('rules.dispatch', () => {
     assert.deepEqual(write.functions, { load: 1 });
   });
 
+  it('resolves known dart message rule-language modules', async () => {
+    const runError = await dispatchRule('error_messages_list', 'dart');
+    const runException = await dispatchRule('exception_messages_list', 'dart');
+    const source =
+      'void demo() { throw Exception("x"); print("y"); throw err; }\n';
+
+    const errorMessages = (await runError({
+      source,
+      language: 'dart',
+    })) as string[];
+    const exceptionMessages = (await runException({
+      source,
+      language: 'dart',
+    })) as string[];
+
+    assert.deepEqual(errorMessages, ['x', 'y']);
+    assert.deepEqual(exceptionMessages, ['x']);
+  });
+
   it('resolves known go rule-language module', async () => {
     const run = await dispatchRule('import_files_list', 'go');
     const value = (await run({
