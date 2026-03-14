@@ -5,6 +5,7 @@ import {
   AnalyseOutputSchema,
   DiffOutputSchema,
   JsonErrorOutputSchema,
+  RulesListOutputSchema,
 } from '../../src/core/contracts/schemas.js';
 import { canonicalStringify } from '../../src/core/format/canonical-json.js';
 
@@ -120,6 +121,16 @@ export const parseJsonErrorOutput = (stdout: Buffer) => {
   return parsed.data;
 };
 
+export const parseRulesListOutput = (stdout: Buffer) => {
+  const payload = JSON.parse(asUtf8(stdout)) as unknown;
+  const parsed = RulesListOutputSchema.safeParse(payload);
+  expect(parsed.success).toBeTrue();
+  if (!parsed.success) {
+    throw new Error('RulesListOutputSchema parse failed');
+  }
+  return parsed.data;
+};
+
 export const expectGolden = (stdout: Buffer, goldenPath: string) => {
   const golden = readFileSync(goldenPath, 'utf8');
   const expected = Buffer.from(
@@ -153,6 +164,20 @@ export const expectRepeatedDiffGolden = (
 
   parseDiffOutput(firstStdout);
   parseDiffOutput(secondStdout);
+  expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
+  expectGolden(firstStdout, goldenPath);
+};
+
+export const expectRepeatedRulesGolden = (
+  args: string[],
+  goldenPath: string,
+) => {
+  const { first, second } = runTwice(args);
+  const firstStdout = expectSuccess(first);
+  const secondStdout = expectSuccess(second);
+
+  parseRulesListOutput(firstStdout);
+  parseRulesListOutput(secondStdout);
   expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
   expectGolden(firstStdout, goldenPath);
 };

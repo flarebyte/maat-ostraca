@@ -1,0 +1,77 @@
+{
+  "language": "dart",
+  "rules": [
+    {
+      "description": "Map class declarations and members.",
+      "name": "class_map"
+    },
+    {
+      "description": "Compute deterministic code-level content hash.",
+      "name": "code_hash"
+    },
+    {
+      "description": "List environment variable names accessed by code.",
+      "name": "env_names_list"
+    },
+    {
+      "description": "List returned or logged error message literals.",
+      "name": "error_messages_list"
+    },
+    {
+      "description": "List thrown exception message literals.",
+      "name": "exception_messages_list"
+    },
+    {
+      "description": "Collect basic per-file metric counters.",
+      "name": "file_metrics"
+    },
+    {
+      "description": "Map function declarations and signatures.",
+      "name": "function_map"
+    },
+    {
+      "description": "List imported files by module path.",
+      "name": "import_files_list"
+    },
+    {
+      "description": "List imported function identifiers.",
+      "name": "import_functions_list"
+    },
+    {
+      "description": "List imported type identifiers.",
+      "name": "import_types_list"
+    },
+    {
+      "description": "Map interface declarations and members.",
+      "name": "interface_map"
+    },
+    {
+      "description": "Map interfaces to canonical source snippets.",
+      "name": "interfaces_code_map"
+    },
+    {
+      "description": "Count all IO-related call sites.",
+      "name": "io_calls_count"
+    },
+    {
+      "description": "Count IO read call sites.",
+      "name": "io_read_calls_count"
+    },
+    {
+      "description": "Count IO write call sites.",
+      "name": "io_write_calls_count"
+    },
+    {
+      "description": "Map method declarations and receivers/classes.",
+      "name": "method_map"
+    },
+    {
+      "description": "List package-level import statements.",
+      "name": "package_imports_list"
+    },
+    {
+      "description": "List detected test case titles.",
+      "name": "testcase_titles_list"
+    }
+  ]
+}
