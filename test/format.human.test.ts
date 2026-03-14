@@ -7,6 +7,10 @@ import type {
 } from '../src/core/contracts/outputs.js';
 import { formatHumanAnalyse } from '../src/core/format/human/analyse.js';
 import {
+  formatHumanAnalyseSummary,
+  summarizeAnalyseRule,
+} from '../src/core/format/human/analyse_summary.js';
+import {
   colorDelta,
   colorDiffStatus,
   colorRuleName,
@@ -239,6 +243,12 @@ describe('human formatter', () => {
       [
         'File: testdata/go/imports/analyse.go',
         'Language: go',
+        'Rules: 3',
+        '',
+        'Summary',
+        '  file_metrics: loc=3, tokens=8',
+        '  import_files_list: 2 items',
+        '  method_map: 1 entries',
         '',
         '[file_metrics]',
         '  cognitiveComplexity: 1',
@@ -286,6 +296,11 @@ describe('human formatter', () => {
       [
         'File: summary.go',
         'Language: go',
+        'Rules: 2',
+        '',
+        'Summary',
+        '  function_map: 12 entries',
+        '  import_files_list: 12 items',
         '',
         '[function_map]',
         '  Count: 12 entries total',
@@ -316,6 +331,91 @@ describe('human formatter', () => {
         '  ... and 2 more',
         '',
       ].join('\n'),
+    );
+  });
+
+  it('summarizes analyse list rules deterministically', () => {
+    assert.equal(
+      summarizeAnalyseRule('import_files_list', ['a', 'b', 'c']),
+      'import_files_list: 3 items',
+    );
+  });
+
+  it('summarizes analyse map rules deterministically', () => {
+    assert.equal(
+      summarizeAnalyseRule('function_map', {
+        alpha: { modifiers: [], params: [], returns: [] },
+        beta: { modifiers: [], params: [], returns: [] },
+      }),
+      'function_map: 2 entries',
+    );
+  });
+
+  it('summarizes analyse metrics with a stable subset', () => {
+    assert.equal(
+      summarizeAnalyseRule('file_metrics', {
+        loc: 12,
+        sloc: 10,
+        tokens: 48,
+      }),
+      'file_metrics: loc=12, tokens=48',
+    );
+    assert.equal(
+      summarizeAnalyseRule('file_metrics', {
+        cyclomaticComplexity: 3,
+      }),
+      'file_metrics: metrics',
+    );
+  });
+
+  it('summarizes analyse hash rules by algorithm name', () => {
+    assert.equal(
+      summarizeAnalyseRule('code_hash', {
+        algorithm: 'sha256',
+        file: 'abc123',
+      }),
+      'code_hash: sha256',
+    );
+  });
+
+  it('falls back to a stable generic analyse object summary', () => {
+    assert.equal(
+      summarizeAnalyseRule('io_calls_count', {
+        functions: {},
+        methods: {},
+      }),
+      'io_calls_count: object',
+    );
+  });
+
+  it('renders analyse summary before detailed sections in sorted rule order', () => {
+    const style = createHumanFormatStyle(false);
+    const output: AnalyseOutput = {
+      filename: 'from.ts',
+      language: 'typescript',
+      rules: {
+        import_files_list: ['alpha', 'beta'],
+        code_hash: { algorithm: 'sha256', file: 'deadbeef' },
+        file_metrics: { loc: 4, tokens: 9 },
+      },
+    };
+
+    assert.deepEqual(formatHumanAnalyseSummary(output, style), [
+      'Summary',
+      '  code_hash: sha256',
+      '  file_metrics: loc=4, tokens=9',
+      '  import_files_list: 2 items',
+    ]);
+
+    const rendered = formatHumanAnalyse(output, style);
+    assert.ok(rendered.indexOf('Summary') < rendered.indexOf('[code_hash]'));
+    assert.ok(
+      rendered.indexOf('  code_hash: sha256') <
+        rendered.indexOf('  file_metrics: loc=4, tokens=9'),
+    );
+    assert.ok(
+      rendered.indexOf('  file_metrics: loc=4, tokens=9') <
+        rendered.indexOf('  import_files_list: 2 items'),
     );
   });
 

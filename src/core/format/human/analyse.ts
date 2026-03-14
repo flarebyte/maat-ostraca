@@ -1,4 +1,5 @@
 import type { AnalyseOutput } from '../../contracts/outputs.js';
+import { formatHumanAnalyseSummary } from './analyse_summary.js';
 import {
   colorRuleName,
   colorSection,
@@ -62,11 +63,16 @@ export const formatHumanAnalyse = (
   output: AnalyseOutput,
   style: HumanFormatStyle = createHumanFormatStyle(),
 ): string => {
-  const lines = [`Language: ${output.language}`];
+  const lines = [
+    `Language: ${output.language}`,
+    `Rules: ${Object.keys(output.rules).length}`,
+  ];
 
   if (output.filename) {
     lines.unshift(`File: ${output.filename}`);
   }
+
+  lines.push('', ...formatHumanAnalyseSummary(output, style));
 
   const ruleNames = Object.keys(output.rules).sort(compareStrings);
   for (const ruleName of ruleNames) {
