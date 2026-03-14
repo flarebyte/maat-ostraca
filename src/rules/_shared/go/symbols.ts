@@ -6,6 +6,7 @@ interface FunctionSymbol {
   modifiers: string[];
   params: string[];
   returns: string[];
+  bodySource: string;
 }
 
 interface MethodSymbol {
@@ -15,6 +16,7 @@ interface MethodSymbol {
   modifiers: string[];
   params: string[];
   returns: string[];
+  bodySource: string;
 }
 
 interface GoSymbols {
@@ -419,6 +421,12 @@ const extractGoSymbolsInternal = (source: string): GoSymbols => {
       const params = scanBalanced(source, cursor, '(', ')');
       cursor = params.end;
       const returns = parseReturns(source, cursor);
+      const body =
+        source[returns.end] === '{'
+          ? scanBalanced(source, returns.end, '{', '}')
+          : undefined;
+      const bodySource =
+        body === undefined ? source.slice(index, returns.end) : body.text;
 
       if (receiverText === undefined) {
         functions.push({
@@ -426,6 +434,7 @@ const extractGoSymbolsInternal = (source: string): GoSymbols => {
           modifiers: [],
           params: parseParams(params.text),
           returns: returns.returns,
+          bodySource,
         });
       } else {
         const receiver = normalizeReceiverType(receiverText);
@@ -436,10 +445,11 @@ const extractGoSymbolsInternal = (source: string): GoSymbols => {
           modifiers: [],
           params: parseParams(params.text),
           returns: returns.returns,
+          bodySource,
         });
       }
 
-      index = returns.end;
+      index = body?.end ?? returns.end;
       continue;
     }
 

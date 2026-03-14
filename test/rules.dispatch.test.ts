@@ -114,6 +114,31 @@ describe('rules.dispatch', () => {
     );
   });
 
+  it('resolves known go io count rule-language modules', async () => {
+    const runAll = await dispatchRule('io_calls_count', 'go');
+    const runRead = await dispatchRule('io_read_calls_count', 'go');
+    const runWrite = await dispatchRule('io_write_calls_count', 'go');
+    const source =
+      'package main\n\nfunc Load() { os.ReadFile("a"); fmt.Println("ok") }\n';
+
+    const all = (await runAll({
+      source,
+      language: 'go',
+    })) as { functions: Record<string, number> };
+    const read = (await runRead({
+      source,
+      language: 'go',
+    })) as { functions: Record<string, number> };
+    const write = (await runWrite({
+      source,
+      language: 'go',
+    })) as { functions: Record<string, number> };
+
+    assert.deepEqual(all.functions, { Load: 2 });
+    assert.deepEqual(read.functions, { Load: 1 });
+    assert.deepEqual(write.functions, { Load: 1 });
+  });
+
   it('resolves known rule-language module', async () => {
     const run = await dispatchRule('code_hash', 'typescript');
     const value = (await run({
