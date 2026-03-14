@@ -35,6 +35,20 @@ describe('rules.dispatch', () => {
     assert.equal(value.sloc, 3);
   });
 
+  it('resolves known dart code hash rule-language module', async () => {
+    const run = await dispatchRule('code_hash', 'dart');
+    const value = (await run({
+      source: 'void main() {}\n',
+      language: 'dart',
+    })) as { algorithm: string; file: string };
+
+    assert.equal(value.algorithm, 'sha256');
+    assert.equal(
+      value.file,
+      '12e3f0ab9f3e6b936c95dcfe87f4f506f6b2e3108281ea220ce1e0360cfe739a',
+    );
+  });
+
   it('resolves known go rule-language module', async () => {
     const run = await dispatchRule('import_files_list', 'go');
     const value = (await run({

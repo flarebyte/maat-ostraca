@@ -1,0 +1,11 @@
+{
+  "from": { "filename": "testdata/dart/hash/v1.dart", "language": "dart" },
+  "rules": {
+    "code_hash": {
+      "changed": true,
+      "from": "02d63b1db14a8a2484c7e96a6fcc3cedfad35b86c7e12fec26d241fee74f406f",
+      "to": "fa316633b196c31c050bfdc3a516b3df286e1fe67f0f6990c1f3d6e19c83b8ae"
+    }
+  },
+  "to": { "filename": "testdata/dart/hash/v2.dart", "language": "dart" }
+}

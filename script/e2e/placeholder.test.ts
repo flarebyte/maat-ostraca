@@ -405,6 +405,24 @@ test('maat analyse go code_hash matches golden and is deterministic', () => {
   expectCanonicalGolden(first.stdout, 'testdata/go/hash/analyse.golden.json');
 });
 
+test('maat analyse dart code_hash matches golden and is deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/dart/hash/v1.dart',
+    '--rules',
+    'code_hash',
+    '--language',
+    'dart',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(first.stdout, 'testdata/dart/hash/analyse.golden.json');
+});
+
 test('maat diff go code_hash matches golden and is deterministic', () => {
   const args = [
     'diff',
@@ -423,6 +441,26 @@ test('maat diff go code_hash matches golden and is deterministic', () => {
   expectDeterministicSuccess(first, second);
   parseWithSchema(first.stdout, DiffOutputSchema);
   expectCanonicalGolden(first.stdout, 'testdata/go/hash/diff.golden.json');
+});
+
+test('maat diff dart code_hash matches golden and is deterministic', () => {
+  const args = [
+    'diff',
+    '--from',
+    'testdata/dart/hash/v1.dart',
+    '--to',
+    'testdata/dart/hash/v2.dart',
+    '--rules',
+    'code_hash',
+    '--language',
+    'dart',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, DiffOutputSchema);
+  expectCanonicalGolden(first.stdout, 'testdata/dart/hash/diff.golden.json');
 });
 
 test('maat analyse go function_map and method_map match golden and are deterministic', () => {
