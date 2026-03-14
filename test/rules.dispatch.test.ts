@@ -56,13 +56,12 @@ describe('rules.dispatch', () => {
       language: 'dart',
     })) as Record<string, { modifiers: string[]; returns: string[] }>;
 
-    assert.deepEqual(value, {
-      boot: {
-        modifiers: ['async'],
-        params: [],
-        returns: ['Future<void>'],
-      },
-    });
+    assert.deepEqual(value.boot?.modifiers, ['async']);
+    assert.deepEqual(value.boot?.params, []);
+    assert.deepEqual(value.boot?.returns, ['Future<void>']);
+    assert.equal(value.boot?.ioCallsCount, 0);
+    assert.equal(value.boot?.returnCount, 0);
+    assert.equal(value.boot?.sha256.length, 64);
   });
 
   it('resolves known dart method map rule-language module', async () => {
@@ -75,15 +74,17 @@ describe('rules.dispatch', () => {
       { receiver: string; name: string; params: string[]; returns: string[] }
     >;
 
-    assert.deepEqual(value, {
-      paymentServiceHelper: {
-        modifiers: ['external', 'static'],
-        receiver: 'PaymentService',
-        name: 'helper',
-        params: [],
-        returns: ['String'],
-      },
-    });
+    assert.deepEqual(value.paymentServiceHelper?.modifiers, [
+      'external',
+      'static',
+    ]);
+    assert.equal(value.paymentServiceHelper?.receiver, 'PaymentService');
+    assert.equal(value.paymentServiceHelper?.name, 'helper');
+    assert.deepEqual(value.paymentServiceHelper?.params, []);
+    assert.deepEqual(value.paymentServiceHelper?.returns, ['String']);
+    assert.equal(value.paymentServiceHelper?.returnCount, 0);
+    assert.equal(value.paymentServiceHelper?.ioCallsCount, 0);
+    assert.equal(value.paymentServiceHelper?.sha256.length, 64);
   });
 
   it('resolves known dart class map rule-language module', async () => {
@@ -94,14 +95,12 @@ describe('rules.dispatch', () => {
       language: 'dart',
     })) as Record<string, { modifiers: string[]; methodCount: number }>;
 
-    assert.deepEqual(value, {
-      PaymentService: {
-        modifiers: ['abstract'],
-        extends: 'BaseService',
-        implements: ['Logger'],
-        methodCount: 1,
-      },
-    });
+    assert.deepEqual(value.PaymentService?.modifiers, ['abstract']);
+    assert.equal(value.PaymentService?.extends, 'BaseService');
+    assert.deepEqual(value.PaymentService?.implements, ['Logger']);
+    assert.equal(value.PaymentService?.methodCount, 1);
+    assert.equal(typeof value.PaymentService?.loc, 'number');
+    assert.equal(value.PaymentService?.sha256.length, 64);
   });
 
   it('resolves known dart interface map rule-language module', async () => {

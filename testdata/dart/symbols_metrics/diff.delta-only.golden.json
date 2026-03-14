@@ -1,0 +1,59 @@
+{
+  "deltaOnly": true,
+  "from": {
+    "filename": "testdata/dart/symbols_metrics/v1.dart",
+    "language": "dart"
+  },
+  "rules": {
+    "class_map": {
+      "ApiClient": {
+        "cognitiveComplexity": 1,
+        "cyclomaticComplexity": 1,
+        "loc": 3,
+        "maxNestingDepth": 0,
+        "methodCount": 0,
+        "sloc": 3,
+        "status": "modified",
+        "tokens": 9
+      }
+    },
+    "function_map": {
+      "load": {
+        "cognitiveComplexity": 1,
+        "conditions": 1,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 0,
+        "returnCount": 1,
+        "sloc": 3,
+        "status": "modified",
+        "tokens": 11
+      }
+    },
+    "method_map": {
+      "apiClientSync": {
+        "cognitiveComplexity": 1,
+        "conditions": 1,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 3,
+        "loops": 0,
+        "maxNestingDepth": 0,
+        "returnCount": 1,
+        "sloc": 3,
+        "status": "modified",
+        "tokens": 9
+      }
+    }
+  },
+  "to": {
+    "filename": "testdata/dart/symbols_metrics/v2.dart",
+    "language": "dart"
+  }
+}

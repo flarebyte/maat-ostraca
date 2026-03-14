@@ -27,8 +27,11 @@ describe('rule class_map/dart', () => {
       'Logger',
     ]);
     assert.equal(result.PaymentService.methodCount, 2);
+    assert.equal(typeof result.PaymentService.loc, 'number');
+    assert.equal(typeof result.PaymentService.sha256, 'string');
     assert.deepEqual(result.Worker.modifiers, []);
     assert.equal(result.Worker.methodCount, 0);
+    assert.equal(typeof result.Worker.tokens, 'number');
   });
 
   it('is deterministic across repeated runs', async () => {

@@ -1,4 +1,6 @@
 import { InternalError } from '../../../core/errors/index.js';
+import { sha256OfText } from '../typescript/metrics.js';
+import type { SymbolMetricsIoFields } from '../typescript/symbol_metrics_io.js';
 
 export interface DartMetrics {
   loc: number;
@@ -9,6 +11,20 @@ export interface DartMetrics {
   tokens: number;
   loops: number;
   conditions: number;
+}
+
+export interface DartSymbolMetrics extends DartMetrics {
+  returnCount: number;
+}
+
+export interface DartClassMetricsFields {
+  loc: number;
+  sloc: number;
+  cyclomaticComplexity: number;
+  cognitiveComplexity: number;
+  maxNestingDepth: number;
+  tokens: number;
+  sha256: string;
 }
 
 const TOKEN_PATTERN = /[A-Za-z_$][A-Za-z0-9_$]*|\d+|[^\s]/g;
@@ -375,4 +391,74 @@ export const computeDartMetrics = (source: string): DartMetrics => {
   } catch {
     throw new InternalError('metrics_error: failed to compute metrics');
   }
+};
+
+// Deterministic Dart symbol metric definitions:
+// - all shared counters reuse the file-level Dart metric rules above
+// - returnCount: count each explicit `return` keyword outside comments/literals
+//   within the exact extracted declaration text
+export const computeDartSymbolMetrics = (source: string): DartSymbolMetrics => {
+  const metrics = computeDartMetrics(source);
+
+  if (source.length === 0) {
+    return {
+      ...metrics,
+      returnCount: 0,
+    };
+  }
+
+  try {
+    const normalized = stripCommentsAndStrings(source);
+    return {
+      ...metrics,
+      returnCount: countKeyword(normalized, 'return'),
+    };
+  } catch {
+    throw new InternalError('metrics_error: failed to compute metrics');
+  }
+};
+
+interface IoCounts {
+  all: number;
+  read: number;
+  write: number;
+}
+
+export const buildDartSymbolMetricsIoFields = (
+  code: string,
+  ioCounts: IoCounts,
+): SymbolMetricsIoFields => {
+  const metrics = computeDartSymbolMetrics(code);
+
+  return {
+    loc: metrics.loc,
+    sloc: metrics.sloc,
+    cyclomaticComplexity: metrics.cyclomaticComplexity,
+    cognitiveComplexity: metrics.cognitiveComplexity,
+    maxNestingDepth: metrics.maxNestingDepth,
+    tokens: metrics.tokens,
+    sha256: sha256OfText(code),
+    loops: metrics.loops,
+    conditions: metrics.conditions,
+    returnCount: metrics.returnCount,
+    ioCallsCount: ioCounts.all,
+    ioReadCallsCount: ioCounts.read,
+    ioWriteCallsCount: ioCounts.write,
+  };
+};
+
+export const buildDartClassMetricsFields = (
+  code: string,
+): DartClassMetricsFields => {
+  const metrics = computeDartMetrics(code);
+
+  return {
+    loc: metrics.loc,
+    sloc: metrics.sloc,
+    cyclomaticComplexity: metrics.cyclomaticComplexity,
+    cognitiveComplexity: metrics.cognitiveComplexity,
+    maxNestingDepth: metrics.maxNestingDepth,
+    tokens: metrics.tokens,
+    sha256: sha256OfText(code),
+  };
 };

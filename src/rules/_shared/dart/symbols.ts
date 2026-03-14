@@ -25,6 +25,7 @@ interface DartClassSymbol {
   extendsName?: string;
   implementsNames: string[];
   methodCount: number;
+  code: string;
 }
 
 interface DartSymbols {
@@ -686,6 +687,7 @@ const parseClass = (segment: string): DartClassSymbol | undefined => {
       ? splitTopLevelCommaList(implementsMatch[1]).map((entry) => entry.trim())
       : [],
     methodCount: methods.length,
+    code: segment,
   };
 };
 
@@ -706,6 +708,7 @@ const extractDartSymbolsInternal = (source: string): DartSymbols => {
             : {}),
           implementsNames: [...parsedClass.implementsNames].sort(compareLex),
           methodCount: parsedClass.methodCount,
+          code: parsedClass.code,
         });
 
         const bodyStart = segment.indexOf('{');

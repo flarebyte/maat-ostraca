@@ -253,6 +253,19 @@ describe('diffResults', () => {
           ioWriteCallsCount: 1,
         },
       },
+      class_map: {
+        Service: {
+          modifiers: [],
+          methodCount: 1,
+          loc: 5,
+          sloc: 5,
+          cyclomaticComplexity: 2,
+          cognitiveComplexity: 2,
+          maxNestingDepth: 2,
+          tokens: 12,
+          sha256: 'eee',
+        },
+      },
     });
     const to = base({
       function_map: {
@@ -297,6 +310,19 @@ describe('diffResults', () => {
           ioWriteCallsCount: 1,
         },
       },
+      class_map: {
+        Service: {
+          modifiers: [],
+          methodCount: 2,
+          loc: 7,
+          sloc: 7,
+          cyclomaticComplexity: 3,
+          cognitiveComplexity: 3,
+          maxNestingDepth: 3,
+          tokens: 18,
+          sha256: 'fff',
+        },
+      },
     });
 
     const regular = diffResults(from, to, {});
@@ -336,6 +362,18 @@ describe('diffResults', () => {
         tokens: { from: 12, to: 15, delta: 3 },
       },
     });
+    assert.deepEqual(regular.rules.class_map, {
+      Service: {
+        status: 'modified',
+        cognitiveComplexity: { from: 2, to: 3, delta: 1 },
+        cyclomaticComplexity: { from: 2, to: 3, delta: 1 },
+        loc: { from: 5, to: 7, delta: 2 },
+        maxNestingDepth: { from: 2, to: 3, delta: 1 },
+        methodCount: { from: 1, to: 2, delta: 1 },
+        sloc: { from: 5, to: 7, delta: 2 },
+        tokens: { from: 12, to: 18, delta: 6 },
+      },
+    });
     assert.deepEqual(delta.rules.function_map, {
       alpha: {
         status: 'modified',
@@ -368,6 +406,18 @@ describe('diffResults', () => {
         returnCount: 1,
         sloc: 1,
         tokens: 3,
+      },
+    });
+    assert.deepEqual(delta.rules.class_map, {
+      Service: {
+        status: 'modified',
+        cognitiveComplexity: 1,
+        cyclomaticComplexity: 1,
+        loc: 2,
+        maxNestingDepth: 1,
+        methodCount: 1,
+        sloc: 2,
+        tokens: 6,
       },
     });
   });

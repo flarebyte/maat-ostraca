@@ -777,6 +777,68 @@ test('maat analyse dart function_map, method_map, and class_map match golden and
   );
 });
 
+test('maat analyse dart symbol metrics + io rules match golden and are deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/dart/symbols_metrics/analyse.dart',
+    '--rules',
+    'function_map,method_map,class_map,io_calls_count,io_read_calls_count,io_write_calls_count',
+    '--language',
+    'dart',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  const data = parseWithSchema(first.stdout, AnalyseOutputSchema);
+  const functionMap = data.rules.function_map as Record<
+    string,
+    {
+      ioCallsCount: number;
+      ioReadCallsCount: number;
+      ioWriteCallsCount: number;
+    }
+  >;
+  const methodMap = data.rules.method_map as Record<
+    string,
+    {
+      ioCallsCount: number;
+      ioReadCallsCount: number;
+      ioWriteCallsCount: number;
+    }
+  >;
+  const ioAll = data.rules.io_calls_count as {
+    functions: Record<string, number>;
+    methods: Record<string, number>;
+  };
+  const ioRead = data.rules.io_read_calls_count as {
+    functions: Record<string, number>;
+    methods: Record<string, number>;
+  };
+  const ioWrite = data.rules.io_write_calls_count as {
+    functions: Record<string, number>;
+    methods: Record<string, number>;
+  };
+
+  for (const key of Object.keys(functionMap)) {
+    expect(functionMap[key]?.ioCallsCount).toBe(ioAll.functions[key]);
+    expect(functionMap[key]?.ioReadCallsCount).toBe(ioRead.functions[key]);
+    expect(functionMap[key]?.ioWriteCallsCount).toBe(ioWrite.functions[key]);
+  }
+
+  for (const key of Object.keys(methodMap)) {
+    expect(methodMap[key]?.ioCallsCount).toBe(ioAll.methods[key]);
+    expect(methodMap[key]?.ioReadCallsCount).toBe(ioRead.methods[key]);
+    expect(methodMap[key]?.ioWriteCallsCount).toBe(ioWrite.methods[key]);
+  }
+
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/dart/symbols_metrics/analyse.golden.json',
+  );
+});
+
 test('maat analyse dart interface_map and interfaces_code_map match golden and are deterministic', () => {
   const args = [
     'analyse',
@@ -819,6 +881,30 @@ test('maat diff function_map,file_metrics delta-only matches golden and is deter
   expectCanonicalGolden(
     first.stdout,
     'testdata/symbols_metrics/diff-function-map-file-metrics.delta-only.golden.json',
+  );
+});
+
+test('maat diff dart function_map,method_map,class_map delta-only matches golden and is deterministic', () => {
+  const args = [
+    'diff',
+    '--from',
+    'testdata/dart/symbols_metrics/v1.dart',
+    '--to',
+    'testdata/dart/symbols_metrics/v2.dart',
+    '--rules',
+    'function_map,method_map,class_map',
+    '--language',
+    'dart',
+    '--json',
+    '--delta-only',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, DiffOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/dart/symbols_metrics/diff.delta-only.golden.json',
   );
 });
 
