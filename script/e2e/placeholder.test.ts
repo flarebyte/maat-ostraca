@@ -641,3 +641,21 @@ test('maat analyse testcase titles rule matches golden and is deterministic', ()
   parseWithSchema(first.stdout, AnalyseOutputSchema);
   expectCanonicalGolden(first.stdout, 'testdata/tests/analyse.golden.json');
 });
+
+test('maat analyse go testcase titles rule matches golden and is deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/go/tests/analyse.go',
+    '--rules',
+    'testcase_titles_list',
+    '--language',
+    'go',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(first.stdout, 'testdata/go/tests/analyse.golden.json');
+});

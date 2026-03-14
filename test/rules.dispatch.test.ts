@@ -169,6 +169,17 @@ describe('rules.dispatch', () => {
     assert.deepEqual(value, ['API_KEY', 'DB_HOST']);
   });
 
+  it('resolves known go testcase titles rule-language module', async () => {
+    const run = await dispatchRule('testcase_titles_list', 'go');
+    const value = (await run({
+      source:
+        'package main\n\nfunc TestDemo(t *testing.T) { t.Run("case-a", func(t *testing.T) {}) }\n',
+      language: 'go',
+    })) as string[];
+
+    assert.deepEqual(value, ['case-a']);
+  });
+
   it('resolves known rule-language module', async () => {
     const run = await dispatchRule('code_hash', 'typescript');
     const value = (await run({
