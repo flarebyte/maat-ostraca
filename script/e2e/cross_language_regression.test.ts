@@ -86,3 +86,49 @@ test('typescript diff output remains byte-identical to the approved golden', () 
   expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
   expectGolden(firstStdout, 'testdata/metrics/diff-file-metrics.golden.json');
 });
+
+test('go analyse output remains byte-identical to the approved golden', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/go/messages/analyse.go',
+    '--rules',
+    'exception_messages_list,error_messages_list',
+    '--language',
+    'go',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  const firstStdout = expectSuccess(first);
+  const secondStdout = expectSuccess(second);
+
+  expectAnalyseSchema(firstStdout);
+  expectAnalyseSchema(secondStdout);
+  expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
+  expectGolden(firstStdout, 'testdata/go/messages/analyse.golden.json');
+});
+
+test('go diff output remains byte-identical to the approved golden', () => {
+  const args = [
+    'diff',
+    '--from',
+    'testdata/go/hash/v1.go',
+    '--to',
+    'testdata/go/hash/v2.go',
+    '--rules',
+    'code_hash',
+    '--language',
+    'go',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  const firstStdout = expectSuccess(first);
+  const secondStdout = expectSuccess(second);
+
+  expectDiffSchema(firstStdout);
+  expectDiffSchema(secondStdout);
+  expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
+  expectGolden(firstStdout, 'testdata/go/hash/diff.golden.json');
+});
