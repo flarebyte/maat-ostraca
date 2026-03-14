@@ -278,11 +278,25 @@ export const createProgram = (
         .argParser(parseLanguage)
         .makeOptionMandatory(true),
     )
+    .option(
+      '--match <csv>',
+      'Optional. Filter rules by exact rule names only',
+      parseRulesCsv,
+    )
     .option('--json', 'Optional. Emit canonical JSON output')
-    .action(async (options: { language: Language; json?: boolean }) => {
-      const result = await deps.runRulesList({ language: options.language });
-      writeResult('rules', Boolean(options.json), result, io);
-    });
+    .action(
+      async (options: {
+        language: Language;
+        match?: string;
+        json?: boolean;
+      }) => {
+        const result = await deps.runRulesList({
+          language: options.language,
+          ...(options.match ? { match: options.match } : {}),
+        });
+        writeResult('rules', Boolean(options.json), result, io);
+      },
+    );
 
   return program;
 };

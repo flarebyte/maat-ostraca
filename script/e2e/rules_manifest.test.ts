@@ -80,3 +80,52 @@ test('maat rules human output remains deterministic for typescript', () => {
   expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
   expect(output).toContain('Language: typescript');
 });
+
+test('maat rules --match json manifest for typescript matches golden and is deterministic', () => {
+  expectRepeatedRulesGolden(
+    [
+      'rules',
+      '--language',
+      'typescript',
+      '--match',
+      'function_map,code_hash',
+      '--json',
+    ],
+    'testdata/rules/typescript.filtered.golden.json',
+  );
+});
+
+test('maat rules --match json manifest for go matches golden and is deterministic', () => {
+  expectRepeatedRulesGolden(
+    [
+      'rules',
+      '--language',
+      'go',
+      '--match',
+      'interface_map,code_hash',
+      '--json',
+    ],
+    'testdata/rules/go.filtered.golden.json',
+  );
+});
+
+test('maat rules --match json manifest for dart matches golden and is deterministic', () => {
+  expectRepeatedRulesGolden(
+    [
+      'rules',
+      '--language',
+      'dart',
+      '--match',
+      'class_map,testcase_titles_list',
+      '--json',
+    ],
+    'testdata/rules/dart.filtered.golden.json',
+  );
+});
+
+test('maat rules json manifest without --match remains unchanged from the approved golden', () => {
+  expectRepeatedRulesGolden(
+    ['rules', '--language', 'typescript', '--json'],
+    'testdata/rules/typescript.golden.json',
+  );
+});

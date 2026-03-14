@@ -1,0 +1,13 @@
+{
+  "language": "go",
+  "rules": [
+    {
+      "name": "code_hash",
+      "description": "Compute deterministic code-level content hash."
+    },
+    {
+      "name": "interface_map",
+      "description": "Map interface declarations and members."
+    }
+  ]
+}

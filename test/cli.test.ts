@@ -84,6 +84,8 @@ describe('maat cli parsing', () => {
       first.stdout,
       /List available rules for one supported language/,
     );
+    assert.match(first.stdout, /Filter rules by exact rule names/);
+    assert.match(first.stdout, /only/);
     assert.match(first.stdout, /Optional\. Emit canonical JSON output/);
     assert.match(first.stdout, /typescript, go,/);
     assert.match(first.stdout, /dart/);
@@ -170,6 +172,52 @@ describe('maat cli parsing', () => {
     const sortedNames = [...names].sort((a, b) => a.localeCompare(b));
     assert.deepEqual(names, sortedNames);
     assert.ok(names.includes('import_files_list'));
+  });
+
+  it('rules --match filters the json manifest deterministically', () => {
+    const result = runCli([
+      'rules',
+      '--language',
+      'typescript',
+      '--match',
+      'function_map,code_hash',
+      '--json',
+    ]);
+
+    assert.equal(result.status, 0);
+
+    const payload = JSON.parse(result.stdout) as unknown;
+    const parsed = RulesListOutputSchema.safeParse(payload);
+    assert.equal(parsed.success, true);
+    if (!parsed.success) {
+      return;
+    }
+
+    assert.deepEqual(
+      parsed.data.rules.map((rule) => rule.name),
+      ['code_hash', 'function_map'],
+    );
+  });
+
+  it('rules --match human output is deterministic', () => {
+    const args = [
+      'rules',
+      '--language',
+      'typescript',
+      '--match',
+      'function_map,code_hash',
+    ];
+    const first = runCli(args);
+    const second = runCli(args);
+
+    assert.equal(first.status, 0);
+    assert.equal(second.status, 0);
+    assert.equal(first.stderr, '');
+    assert.equal(second.stderr, '');
+    assert.equal(first.stdout, second.stdout);
+    assert.match(first.stdout, /Language: typescript/);
+    assert.match(first.stdout, /code_hash/);
+    assert.match(first.stdout, /function_map/);
   });
 
   it('analyse json includes deterministic outputs for implemented rules', () => {

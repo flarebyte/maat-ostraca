@@ -33,4 +33,16 @@ describe('runRulesList', () => {
       'Map class declarations and members.',
     );
   });
+
+  it('filters the manifest by exact rule names when match is provided', async () => {
+    const result = await runRulesList({
+      language: 'typescript',
+      match: 'function_map,code_hash',
+    });
+
+    assert.deepEqual(
+      result.rules.map((rule) => rule.name),
+      ['code_hash', 'function_map'],
+    );
+  });
 });

@@ -62,6 +62,8 @@ test('maat rules help is deterministic', () => {
   expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
   expect(output.length).toBeGreaterThan(0);
   expect(output).toContain('List available rules for one supported language');
+  expect(output).toContain('Filter rules by exact rule names');
+  expect(output).toContain('only');
   expect(output).toContain('Optional. Emit canonical JSON output');
   expect(output).toContain('typescript|go|dart');
 });
