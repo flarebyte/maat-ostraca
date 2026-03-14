@@ -14,6 +14,17 @@ export interface CliResult {
   exitCode: number;
 }
 
+interface PackageJsonShape {
+  bin?: Record<string, string> | string;
+}
+
+const packageJson = JSON.parse(
+  readFileSync('package.json', 'utf8'),
+) as PackageJsonShape;
+
+export const packagedBinPath =
+  typeof packageJson.bin === 'string' ? packageJson.bin : packageJson.bin?.maat;
+
 export const runCli = (args: string[], input?: string): CliResult => {
   const result = spawnSync(
     'node',
@@ -32,6 +43,20 @@ export const runCli = (args: string[], input?: string): CliResult => {
   };
 };
 
+export const runBuiltCli = (args: string[], input?: string): CliResult => {
+  const result = spawnSync('node', [packagedBinPath ?? '', ...args], {
+    cwd: process.cwd(),
+    encoding: 'buffer',
+    ...(input !== undefined ? { input } : {}),
+  });
+
+  return {
+    stdout: result.stdout ?? Buffer.alloc(0),
+    stderr: result.stderr ?? Buffer.alloc(0),
+    exitCode: result.status ?? 1,
+  };
+};
+
 export const runTwice = (
   args: string[],
   input?: string,
@@ -39,6 +64,16 @@ export const runTwice = (
   return {
     first: runCli(args, input),
     second: runCli(args, input),
+  };
+};
+
+export const runBuiltTwice = (
+  args: string[],
+  input?: string,
+): { first: CliResult; second: CliResult } => {
+  return {
+    first: runBuiltCli(args, input),
+    second: runBuiltCli(args, input),
   };
 };
 

@@ -43,5 +43,21 @@ cat testdata/analyse-input.ts | maat analyse --rules code_hash --language typesc
 maat diff --from testdata/metrics/v1.ts --to testdata/metrics/v2.ts --rules file_metrics --language typescript --json
 ```
 
-Determinism:
-- For the same inputs and rule selection, JSON output is deterministic with stable key ordering.
+## Supported Commands
+
+- `analyse`
+- `diff`
+- `rules`
+
+## Language Support Matrix
+
+- `typescript`: imports, metrics, code hash, symbol maps, I/O counts, messages, env names, testcase titles
+- `go`: imports, metrics, code hash, symbol maps, I/O counts, messages, env names, testcase titles
+- `dart`: imports, metrics, code hash, symbol maps, I/O counts, messages, env names, testcase titles
+
+## Determinism Guarantees
+
+- Canonical JSON output with stable key ordering
+- Sorted and deduped list outputs where applicable
+- Golden-test coverage across analyse and diff flows
+- Repeated-run byte stability for the same inputs and rule selection
