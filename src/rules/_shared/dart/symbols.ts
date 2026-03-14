@@ -6,6 +6,7 @@ interface DartFunctionSymbol {
   modifiers: string[];
   params: string[];
   returns: string[];
+  bodySource: string;
 }
 
 interface DartMethodSymbol {
@@ -15,6 +16,7 @@ interface DartMethodSymbol {
   modifiers: string[];
   params: string[];
   returns: string[];
+  bodySource: string;
 }
 
 interface DartClassSymbol {
@@ -622,6 +624,7 @@ const parseFunctionLike = (
       modifiers,
       params: parsedParams,
       returns,
+      bodySource: segment,
     };
   }
 
@@ -632,6 +635,7 @@ const parseFunctionLike = (
     modifiers,
     params: parsedParams,
     returns,
+    bodySource: segment,
   };
 };
 

@@ -603,6 +603,24 @@ test('maat analyse go io count rules match golden and are deterministic', () => 
   expectCanonicalGolden(first.stdout, 'testdata/go/io/analyse.golden.json');
 });
 
+test('maat analyse dart io count rules match golden and are deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/dart/io/analyse.dart',
+    '--rules',
+    'io_calls_count,io_read_calls_count,io_write_calls_count',
+    '--language',
+    'dart',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(first.stdout, 'testdata/dart/io/analyse.golden.json');
+});
+
 test('maat diff go enriched function_map and method_map delta-only matches golden and is deterministic', () => {
   const args = [
     'diff',
@@ -672,6 +690,30 @@ test('maat diff go io_calls_count delta-only matches golden and is deterministic
   expectCanonicalGolden(
     first.stdout,
     'testdata/go/io/diff-io-calls-delta-only.golden.json',
+  );
+});
+
+test('maat diff dart io_calls_count delta-only matches golden and is deterministic', () => {
+  const args = [
+    'diff',
+    '--from',
+    'testdata/dart/io/diff-v1.dart',
+    '--to',
+    'testdata/dart/io/diff-v2.dart',
+    '--rules',
+    'io_calls_count',
+    '--language',
+    'dart',
+    '--json',
+    '--delta-only',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, DiffOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/dart/io/diff-io-calls-delta-only.golden.json',
   );
 });
 

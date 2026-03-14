@@ -135,6 +135,33 @@ describe('rules.dispatch', () => {
     );
   });
 
+  it('resolves known dart io count rule-language modules', async () => {
+    const runAll = await dispatchRule('io_calls_count', 'dart');
+    const runRead = await dispatchRule('io_read_calls_count', 'dart');
+    const runWrite = await dispatchRule('io_write_calls_count', 'dart');
+    const source = [
+      "Future<void> load() async { await File('a').readAsString(); print('ok'); }",
+      '',
+    ].join('\n');
+
+    const all = (await runAll({
+      source,
+      language: 'dart',
+    })) as { functions: Record<string, number> };
+    const read = (await runRead({
+      source,
+      language: 'dart',
+    })) as { functions: Record<string, number> };
+    const write = (await runWrite({
+      source,
+      language: 'dart',
+    })) as { functions: Record<string, number> };
+
+    assert.deepEqual(all.functions, { load: 2 });
+    assert.deepEqual(read.functions, { load: 1 });
+    assert.deepEqual(write.functions, { load: 1 });
+  });
+
   it('resolves known go rule-language module', async () => {
     const run = await dispatchRule('import_files_list', 'go');
     const value = (await run({

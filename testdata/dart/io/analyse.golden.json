@@ -1,0 +1,30 @@
+{
+  "filename": "testdata/dart/io/analyse.dart",
+  "language": "dart",
+  "rules": {
+    "io_calls_count": {
+      "functions": { "idle": 0, "loadData": 3, "saveData": 5 },
+      "methods": {
+        "apiClientFetchData": 2,
+        "apiClientNoop": 0,
+        "apiClientPushData": 5
+      }
+    },
+    "io_read_calls_count": {
+      "functions": { "idle": 0, "loadData": 3, "saveData": 0 },
+      "methods": {
+        "apiClientFetchData": 2,
+        "apiClientNoop": 0,
+        "apiClientPushData": 0
+      }
+    },
+    "io_write_calls_count": {
+      "functions": { "idle": 0, "loadData": 0, "saveData": 5 },
+      "methods": {
+        "apiClientFetchData": 0,
+        "apiClientNoop": 0,
+        "apiClientPushData": 5
+      }
+    }
+  }
+}

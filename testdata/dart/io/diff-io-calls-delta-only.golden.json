@@ -1,0 +1,11 @@
+{
+  "deltaOnly": true,
+  "from": { "filename": "testdata/dart/io/diff-v1.dart", "language": "dart" },
+  "rules": {
+    "io_calls_count": {
+      "functions": { "status": "modified", "syncData": 1 },
+      "methods": { "apiClientStatus": 1, "status": "modified" }
+    }
+  },
+  "to": { "filename": "testdata/dart/io/diff-v2.dart", "language": "dart" }
+}
