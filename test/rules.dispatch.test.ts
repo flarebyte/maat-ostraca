@@ -139,6 +139,25 @@ describe('rules.dispatch', () => {
     assert.deepEqual(write.functions, { Load: 1 });
   });
 
+  it('resolves known go message rule-language modules', async () => {
+    const runError = await dispatchRule('error_messages_list', 'go');
+    const runException = await dispatchRule('exception_messages_list', 'go');
+    const source =
+      'package main\n\nfunc demo() { errors.New("x"); panic("boom"); panic(err) }\n';
+
+    const errorMessages = (await runError({
+      source,
+      language: 'go',
+    })) as string[];
+    const exceptionMessages = (await runException({
+      source,
+      language: 'go',
+    })) as string[];
+
+    assert.deepEqual(errorMessages, ['boom', 'x']);
+    assert.deepEqual(exceptionMessages, ['boom']);
+  });
+
   it('resolves known rule-language module', async () => {
     const run = await dispatchRule('code_hash', 'typescript');
     const value = (await run({

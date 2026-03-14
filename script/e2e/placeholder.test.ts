@@ -567,6 +567,27 @@ test('maat analyse exception/error messages rules match golden and are determini
   expectCanonicalGolden(first.stdout, 'testdata/messages/analyse.golden.json');
 });
 
+test('maat analyse go exception/error messages rules match golden and are deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/go/messages/analyse.go',
+    '--rules',
+    'exception_messages_list,error_messages_list',
+    '--language',
+    'go',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/go/messages/analyse.golden.json',
+  );
+});
+
 test('maat analyse env names rule matches golden and is deterministic', () => {
   const args = [
     'analyse',

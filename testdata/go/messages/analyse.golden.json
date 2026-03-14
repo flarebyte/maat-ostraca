@@ -1,0 +1,15 @@
+{
+  "filename": "testdata/go/messages/analyse.go",
+  "language": "go",
+  "rules": {
+    "error_messages_list": [
+      "format fail",
+      "new fail",
+      "panic fail",
+      "print fail",
+      "printf fail: %s",
+      "println fail"
+    ],
+    "exception_messages_list": ["panic fail"]
+  }
+}
