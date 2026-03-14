@@ -3,6 +3,8 @@
 `maat-ostraca` is a CLI that analyzes source files and returns structured,
 machine-friendly insights.
 
+![Maat Ostraca](./maat-ostraca-hero.jpeg)
+
 At a high level, the CLI is designed to:
 
 - Parse code from a file path or stdin
