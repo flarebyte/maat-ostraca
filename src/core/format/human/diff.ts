@@ -7,6 +7,7 @@ import {
   createHumanFormatStyle,
   type HumanFormatStyle,
 } from './color.js';
+import { formatHumanDiffSummary } from './diff_summary.js';
 import {
   appendSection,
   compareStrings,
@@ -198,6 +199,8 @@ export const formatHumanDiff = (
   if (output.deltaOnly) {
     lines.push('Delta only: true');
   }
+
+  lines.push(...['', ...formatHumanDiffSummary(output, style)]);
 
   const ruleNames = Object.keys(output.rules).sort(compareStrings);
   for (const ruleName of ruleNames) {

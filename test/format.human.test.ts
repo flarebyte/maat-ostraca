@@ -16,6 +16,10 @@ import {
 } from '../src/core/format/human/color.js';
 import { formatHumanDiff } from '../src/core/format/human/diff.js';
 import {
+  formatHumanDiffSummary,
+  summarizeDiffRule,
+} from '../src/core/format/human/diff_summary.js';
+import {
   getRuleFamily,
   RULE_FAMILY_ORDER,
 } from '../src/core/format/human/rule_families.js';
@@ -342,6 +346,10 @@ describe('human formatter', () => {
         'To: testdata/dart/metrics/v2.dart',
         'Language: dart',
         '',
+        'Summary',
+        '  file_metrics: 2 metric changes',
+        '  import_files_list: +1 / -1',
+        '',
         '[file_metrics]',
         '  loc: 5 -> 8 (delta +3)',
         '  tokens: 10 -> 15 (delta +5)',
@@ -383,6 +391,10 @@ describe('human formatter', () => {
         'From: from.dart',
         'To: to.dart',
         'Language: dart',
+        '',
+        'Summary',
+        '  function_map: 12 unchanged',
+        '  import_files_list: +12 / -0',
         '',
         '[function_map]',
         '  Count: 12 entries total',
@@ -442,6 +454,10 @@ describe('human formatter', () => {
         'Language: go',
         'Delta only: true',
         '',
+        'Summary',
+        '  code_hash: changed',
+        '  file_metrics: 2 metric changes',
+        '',
         '[code_hash]',
         '  changed: true',
         '',
@@ -478,10 +494,103 @@ describe('human formatter', () => {
         'To: to.go',
         'Language: go',
         '',
+        '\u001B[36m\u001B[1mSummary\u001B[22m\u001B[39m',
+        '  \u001B[1mmethod_map\u001B[22m: 1 modified',
+        '',
         '\u001B[36m\u001B[1m[\u001B[1mmethod_map\u001B[22m]\u001B[22m\u001B[39m',
         '  paymentServiceCharge: \u001B[33mmodified\u001B[39m, loc=3 -> 5 (delta \u001B[32m+2\u001B[39m)',
         '',
       ].join('\n'),
+    );
+  });
+
+  it('summarizes list diff counts deterministically', () => {
+    assert.equal(
+      summarizeDiffRule('import_files_list', {
+        added: ['a', 'b'],
+        removed: ['c'],
+      }),
+      'import_files_list: +2 / -1',
+    );
+  });
+
+  it('summarizes metric diff changes deterministically', () => {
+    assert.equal(
+      summarizeDiffRule('file_metrics', {
+        loc: { from: 1, to: 3, delta: 2 },
+        loops: { from: 2, to: 2, delta: 0 },
+        tokens: { from: 4, to: 7, delta: 3 },
+      }),
+      'file_metrics: 2 metric changes',
+    );
+    assert.equal(
+      summarizeDiffRule('file_metrics', {
+        loc: 2,
+        loops: 0,
+      }),
+      'file_metrics: 1 metric changes',
+    );
+  });
+
+  it('summarizes hash diffs as changed or unchanged', () => {
+    assert.equal(
+      summarizeDiffRule('code_hash', { changed: true }),
+      'code_hash: changed',
+    );
+    assert.equal(
+      summarizeDiffRule('code_hash', { changed: false }),
+      'code_hash: unchanged',
+    );
+  });
+
+  it('summarizes map diff statuses deterministically', () => {
+    assert.equal(
+      summarizeDiffRule('function_map', {
+        a: { status: 'added' },
+        b: { status: 'modified' },
+        c: { status: 'modified' },
+      }),
+      'function_map: 1 added, 2 modified',
+    );
+  });
+
+  it('falls back to a stable generic summary for unknown shapes', () => {
+    assert.equal(
+      summarizeDiffRule('interfaces_code_map', {
+        PaymentProvider: 'type PaymentProvider interface{}',
+      }),
+      'interfaces_code_map: changed',
+    );
+  });
+
+  it('renders diff summary before detailed sections in sorted rule order', () => {
+    const style = createHumanFormatStyle(false);
+    const output: DiffOutput = {
+      from: { filename: 'from.ts', language: 'typescript' },
+      to: { filename: 'to.ts', language: 'typescript' },
+      rules: {
+        import_files_list: { added: ['b'], removed: [] },
+        code_hash: { changed: true },
+        file_metrics: { loc: { from: 1, to: 2, delta: 1 } },
+      },
+    };
+
+    assert.deepEqual(formatHumanDiffSummary(output, style), [
+      'Summary',
+      '  code_hash: changed',
+      '  file_metrics: 1 metric changes',
+      '  import_files_list: +1 / -0',
+    ]);
+
+    const rendered = formatHumanDiff(output, style);
+    assert.ok(rendered.indexOf('Summary') < rendered.indexOf('[code_hash]'));
+    assert.ok(
+      rendered.indexOf('  code_hash: changed') <
+        rendered.indexOf('  file_metrics: 1 metric changes'),
+    );
+    assert.ok(
+      rendered.indexOf('  file_metrics: 1 metric changes') <
+        rendered.indexOf('  import_files_list: +1 / -0'),
     );
   });
 });
