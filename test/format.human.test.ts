@@ -15,6 +15,10 @@ import {
   supportsHumanColor,
 } from '../src/core/format/human/color.js';
 import { formatHumanDiff } from '../src/core/format/human/diff.js';
+import {
+  getRuleFamily,
+  RULE_FAMILY_ORDER,
+} from '../src/core/format/human/rule_families.js';
 import { formatHumanRules } from '../src/core/format/human/rules.js';
 import {
   MAX_LIST_ITEMS_DISPLAY,
@@ -97,18 +101,36 @@ describe('human formatter', () => {
     );
   });
 
-  it('renders rules in deterministic sorted order', () => {
+  it('maps known rules to their expected families', () => {
+    assert.equal(getRuleFamily('import_files_list'), 'imports');
+    assert.equal(getRuleFamily('function_map'), 'symbols');
+    assert.equal(getRuleFamily('code_hash'), 'metrics');
+    assert.equal(getRuleFamily('io_calls_count'), 'io');
+    assert.equal(getRuleFamily('error_messages_list'), 'messages');
+    assert.equal(getRuleFamily('env_names_list'), 'environment');
+    assert.equal(getRuleFamily('testcase_titles_list'), 'tests');
+  });
+
+  it('renders rules grouped into deterministic family sections', () => {
     const style = createHumanFormatStyle(false);
     const output: RulesListOutput = {
       language: 'typescript',
       rules: [
         {
+          name: 'code_hash',
+          description: 'Compute deterministic code-level content hash.',
+        },
+        {
           name: 'file_metrics',
           description: 'Collect basic per-file metric counters.',
         },
         {
-          name: 'code_hash',
-          description: 'Compute deterministic code-level content hash.',
+          name: 'function_map',
+          description: 'Map function declarations and signatures.',
+        },
+        {
+          name: 'import_files_list',
+          description: 'List imported files by module path.',
         },
       ],
     };
@@ -120,13 +142,60 @@ describe('human formatter', () => {
       first,
       [
         'Language: typescript',
-        'Rules:',
+        '',
+        'Imports',
+        '  - import_files_list: List imported files by module path.',
+        '',
+        'Symbols',
+        '  - function_map: Map function declarations and signatures.',
+        '',
+        'Metrics',
         '  - code_hash: Compute deterministic code-level content hash.',
         '  - file_metrics: Collect basic per-file metric counters.',
         '',
       ].join('\n'),
     );
     assert.equal(first, second);
+  });
+
+  it('omits empty families and keeps family order fixed', () => {
+    const style = createHumanFormatStyle(false);
+    const output: RulesListOutput = {
+      language: 'go',
+      rules: [
+        {
+          name: 'io_write_calls_count',
+          description: 'Count IO write call sites.',
+        },
+        {
+          name: 'env_names_list',
+          description: 'List environment variable names accessed by code.',
+        },
+      ],
+    };
+
+    assert.equal(
+      formatHumanRules(output, style),
+      [
+        'Language: go',
+        '',
+        'IO',
+        '  - io_write_calls_count: Count IO write call sites.',
+        '',
+        'Environment',
+        '  - env_names_list: List environment variable names accessed by code.',
+        '',
+      ].join('\n'),
+    );
+    assert.deepEqual(RULE_FAMILY_ORDER, [
+      'imports',
+      'symbols',
+      'metrics',
+      'io',
+      'messages',
+      'environment',
+      'tests',
+    ]);
   });
 
   it('renders analyse output deterministically for list, map, and scalar rules', () => {

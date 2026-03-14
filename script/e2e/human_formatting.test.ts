@@ -12,9 +12,41 @@ test('maat rules human output is deterministic', () => {
   expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
   expect(output.length).toBeGreaterThan(0);
   expect(output).toContain('Language: typescript');
-  expect(output).toContain('Rules:');
-  expect(output).toContain('Count: 18 rules total');
-  expect(output).toContain('... and 8 more');
+  expect(output).toContain('Imports');
+  expect(output).toContain('Symbols');
+  expect(output).toContain('Metrics');
+});
+
+test('maat rules human output is deterministic for go', () => {
+  const args = ['rules', '--language', 'go'];
+  const { first, second } = runTwice(args);
+
+  const firstStdout = expectSuccess(first);
+  const secondStdout = expectSuccess(second);
+  const output = asUtf8(firstStdout);
+
+  expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
+  expect(output.length).toBeGreaterThan(0);
+  expect(output).toContain('Language: go');
+  expect(output).toContain('Imports');
+  expect(output).toContain('Messages');
+  expect(output).toContain('Tests');
+});
+
+test('maat rules human output is deterministic for dart', () => {
+  const args = ['rules', '--language', 'dart'];
+  const { first, second } = runTwice(args);
+
+  const firstStdout = expectSuccess(first);
+  const secondStdout = expectSuccess(second);
+  const output = asUtf8(firstStdout);
+
+  expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
+  expect(output.length).toBeGreaterThan(0);
+  expect(output).toContain('Language: dart');
+  expect(output).toContain('Imports');
+  expect(output).toContain('Symbols');
+  expect(output).toContain('Environment');
 });
 
 test('maat analyse human output is deterministic', () => {
