@@ -714,6 +714,27 @@ test('maat analyse symbol metrics + io rules match golden and are deterministic'
   );
 });
 
+test('maat analyse dart function_map, method_map, and class_map match golden and are deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/dart/symbols/analyse.dart',
+    '--rules',
+    'function_map,method_map,class_map',
+    '--language',
+    'dart',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/dart/symbols/analyse.golden.json',
+  );
+});
+
 test('maat diff function_map,file_metrics delta-only matches golden and is deterministic', () => {
   const args = [
     'diff',

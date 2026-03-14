@@ -1,0 +1,47 @@
+import assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
+import { canonicalStringify } from '../src/core/format/canonical-json.js';
+import { run } from '../src/rules/class_map/dart.js';
+
+describe('rule class_map/dart', () => {
+  it('extracts classes, extends/implements, modifiers, and methodCount', async () => {
+    const source = [
+      'abstract class PaymentService extends BaseService implements Logger, Chargeable {',
+      '  PaymentService();',
+      '  Future<void> charge(String id) async {}',
+      '  static external String helper();',
+      "  String get label => 'x';",
+      '}',
+      '',
+      'class Worker {}',
+      '',
+    ].join('\n');
+
+    const result = await run({ source, language: 'dart' });
+
+    assert.deepEqual(Object.keys(result), ['PaymentService', 'Worker']);
+    assert.deepEqual(result.PaymentService.modifiers, ['abstract']);
+    assert.equal(result.PaymentService.extends, 'BaseService');
+    assert.deepEqual(result.PaymentService.implements, [
+      'Chargeable',
+      'Logger',
+    ]);
+    assert.equal(result.PaymentService.methodCount, 2);
+    assert.deepEqual(result.Worker.modifiers, []);
+    assert.equal(result.Worker.methodCount, 0);
+  });
+
+  it('is deterministic across repeated runs', async () => {
+    const source = [
+      'abstract class A implements C, B {',
+      '  static external String helper();',
+      '}',
+      '',
+    ].join('\n');
+
+    const first = await run({ source, language: 'dart' });
+    const second = await run({ source, language: 'dart' });
+
+    assert.equal(canonicalStringify(first), canonicalStringify(second));
+  });
+});

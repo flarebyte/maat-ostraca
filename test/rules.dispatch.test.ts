@@ -49,6 +49,61 @@ describe('rules.dispatch', () => {
     );
   });
 
+  it('resolves known dart function map rule-language module', async () => {
+    const run = await dispatchRule('function_map', 'dart');
+    const value = (await run({
+      source: 'Future<void> boot() async {}\n',
+      language: 'dart',
+    })) as Record<string, { modifiers: string[]; returns: string[] }>;
+
+    assert.deepEqual(value, {
+      boot: {
+        modifiers: ['async'],
+        params: [],
+        returns: ['Future<void>'],
+      },
+    });
+  });
+
+  it('resolves known dart method map rule-language module', async () => {
+    const run = await dispatchRule('method_map', 'dart');
+    const value = (await run({
+      source: 'class PaymentService { static external String helper(); }\n',
+      language: 'dart',
+    })) as Record<
+      string,
+      { receiver: string; name: string; params: string[]; returns: string[] }
+    >;
+
+    assert.deepEqual(value, {
+      paymentServiceHelper: {
+        modifiers: ['external', 'static'],
+        receiver: 'PaymentService',
+        name: 'helper',
+        params: [],
+        returns: ['String'],
+      },
+    });
+  });
+
+  it('resolves known dart class map rule-language module', async () => {
+    const run = await dispatchRule('class_map', 'dart');
+    const value = (await run({
+      source:
+        'abstract class PaymentService extends BaseService implements Logger { void charge() {} }\n',
+      language: 'dart',
+    })) as Record<string, { modifiers: string[]; methodCount: number }>;
+
+    assert.deepEqual(value, {
+      PaymentService: {
+        modifiers: ['abstract'],
+        extends: 'BaseService',
+        implements: ['Logger'],
+        methodCount: 1,
+      },
+    });
+  });
+
   it('resolves known go rule-language module', async () => {
     const run = await dispatchRule('import_files_list', 'go');
     const value = (await run({

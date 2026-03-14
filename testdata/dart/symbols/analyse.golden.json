@@ -1,0 +1,47 @@
+{
+  "filename": "testdata/dart/symbols/analyse.dart",
+  "language": "dart",
+  "rules": {
+    "class_map": {
+      "PaymentService": {
+        "extends": "BaseService",
+        "implements": ["Chargeable", "Logger"],
+        "methodCount": 2,
+        "modifiers": ["abstract"]
+      },
+      "Worker": { "methodCount": 0, "modifiers": [] }
+    },
+    "function_map": {
+      "boot": {
+        "modifiers": ["async"],
+        "params": ["BuildContext context"],
+        "returns": ["Future<void>"]
+      },
+      "lookup": {
+        "modifiers": ["external"],
+        "params": ["String id"],
+        "returns": ["String"]
+      }
+    },
+    "method_map": {
+      "paymentServiceCharge": {
+        "modifiers": ["async"],
+        "name": "charge",
+        "params": [
+          "BuildContext context",
+          "int count = 0",
+          "required String id"
+        ],
+        "receiver": "PaymentService",
+        "returns": ["Future<void>"]
+      },
+      "paymentServiceHelper": {
+        "modifiers": ["external", "static"],
+        "name": "helper",
+        "params": [],
+        "receiver": "PaymentService",
+        "returns": ["String"]
+      }
+    }
+  }
+}
