@@ -24,6 +24,17 @@ describe('rules.dispatch', () => {
     assert.deepEqual(value, ['package:flutter/material.dart']);
   });
 
+  it('resolves known dart file metrics rule-language module', async () => {
+    const run = await dispatchRule('file_metrics', 'dart');
+    const value = (await run({
+      source: 'void main() {\n  print(1);\n}\n',
+      language: 'dart',
+    })) as { loc: number; sloc: number };
+
+    assert.equal(value.loc, 4);
+    assert.equal(value.sloc, 3);
+  });
+
   it('resolves known go rule-language module', async () => {
     const run = await dispatchRule('import_files_list', 'go');
     const value = (await run({

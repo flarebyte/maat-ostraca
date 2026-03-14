@@ -71,6 +71,7 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
     'io_write_calls_count:typescript',
     () => import('./io_write_calls_count/typescript.js'),
   ],
+  ['file_metrics:dart', () => import('./file_metrics/dart.js')],
   ['file_metrics:go', () => import('./file_metrics/go.js')],
   ['file_metrics:typescript', () => import('./file_metrics/typescript.js')],
   ['code_hash:go', () => import('./code_hash/go.js')],
