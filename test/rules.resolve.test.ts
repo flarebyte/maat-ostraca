@@ -63,12 +63,12 @@ describe('rules.resolve', () => {
     );
   });
 
-  it('rejects rule not supported for language', () => {
-    assert.throws(
-      () => resolveRules({ rules: 'interfaces_code_map', language: 'go' }),
-      new UsageError(
-        'unsupported rule "interfaces_code_map" for language "go"',
-      ),
-    );
+  it('resolves interfaces_code_map for go', () => {
+    const resolved = resolveRules({
+      rules: 'interfaces_code_map',
+      language: 'go',
+    });
+
+    assert.deepEqual(resolved, ['interfaces_code_map']);
   });
 });

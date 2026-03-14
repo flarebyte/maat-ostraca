@@ -381,6 +381,27 @@ test('maat analyse go function_map and method_map match golden and are determini
   );
 });
 
+test('maat analyse go interface_map and interfaces_code_map match golden and are deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/go/interfaces/analyse.go',
+    '--rules',
+    'interface_map,interfaces_code_map',
+    '--language',
+    'go',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/go/interfaces/analyse.golden.json',
+  );
+});
+
 test('maat analyse io count rules match golden and are deterministic', () => {
   const args = [
     'analyse',

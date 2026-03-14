@@ -93,7 +93,7 @@ export const RULE_CATALOG: readonly RuleCatalogEntry[] = [
   {
     name: 'interfaces_code_map',
     description: 'Map interfaces to canonical source snippets.',
-    languages: ['typescript'],
+    languages: ['go', 'typescript'],
   },
   {
     name: 'file_metrics',

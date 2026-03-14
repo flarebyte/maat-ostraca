@@ -83,6 +83,37 @@ describe('rules.dispatch', () => {
     });
   });
 
+  it('resolves known go interface map rule-language module', async () => {
+    const run = await dispatchRule('interface_map', 'go');
+    const value = (await run({
+      source:
+        'package main\n\ntype Reader interface { Read([]byte) (int, error) }\n',
+      language: 'go',
+    })) as Record<string, { extends: string[]; methods: string[] }>;
+
+    assert.deepEqual(value, {
+      Reader: {
+        modifiers: [],
+        extends: [],
+        methods: ['Read([]byte) (int, error)'],
+      },
+    });
+  });
+
+  it('resolves known go interfaces code map rule-language module', async () => {
+    const run = await dispatchRule('interfaces_code_map', 'go');
+    const value = (await run({
+      source:
+        'package main\n\ntype Reader interface { Read([]byte) (int, error) }\n',
+      language: 'go',
+    })) as Record<string, string>;
+
+    assert.equal(
+      value.Reader,
+      'type Reader interface { Read([]byte) (int, error) }',
+    );
+  });
+
   it('resolves known rule-language module', async () => {
     const run = await dispatchRule('code_hash', 'typescript');
     const value = (await run({
