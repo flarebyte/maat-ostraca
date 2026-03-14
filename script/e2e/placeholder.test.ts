@@ -735,6 +735,27 @@ test('maat analyse dart function_map, method_map, and class_map match golden and
   );
 });
 
+test('maat analyse dart interface_map and interfaces_code_map match golden and are deterministic', () => {
+  const args = [
+    'analyse',
+    '--in',
+    'testdata/dart/interfaces/analyse.dart',
+    '--rules',
+    'interface_map,interfaces_code_map',
+    '--language',
+    'dart',
+    '--json',
+  ];
+
+  const { first, second } = runTwice(args);
+  expectDeterministicSuccess(first, second);
+  parseWithSchema(first.stdout, AnalyseOutputSchema);
+  expectCanonicalGolden(
+    first.stdout,
+    'testdata/dart/interfaces/analyse.golden.json',
+  );
+});
+
 test('maat diff function_map,file_metrics delta-only matches golden and is deterministic', () => {
   const args = [
     'diff',

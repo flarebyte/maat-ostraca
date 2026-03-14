@@ -55,8 +55,10 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
   ['method_map:go', () => import('./method_map/go.js')],
   ['class_map:dart', () => import('./class_map/dart.js')],
   ['class_map:typescript', () => import('./class_map/typescript.js')],
+  ['interface_map:dart', () => import('./interface_map/dart.js')],
   ['interface_map:typescript', () => import('./interface_map/typescript.js')],
   ['interface_map:go', () => import('./interface_map/go.js')],
+  ['interfaces_code_map:dart', () => import('./interfaces_code_map/dart.js')],
   [
     'interfaces_code_map:typescript',
     () => import('./interfaces_code_map/typescript.js'),

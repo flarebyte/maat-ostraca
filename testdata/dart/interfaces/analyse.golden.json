@@ -1,0 +1,22 @@
+{
+  "filename": "testdata/dart/interfaces/analyse.dart",
+  "language": "dart",
+  "rules": {
+    "interface_map": {
+      "PaymentProvider": {
+        "extends": ["Chargeable", "Logger", "Reader"],
+        "methods": ["Future<void> charge(String id)", "String format(int x)"],
+        "modifiers": ["abstract"]
+      },
+      "Reader": {
+        "extends": [],
+        "methods": ["String read(String id)"],
+        "modifiers": ["abstract"]
+      }
+    },
+    "interfaces_code_map": {
+      "PaymentProvider": "abstract class PaymentProvider extends Reader implements Logger, Chargeable {\n  Future<void> charge(String id);\n  String format(int x);\n  void withBody() {}\n}",
+      "Reader": "abstract class Reader {\n  String read(String id);\n}"
+    }
+  }
+}

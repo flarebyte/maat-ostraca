@@ -104,6 +104,37 @@ describe('rules.dispatch', () => {
     });
   });
 
+  it('resolves known dart interface map rule-language module', async () => {
+    const run = await dispatchRule('interface_map', 'dart');
+    const value = (await run({
+      source:
+        'abstract class Reader implements Logger { String read(String id); void write(String id); }\nclass Worker {}\n',
+      language: 'dart',
+    })) as Record<string, { extends: string[]; methods: string[] }>;
+
+    assert.deepEqual(value, {
+      Reader: {
+        modifiers: ['abstract'],
+        extends: ['Logger'],
+        methods: ['String read(String id)', 'void write(String id)'],
+      },
+    });
+  });
+
+  it('resolves known dart interfaces code map rule-language module', async () => {
+    const run = await dispatchRule('interfaces_code_map', 'dart');
+    const value = (await run({
+      source:
+        'abstract class Reader {\n  String read(String id);\n}\nclass Worker {}\n',
+      language: 'dart',
+    })) as Record<string, string>;
+
+    assert.equal(
+      value.Reader,
+      'abstract class Reader {\n  String read(String id);\n}',
+    );
+  });
+
   it('resolves known go rule-language module', async () => {
     const run = await dispatchRule('import_files_list', 'go');
     const value = (await run({
