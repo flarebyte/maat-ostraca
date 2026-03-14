@@ -94,6 +94,16 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
   ['code_hash:typescript', () => import('./code_hash/typescript.js')],
 ]);
 
+export const IMPLEMENTED_RULES_BY_LANGUAGE = new Map<Language, RuleName[]>(
+  (['typescript', 'go', 'dart'] as const).map((language) => [
+    language,
+    [...ruleLoaders.keys()]
+      .filter((key) => key.endsWith(`:${language}`))
+      .map((key) => key.slice(0, key.lastIndexOf(':')) as RuleName)
+      .sort((left, right) => left.localeCompare(right)),
+  ]),
+);
+
 export const dispatchRule = async (
   ruleName: RuleName,
   language: Language,

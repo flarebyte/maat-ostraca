@@ -36,6 +36,9 @@ Basic commands:
 # Analyse one file
 maat analyse --in testdata/determinism/wide-v1.ts --rules import_files_list,file_metrics,code_hash --language typescript --json
 
+# Analyse all rules for one language
+maat analyse --in testdata/go/determinism/wide-v1.go --rules '*' --language go --json
+
 # Diff two snapshots
 maat diff --from testdata/go/hash/v1.go --to testdata/go/hash/v2.go --rules code_hash --language go --json
 
