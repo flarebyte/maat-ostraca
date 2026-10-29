@@ -6,7 +6,7 @@ export function classify(value: number): number {
       }
     }
   } else {
-    value = value < -10 ? -10 : value;
+    value = Math.max(value, -10);
   }
 
   switch (value) {

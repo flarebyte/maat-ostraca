@@ -18,6 +18,15 @@ const COMMON_RULES = [
 
 const MATRIX = [
   {
+    language: 'python',
+    analyseIn: 'testdata/python/determinism/wide-v1.py',
+    diffFrom: 'testdata/python/determinism/wide-v1.py',
+    diffTo: 'testdata/python/determinism/wide-v2.py',
+    analyseGolden:
+      'testdata/python/determinism/matrix-common-analyse.golden.json',
+    diffGolden: 'testdata/python/determinism/matrix-common-diff.golden.json',
+  },
+  {
     language: 'typescript',
     analyseIn: 'testdata/determinism/wide-v1.ts',
     diffFrom: 'testdata/determinism/wide-v1.ts',
