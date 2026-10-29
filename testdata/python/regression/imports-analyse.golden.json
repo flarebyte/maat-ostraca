@@ -1,0 +1,8 @@
+{
+  "filename": "testdata/python/regression/v1.py",
+  "language": "python",
+  "rules": {
+    "import_files_list": [".helpers", "logging", "os"],
+    "package_imports_list": ["logging", "os"]
+  }
+}

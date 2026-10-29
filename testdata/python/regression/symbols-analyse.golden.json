@@ -1,0 +1,64 @@
+{
+  "filename": "testdata/python/regression/v1.py",
+  "language": "python",
+  "rules": {
+    "class_map": {
+      "Service": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "extends": "Base",
+        "loc": 6,
+        "loops": 0,
+        "maxNestingDepth": 2,
+        "methodCount": 1,
+        "modifiers": [],
+        "sha256": "8ef5d9f03c0d1164e409661af0efeafc260103bc63b9bebaa857b4c766799869",
+        "sloc": 6,
+        "tokens": 13
+      }
+    },
+    "function_map": {
+      "test_env": {
+        "cognitiveComplexity": 2,
+        "conditions": 1,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 6,
+        "loops": 0,
+        "maxNestingDepth": 2,
+        "modifiers": [],
+        "params": [],
+        "returnCount": 1,
+        "returns": [],
+        "sha256": "eb2ec45914a888139f53d284ff362b1fff570dac9b1f24d88fcc83271f681b5b",
+        "sloc": 6,
+        "tokens": 9
+      }
+    },
+    "method_map": {
+      "Service.test_load": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 2,
+        "ioReadCallsCount": 1,
+        "ioWriteCallsCount": 1,
+        "loc": 4,
+        "loops": 0,
+        "maxNestingDepth": 1,
+        "modifiers": ["async", "staticmethod"],
+        "name": "test_load",
+        "params": ["path: str"],
+        "receiver": "Service",
+        "returnCount": 1,
+        "returns": ["str"],
+        "sha256": "8766fdcfefb6b8350f02116bd99a2f88d177bf7f8f1659c00b2b362582fdb1bf",
+        "sloc": 4,
+        "tokens": 10
+      }
+    }
+  }
+}

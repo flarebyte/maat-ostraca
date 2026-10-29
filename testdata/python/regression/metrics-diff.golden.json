@@ -1,0 +1,24 @@
+{
+  "from": {
+    "filename": "testdata/python/regression/v1.py",
+    "language": "python"
+  },
+  "rules": {
+    "code_hash": {
+      "changed": true,
+      "from": "aa079d19c4a87e8960487d24fe1f524f84dc8e269e787aeac62293207ce3b4fd",
+      "to": "d86b00fd4570c0a02af061df1a2ee1b3f49af865420cf1d8ee32446b816c0f8f"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": { "delta": 0, "from": 2, "to": 2 },
+      "conditions": { "delta": 0, "from": 1, "to": 1 },
+      "cyclomaticComplexity": { "delta": 0, "from": 2, "to": 2 },
+      "loc": { "delta": 0, "from": 19, "to": 19 },
+      "loops": { "delta": 0, "from": 0, "to": 0 },
+      "maxNestingDepth": { "delta": 0, "from": 2, "to": 2 },
+      "sloc": { "delta": 0, "from": 16, "to": 16 },
+      "tokens": { "delta": 1, "from": 31, "to": 32 }
+    }
+  },
+  "to": { "filename": "testdata/python/regression/v2.py", "language": "python" }
+}

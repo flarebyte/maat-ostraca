@@ -1,0 +1,8 @@
+{
+  "filename": "testdata/python/regression/v1.py",
+  "language": "python",
+  "rules": {
+    "error_messages_list": ["missing configuration"],
+    "exception_messages_list": ["invalid configuration"]
+  }
+}
