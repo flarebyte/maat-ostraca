@@ -24,6 +24,13 @@
       "quoteStyle": "single"
     }
   },
+  "overrides": [
+    {
+      "includes": ["testdata/**"],
+      "linter": { "enabled": false },
+      "assist": { "enabled": false }
+    }
+  ],
   "assist": {
     "enabled": true,
     "actions": {
