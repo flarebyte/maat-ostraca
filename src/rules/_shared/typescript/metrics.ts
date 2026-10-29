@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { searchByKind } from '../../../core/astgrep/index.js';
 import type { Language } from '../../../core/contracts/language.js';
 import { InternalError } from '../../../core/errors/index.js';
+import { createBraceDepthCounter } from '../brace_depth.js';
 
 export interface SymbolMetrics {
   loc: number;
@@ -42,8 +43,7 @@ const countByKind = async (
 };
 
 const computeMaxNestingDepth = (source: string): number => {
-  let depth = 0;
-  let maxDepth = 0;
+  const counter = createBraceDepthCounter();
   let inLineComment = false;
   let inBlockComment = false;
   let inSingleQuote = false;
@@ -119,20 +119,10 @@ const computeMaxNestingDepth = (source: string): number => {
       continue;
     }
 
-    if (char === '{') {
-      depth += 1;
-      if (depth > maxDepth) {
-        maxDepth = depth;
-      }
-      continue;
-    }
-
-    if (char === '}') {
-      depth = Math.max(0, depth - 1);
-    }
+    counter.visit(char);
   }
 
-  return maxDepth;
+  return counter.maximum();
 };
 
 // Deterministic metric definitions shared by file/symbol metrics:

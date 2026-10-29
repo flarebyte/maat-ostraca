@@ -1,4 +1,5 @@
 import type { DiffOutput } from '../../contracts/outputs.js';
+import { isHashDiff, isListDiff, isNumericDelta } from '../../diff/guards.js';
 import {
   colorDelta,
   colorDiffStatus,
@@ -17,36 +18,6 @@ import {
   sortedEntries,
 } from './shared.js';
 import { summarizeListLines, summarizeMapLines } from './summary.js';
-
-const isNumericDelta = (
-  value: unknown,
-): value is { from: number; to: number; delta: number } => {
-  const candidate = value as { from?: unknown; to?: unknown; delta?: unknown };
-  return (
-    isPlainObject(value) &&
-    typeof candidate.from === 'number' &&
-    typeof candidate.to === 'number' &&
-    typeof candidate.delta === 'number'
-  );
-};
-
-const isListDiff = (
-  value: unknown,
-): value is { added: unknown[]; removed: unknown[] } => {
-  const candidate = value as { added?: unknown; removed?: unknown };
-  return (
-    isPlainObject(value) &&
-    Array.isArray(candidate.added) &&
-    Array.isArray(candidate.removed)
-  );
-};
-
-const isHashDiff = (
-  value: unknown,
-): value is { from?: string; to?: string; changed: boolean } => {
-  const candidate = value as { changed?: unknown };
-  return isPlainObject(value) && typeof candidate.changed === 'boolean';
-};
 
 const formatDeltaValue = (delta: number, style: HumanFormatStyle): string => {
   const text = delta > 0 ? `+${delta}` : String(delta);

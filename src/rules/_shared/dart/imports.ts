@@ -41,20 +41,7 @@ export const listDartImportUris = (
 export const listDartPackageImportUris = (
   input: RuleRunInput,
   errorPrefix: string,
-): string[] => {
-  if (input.language !== 'dart') {
-    throw new InternalError(
-      `${errorPrefix}: unsupported language "${input.language}"`,
-    );
-  }
-
-  try {
-    return sortUniqueImportUris(
-      extractDartImportUris(input.source).filter((uri) =>
-        uri.startsWith('package:'),
-      ),
-    );
-  } catch {
-    throw new InternalError('astgrep_error: failed to extract dart imports');
-  }
-};
+): string[] =>
+  listDartImportUris(input, errorPrefix).filter((uri) =>
+    uri.startsWith('package:'),
+  );

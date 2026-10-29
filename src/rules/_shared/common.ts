@@ -1,4 +1,5 @@
 import { InternalError } from '../../core/errors/index.js';
+import { createBraceDepthCounter } from './brace_depth.js';
 import { sha256OfText } from './typescript/metrics.js';
 
 export interface FileMetricsResult {
@@ -77,24 +78,9 @@ export const countIdentifierMatches = (
 };
 
 export const computeBraceNestingDepth = (source: string): number => {
-  let depth = 0;
-  let maxDepth = 0;
-
-  for (const char of source) {
-    if (char === '{') {
-      depth += 1;
-      if (depth > maxDepth) {
-        maxDepth = depth;
-      }
-      continue;
-    }
-
-    if (char === '}') {
-      depth = Math.max(0, depth - 1);
-    }
-  }
-
-  return maxDepth;
+  const counter = createBraceDepthCounter();
+  for (const char of source) counter.visit(char);
+  return counter.maximum();
 };
 
 export const pushTrimmedEntry = (entries: string[], value: string): void => {
@@ -435,4 +421,85 @@ export const buildInterfaceMap = <
   }
 
   return output;
+};
+
+export interface FunctionMapStructuralFields {
+  modifiers: string[];
+  params: string[];
+  returns: string[];
+}
+export const buildFunctionMap = async <
+  T extends FunctionMapStructuralFields & { name: string },
+  M,
+>(
+  symbols: readonly T[],
+  metrics: (symbol: T) => M | Promise<M>,
+): Promise<Record<string, FunctionMapStructuralFields & M>> => {
+  const output: Record<string, FunctionMapStructuralFields & M> = {};
+  for (const symbol of symbols)
+    output[symbol.name] = {
+      modifiers: symbol.modifiers,
+      params: symbol.params,
+      returns: symbol.returns,
+      ...(await metrics(symbol)),
+    };
+  return output;
+};
+
+export const buildNamedSymbolIoOutput = (
+  symbols: {
+    functions: readonly { name: string; bodySource: string }[];
+    methods: readonly { key: string; bodySource: string }[];
+  },
+  count: (source: string) => number,
+) =>
+  buildIoCountOutput(
+    {
+      functions: symbols.functions.map((symbol) => ({
+        key: symbol.name,
+        bodySource: symbol.bodySource,
+      })),
+      methods: symbols.methods,
+    },
+    count,
+  );
+
+export const maskSlashComment = (
+  source: string,
+  start: number,
+): { output: string; end: number } | undefined => {
+  if (source[start] !== '/' || !['/', '*'].includes(source[start + 1] ?? ''))
+    return undefined;
+  const line = source[start + 1] === '/';
+  let end = start + 2;
+  while (end < source.length) {
+    if (line && source[end] === '\n') break;
+    if (!line && source[end] === '*' && source[end + 1] === '/') {
+      end += 2;
+      break;
+    }
+    end++;
+  }
+  return { output: source.slice(start, end).replace(/[^\n]/g, ' '), end };
+};
+export const trailingIdentifier = (
+  source: string,
+  isPart: (char: string | undefined) => boolean,
+) => {
+  const end = source.trimEnd().length;
+  let start = end;
+  while (start > 0 && isPart(source[start - 1])) start--;
+  return {
+    name: source.slice(start, end),
+    prefix: source.slice(0, start).trim(),
+  };
+};
+
+export const withIoCountErrors = <T>(run: () => T): T => {
+  try {
+    return run();
+  } catch (error: unknown) {
+    if (error instanceof InternalError) throw error;
+    throw new InternalError('io_count_error: failed to compute io counts');
+  }
 };

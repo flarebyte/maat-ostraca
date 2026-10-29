@@ -1,5 +1,6 @@
 import { InternalError } from '../../../core/errors/index.js';
 import type { RuleRunInput } from '../../dispatch.js';
+import { trailingIdentifier } from '../common.js';
 import {
   collectDartDeclarationSegments,
   compareDartLex,
@@ -40,25 +41,11 @@ const extractAbstractMethodSignature = (
 
   scanDartBalanced(segment, paramsStart, '(', ')');
   const beforeParams = segment.slice(0, paramsStart).trimEnd();
-  let nameEnd = beforeParams.length;
-  while (
-    nameEnd > 0 &&
-    (beforeParams[nameEnd - 1] === ' ' || beforeParams[nameEnd - 1] === '\t')
-  ) {
-    nameEnd -= 1;
-  }
-
-  let nameStart = nameEnd;
-  while (nameStart > 0 && isDartIdentifierPart(beforeParams[nameStart - 1])) {
-    nameStart -= 1;
-  }
-
-  if (nameStart === nameEnd) {
-    return undefined;
-  }
-
-  const name = beforeParams.slice(nameStart, nameEnd);
-  const prefix = beforeParams.slice(0, nameStart).trim();
+  const { name, prefix } = trailingIdentifier(
+    beforeParams,
+    isDartIdentifierPart,
+  );
+  if (!name) return undefined;
   if (
     name === receiver ||
     prefix === 'get' ||

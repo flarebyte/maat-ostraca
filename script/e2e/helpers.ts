@@ -184,3 +184,52 @@ export const expectRepeatedRulesGolden = (
   expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
   expectGolden(firstStdout, goldenPath);
 };
+
+export const expectDeltaOnlyShapes = (
+  standard: ReturnType<typeof parseDiffOutput>,
+  delta: ReturnType<typeof parseDiffOutput>,
+) => {
+  const standardMetrics = standard.rules.file_metrics as Record<
+    string,
+    unknown
+  >;
+  const deltaMetrics = delta.rules.file_metrics as Record<string, unknown>;
+  expect(typeof standardMetrics.loc).toBe('object');
+  expect(typeof deltaMetrics.loc).toBe('number');
+  const standardHash = standard.rules.code_hash as Record<string, unknown>;
+  const deltaHash = delta.rules.code_hash as Record<string, unknown>;
+  expect(Object.hasOwn(standardHash, 'from')).toBeTrue();
+  expect(Object.hasOwn(standardHash, 'to')).toBeTrue();
+  expect(Object.hasOwn(deltaHash, 'from')).toBeFalse();
+  expect(Object.hasOwn(deltaHash, 'to')).toBeFalse();
+  expect(Object.hasOwn(deltaHash, 'changed')).toBeTrue();
+};
+export const expectRepeatedDeltaOnly = (args: string[]) => {
+  const { first, second } = runTwice([...args, '--delta-only']);
+  const left = parseDiffOutput(expectSuccess(first));
+  const right = parseDiffOutput(expectSuccess(second));
+  expect(equalBytes(first.stdout, second.stdout)).toBeTrue();
+  expect(left.deltaOnly).toBeTrue();
+  expect(right.deltaOnly).toBeTrue();
+};
+export const expectRuleOrderInvariant = (
+  language: string,
+  file: string,
+  firstRules: string,
+  secondRules: string,
+) => {
+  const args = [
+    'analyse',
+    '--in',
+    file,
+    '--language',
+    language,
+    '--json',
+    '--rules',
+  ];
+  const first = expectSuccess(runCli([...args, firstRules]));
+  const second = expectSuccess(runCli([...args, secondRules]));
+  parseAnalyseOutput(first);
+  parseAnalyseOutput(second);
+  expect(equalBytes(first, second)).toBeTrue();
+};

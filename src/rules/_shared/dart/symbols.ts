@@ -1,6 +1,10 @@
 import { InternalError } from '../../../core/errors/index.js';
 import type { RuleRunInput } from '../../dispatch.js';
-import { lowerCamel, upperCamelSegment } from '../common.js';
+import {
+  lowerCamel,
+  trailingIdentifier,
+  upperCamelSegment,
+} from '../common.js';
 import {
   collectDartDeclarationSegments,
   compareDartLex,
@@ -38,7 +42,7 @@ interface DartClassSymbol {
   code: string;
 }
 
-interface DartSymbols {
+export interface DartSymbols {
   functions: DartFunctionSymbol[];
   methods: DartMethodSymbol[];
   classes: DartClassSymbol[];
@@ -78,25 +82,11 @@ const parseFunctionLike = (
     return undefined;
   }
 
-  let nameEnd = beforeParams.length;
-  while (
-    nameEnd > 0 &&
-    (beforeParams[nameEnd - 1] === ' ' || beforeParams[nameEnd - 1] === '\t')
-  ) {
-    nameEnd -= 1;
-  }
-
-  let nameStart = nameEnd;
-  while (nameStart > 0 && isDartIdentifierPart(beforeParams[nameStart - 1])) {
-    nameStart -= 1;
-  }
-
-  if (nameStart === nameEnd) {
-    return undefined;
-  }
-
-  const name = beforeParams.slice(nameStart, nameEnd);
-  const prefix = beforeParams.slice(0, nameStart).trim();
+  const { name, prefix } = trailingIdentifier(
+    beforeParams,
+    isDartIdentifierPart,
+  );
+  if (!name) return undefined;
   if (prefix.endsWith('.')) {
     return undefined;
   }

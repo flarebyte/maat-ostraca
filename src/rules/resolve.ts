@@ -2,6 +2,7 @@ import { UsageError } from '../core/errors/index.js';
 import type { Language } from '../core/types.js';
 import { RULE_CATALOG, type RuleName } from './catalog.js';
 import { IMPLEMENTED_RULES_BY_LANGUAGE } from './dispatch.js';
+import { validateRuleName } from './validate_name.js';
 
 export interface ResolveRulesInput {
   rules: string;
@@ -10,7 +11,6 @@ export interface ResolveRulesInput {
 
 const isTrailingWildcard = (token: string): boolean => token.endsWith('*');
 
-const byName = new Map(RULE_CATALOG.map((entry) => [entry.name, entry]));
 const allImplementedRulesForLanguage = (language: Language): RuleName[] => {
   return IMPLEMENTED_RULES_BY_LANGUAGE.get(language) ?? [];
 };
@@ -69,20 +69,7 @@ export const resolveRules = ({
       );
     }
 
-    if (!byName.has(token as RuleName)) {
-      throw new UsageError(
-        `unknown rule "${token}" for language "${language}"`,
-      );
-    }
-
-    const entry = byName.get(token as RuleName);
-    if (!entry?.languages.includes(language)) {
-      throw new UsageError(
-        `unsupported rule "${token}" for language "${language}"`,
-      );
-    }
-
-    resolved.add(entry.name);
+    resolved.add(validateRuleName(token, language));
   }
 
   const sorted = [...resolved].sort((a, b) => a.localeCompare(b));

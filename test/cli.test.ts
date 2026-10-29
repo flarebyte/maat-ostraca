@@ -6,6 +6,7 @@ import {
   JsonErrorOutputSchema,
   RulesListOutputSchema,
 } from '../src/core/contracts/schemas.js';
+import { goHashDiffArgs } from './cli-fixture-args.js';
 
 const runCli = (args: string[], input?: string) => {
   return spawnSync(
@@ -16,6 +17,14 @@ const runCli = (args: string[], input?: string) => {
       ...(input !== undefined ? { input } : {}),
     },
   );
+};
+
+const parseRulesResult = (result: ReturnType<typeof runCli>) => {
+  assert.equal(result.status, 0);
+  const parsed = RulesListOutputSchema.safeParse(JSON.parse(result.stdout));
+  assert.equal(parsed.success, true);
+  if (!parsed.success) throw new Error('Invalid rules output');
+  return parsed;
 };
 
 describe('maat cli parsing', () => {
@@ -159,14 +168,7 @@ describe('maat cli parsing', () => {
   it('returns sorted rules list for language in json mode and matches schema', () => {
     const result = runCli(['rules', '--language', 'typescript', '--json']);
 
-    assert.equal(result.status, 0);
-
-    const payload = JSON.parse(result.stdout) as unknown;
-    const parsed = RulesListOutputSchema.safeParse(payload);
-    assert.equal(parsed.success, true);
-    if (!parsed.success) {
-      return;
-    }
+    const parsed = parseRulesResult(result);
 
     const names = parsed.data.rules.map((rule) => rule.name);
     const sortedNames = [...names].sort((a, b) => a.localeCompare(b));
@@ -184,14 +186,7 @@ describe('maat cli parsing', () => {
       '--json',
     ]);
 
-    assert.equal(result.status, 0);
-
-    const payload = JSON.parse(result.stdout) as unknown;
-    const parsed = RulesListOutputSchema.safeParse(payload);
-    assert.equal(parsed.success, true);
-    if (!parsed.success) {
-      return;
-    }
+    const parsed = parseRulesResult(result);
 
     assert.deepEqual(
       parsed.data.rules.map((rule) => rule.name),
@@ -317,18 +312,7 @@ describe('maat cli parsing', () => {
   });
 
   it('diff --exit-code-on-change returns 3 for changed fixtures and keeps stdout unchanged in json mode', () => {
-    const baseArgs = [
-      'diff',
-      '--from',
-      'testdata/go/hash/v1.go',
-      '--to',
-      'testdata/go/hash/v2.go',
-      '--rules',
-      'code_hash',
-      '--language',
-      'go',
-      '--json',
-    ];
+    const baseArgs = goHashDiffArgs();
 
     const withoutFlag = runCli(baseArgs);
     const withFlag = runCli([...baseArgs, '--exit-code-on-change']);

@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { run } from '../src/rules/file_metrics/go.js';
-import { readFixture, registerFileMetricsDiffTests } from './helpers.js';
+import {
+  expectEmptyFileMetrics,
+  readFixture,
+  registerFileMetricsDiffTests,
+} from './helpers.js';
 
 describe('rule file_metrics/go', () => {
   it('computes loc and sloc deterministically with blank lines', async () => {
@@ -65,16 +69,7 @@ describe('rule file_metrics/go', () => {
   it('returns zeros for empty source', async () => {
     const result = await run({ source: '', language: 'go' });
 
-    assert.deepEqual(result, {
-      loc: 0,
-      sloc: 0,
-      cyclomaticComplexity: 0,
-      cognitiveComplexity: 0,
-      maxNestingDepth: 0,
-      tokens: 0,
-      loops: 0,
-      conditions: 0,
-    });
+    expectEmptyFileMetrics(result);
   });
 
   registerFileMetricsDiffTests('file.go', 'go');

@@ -245,3 +245,15 @@ export const EXPECTED_EMPTY_CODE_HASH = {
   algorithm: 'sha256',
   file: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
 } as const;
+
+export const expectEmptyFileMetrics = (result: unknown) =>
+  assert.deepEqual(result, {
+    loc: 0,
+    sloc: 0,
+    cyclomaticComplexity: 0,
+    cognitiveComplexity: 0,
+    maxNestingDepth: 0,
+    tokens: 0,
+    loops: 0,
+    conditions: 0,
+  });

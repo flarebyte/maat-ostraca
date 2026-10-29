@@ -1,10 +1,11 @@
 import { expect, test } from 'bun:test';
 import {
   equalBytes,
+  expectRepeatedDeltaOnly,
+  expectRuleOrderInvariant,
   expectSuccess,
   parseAnalyseOutput,
   parseDiffOutput,
-  runCli,
   runTwice,
 } from './helpers.js';
 
@@ -107,43 +108,14 @@ test('go diff is byte-identical across repeated runs', () => {
 });
 
 test('go analyse output is invariant to explicit rule ordering', () => {
-  const first = runCli([
-    'analyse',
-    '--in',
+  expectRuleOrderInvariant(
+    'go',
     'testdata/go/determinism/wide-v1.go',
-    '--rules',
     GO_WIDE_RULES_ORDER_A,
-    '--language',
-    'go',
-    '--json',
-  ]);
-  const second = runCli([
-    'analyse',
-    '--in',
-    'testdata/go/determinism/wide-v1.go',
-    '--rules',
     GO_WIDE_RULES_ORDER_B,
-    '--language',
-    'go',
-    '--json',
-  ]);
-
-  expectSuccess(first);
-  expectSuccess(second);
-  parseAnalyseOutput(first.stdout);
-  parseAnalyseOutput(second.stdout);
-  expect(equalBytes(first.stdout, second.stdout)).toBeTrue();
+  );
 });
 
 test('go diff delta-only is deterministic and preserves deltaOnly flag', () => {
-  const { first, second } = runTwice([...GO_DIFF_ARGS, '--delta-only']);
-
-  expectSuccess(first);
-  expectSuccess(second);
-  const firstParsed = parseDiffOutput(first.stdout);
-  const secondParsed = parseDiffOutput(second.stdout);
-
-  expect(equalBytes(first.stdout, second.stdout)).toBeTrue();
-  expect(firstParsed.deltaOnly).toBeTrue();
-  expect(secondParsed.deltaOnly).toBeTrue();
+  expectRepeatedDeltaOnly(GO_DIFF_ARGS);
 });
