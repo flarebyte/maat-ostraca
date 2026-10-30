@@ -1,0 +1,93 @@
+{
+  "from": {
+    "filename": "testdata/python/regression/v1.py",
+    "language": "python"
+  },
+  "rules": {
+    "class_map": {
+      "Service": {
+        "cognitiveComplexity": { "delta": 0, "from": 1, "to": 1 },
+        "conditions": { "delta": 0, "from": 0, "to": 0 },
+        "cyclomaticComplexity": { "delta": 0, "from": 1, "to": 1 },
+        "loc": { "delta": 0, "from": 6, "to": 6 },
+        "loops": { "delta": 0, "from": 0, "to": 0 },
+        "maxNestingDepth": { "delta": 0, "from": 2, "to": 2 },
+        "methodCount": { "delta": 0, "from": 1, "to": 1 },
+        "sloc": { "delta": 0, "from": 6, "to": 6 },
+        "status": "modified",
+        "tokens": { "delta": 1, "from": 13, "to": 14 }
+      }
+    },
+    "code_hash": {
+      "changed": true,
+      "from": "aa079d19c4a87e8960487d24fe1f524f84dc8e269e787aeac62293207ce3b4fd",
+      "to": "d86b00fd4570c0a02af061df1a2ee1b3f49af865420cf1d8ee32446b816c0f8f"
+    },
+    "env_names_list": { "added": ["USER"], "removed": ["HOME"] },
+    "error_messages_list": { "added": [], "removed": [] },
+    "exception_messages_list": {
+      "added": ["bad configuration"],
+      "removed": ["invalid configuration"]
+    },
+    "file_metrics": {
+      "cognitiveComplexity": { "delta": 0, "from": 2, "to": 2 },
+      "conditions": { "delta": 0, "from": 1, "to": 1 },
+      "cyclomaticComplexity": { "delta": 0, "from": 2, "to": 2 },
+      "loc": { "delta": 0, "from": 19, "to": 19 },
+      "loops": { "delta": 0, "from": 0, "to": 0 },
+      "maxNestingDepth": { "delta": 0, "from": 2, "to": 2 },
+      "sloc": { "delta": 0, "from": 16, "to": 16 },
+      "tokens": { "delta": 1, "from": 31, "to": 32 }
+    },
+    "function_map": {
+      "test_env": {
+        "cognitiveComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "conditions": { "delta": 0, "from": 1, "to": 1 },
+        "cyclomaticComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "ioCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "ioReadCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "ioWriteCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "loc": { "delta": 0, "from": 6, "to": 6 },
+        "loops": { "delta": 0, "from": 0, "to": 0 },
+        "maxNestingDepth": { "delta": 0, "from": 2, "to": 2 },
+        "returnCount": { "delta": 0, "from": 1, "to": 1 },
+        "sloc": { "delta": 0, "from": 6, "to": 6 },
+        "status": "modified",
+        "tokens": { "delta": 0, "from": 9, "to": 9 }
+      }
+    },
+    "import_files_list": { "added": [], "removed": [] },
+    "io_calls_count": {
+      "functions": { "status": "unchanged" },
+      "methods": { "status": "unchanged" }
+    },
+    "io_read_calls_count": {
+      "functions": { "status": "unchanged" },
+      "methods": { "status": "unchanged" }
+    },
+    "io_write_calls_count": {
+      "functions": { "status": "unchanged" },
+      "methods": { "status": "unchanged" }
+    },
+    "method_map": {
+      "Service.test_load": {
+        "cognitiveComplexity": { "delta": 0, "from": 1, "to": 1 },
+        "conditions": { "delta": 0, "from": 0, "to": 0 },
+        "cyclomaticComplexity": { "delta": 0, "from": 1, "to": 1 },
+        "ioCallsCount": { "delta": 0, "from": 2, "to": 2 },
+        "ioReadCallsCount": { "delta": 0, "from": 1, "to": 1 },
+        "ioWriteCallsCount": { "delta": 0, "from": 1, "to": 1 },
+        "loc": { "delta": 0, "from": 4, "to": 4 },
+        "loops": { "delta": 0, "from": 0, "to": 0 },
+        "maxNestingDepth": { "delta": 0, "from": 1, "to": 1 },
+        "returnCount": { "delta": 0, "from": 1, "to": 1 },
+        "sloc": { "delta": 0, "from": 4, "to": 4 },
+        "status": "modified",
+        "tokens": { "delta": 1, "from": 10, "to": 11 }
+      }
+    },
+    "package_imports_list": { "added": [], "removed": [] },
+    "testcase_titles_list": { "added": [], "removed": [] }
+  },
+  "to": { "filename": "testdata/python/regression/v2.py", "language": "python" }
+}

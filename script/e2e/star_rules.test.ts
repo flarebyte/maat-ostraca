@@ -63,155 +63,49 @@ const DART_RULES = [
   'io_write_calls_count',
 ].join(',');
 
-test('maat analyse with --rules * is deterministic for typescript json output', () => {
-  const args = [
+const cases = [
+  {
+    language: 'typescript',
+    file: 'testdata/determinism/wide-v1.ts',
+    rules: TYPESCRIPT_RULES,
+  },
+  {
+    language: 'go',
+    file: 'testdata/go/determinism/wide-v1.go',
+    rules: GO_RULES,
+  },
+  {
+    language: 'dart',
+    file: 'testdata/dart/determinism/wide-v1.dart',
+    rules: DART_RULES,
+  },
+];
+for (const { language, file, rules } of cases) {
+  const args = (selector: string) => [
     'analyse',
     '--in',
-    'testdata/determinism/wide-v1.ts',
+    file,
     '--rules',
-    '*',
+    selector,
     '--language',
-    'typescript',
+    language,
     '--json',
   ];
-  const { first, second } = runTwice(args);
-
-  const firstStdout = expectSuccess(first);
-  const secondStdout = expectSuccess(second);
-
-  parseAnalyseOutput(firstStdout);
-  parseAnalyseOutput(secondStdout);
-  expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
-});
-
-test('maat analyse with --rules * is deterministic for go json output', () => {
-  const args = [
-    'analyse',
-    '--in',
-    'testdata/go/determinism/wide-v1.go',
-    '--rules',
-    '*',
-    '--language',
-    'go',
-    '--json',
-  ];
-  const { first, second } = runTwice(args);
-
-  const firstStdout = expectSuccess(first);
-  const secondStdout = expectSuccess(second);
-
-  parseAnalyseOutput(firstStdout);
-  parseAnalyseOutput(secondStdout);
-  expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
-});
-
-test('maat analyse with --rules * is deterministic for dart json output', () => {
-  const args = [
-    'analyse',
-    '--in',
-    'testdata/dart/determinism/wide-v1.dart',
-    '--rules',
-    '*',
-    '--language',
-    'dart',
-    '--json',
-  ];
-  const { first, second } = runTwice(args);
-
-  const firstStdout = expectSuccess(first);
-  const secondStdout = expectSuccess(second);
-
-  parseAnalyseOutput(firstStdout);
-  parseAnalyseOutput(secondStdout);
-  expect(equalBytes(firstStdout, secondStdout)).toBeTrue();
-});
-
-test('maat analyse with --rules * matches the fully expanded typescript rule list', () => {
-  const wildcard = runCli([
-    'analyse',
-    '--in',
-    'testdata/determinism/wide-v1.ts',
-    '--rules',
-    '*',
-    '--language',
-    'typescript',
-    '--json',
-  ]);
-  const expanded = runCli([
-    'analyse',
-    '--in',
-    'testdata/determinism/wide-v1.ts',
-    '--rules',
-    TYPESCRIPT_RULES,
-    '--language',
-    'typescript',
-    '--json',
-  ]);
-
-  const wildcardStdout = expectSuccess(wildcard);
-  const expandedStdout = expectSuccess(expanded);
-
-  parseAnalyseOutput(wildcardStdout);
-  parseAnalyseOutput(expandedStdout);
-  expect(equalBytes(wildcardStdout, expandedStdout)).toBeTrue();
-});
-
-test('maat analyse with --rules * matches the fully expanded go rule list', () => {
-  const wildcard = runCli([
-    'analyse',
-    '--in',
-    'testdata/go/determinism/wide-v1.go',
-    '--rules',
-    '*',
-    '--language',
-    'go',
-    '--json',
-  ]);
-  const expanded = runCli([
-    'analyse',
-    '--in',
-    'testdata/go/determinism/wide-v1.go',
-    '--rules',
-    GO_RULES,
-    '--language',
-    'go',
-    '--json',
-  ]);
-
-  const wildcardStdout = expectSuccess(wildcard);
-  const expandedStdout = expectSuccess(expanded);
-
-  parseAnalyseOutput(wildcardStdout);
-  parseAnalyseOutput(expandedStdout);
-  expect(equalBytes(wildcardStdout, expandedStdout)).toBeTrue();
-});
-
-test('maat analyse with --rules * matches the fully expanded dart rule list', () => {
-  const wildcard = runCli([
-    'analyse',
-    '--in',
-    'testdata/dart/determinism/wide-v1.dart',
-    '--rules',
-    '*',
-    '--language',
-    'dart',
-    '--json',
-  ]);
-  const expanded = runCli([
-    'analyse',
-    '--in',
-    'testdata/dart/determinism/wide-v1.dart',
-    '--rules',
-    DART_RULES,
-    '--language',
-    'dart',
-    '--json',
-  ]);
-
-  const wildcardStdout = expectSuccess(wildcard);
-  const expandedStdout = expectSuccess(expanded);
-
-  parseAnalyseOutput(wildcardStdout);
-  parseAnalyseOutput(expandedStdout);
-  expect(equalBytes(wildcardStdout, expandedStdout)).toBeTrue();
-});
+  const assertEqualOutputs = (
+    first: ReturnType<typeof runCli>,
+    second: ReturnType<typeof runCli>,
+  ) => {
+    const left = expectSuccess(first);
+    const right = expectSuccess(second);
+    parseAnalyseOutput(left);
+    parseAnalyseOutput(right);
+    expect(equalBytes(left, right)).toBeTrue();
+  };
+  test(`maat analyse with --rules * is deterministic for ${language} json output`, () => {
+    const { first, second } = runTwice(args('*'));
+    assertEqualOutputs(first, second);
+  });
+  test(`maat analyse with --rules * matches the fully expanded ${language} rule list`, () => {
+    assertEqualOutputs(runCli(args('*')), runCli(args(rules)));
+  });
+}

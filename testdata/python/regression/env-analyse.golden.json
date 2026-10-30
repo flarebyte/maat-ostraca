@@ -1,0 +1,5 @@
+{
+  "filename": "testdata/python/regression/v1.py",
+  "language": "python",
+  "rules": { "env_names_list": ["HOME", "PATH"] }
+}

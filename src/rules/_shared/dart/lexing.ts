@@ -1,3 +1,6 @@
+const updateAngleDepth = (depth: number, char: string | undefined): number =>
+  char === '<' ? depth + 1 : Math.max(0, depth - 1);
+
 import {
   pushTrimmedEntry,
   scanBalancedWithSkipper,
@@ -241,13 +244,8 @@ export const readDartDeclarationSegment = (
       index += 1;
       continue;
     }
-    if (char === '<') {
-      angleDepth += 1;
-      index += 1;
-      continue;
-    }
-    if (char === '>') {
-      angleDepth = Math.max(0, angleDepth - 1);
+    if (char === '<' || char === '>') {
+      angleDepth = updateAngleDepth(angleDepth, char);
       index += 1;
       continue;
     }
@@ -322,13 +320,8 @@ export const findDartParameterStart = (segment: string): number | undefined => {
       continue;
     }
 
-    if (char === '<') {
-      angleDepth += 1;
-      index += 1;
-      continue;
-    }
-    if (char === '>') {
-      angleDepth = Math.max(0, angleDepth - 1);
+    if (char === '<' || char === '>') {
+      angleDepth = updateAngleDepth(angleDepth, char);
       index += 1;
       continue;
     }

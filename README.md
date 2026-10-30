@@ -62,6 +62,7 @@ cat testdata/dart/env/analyse.dart | maat analyse --rules env_names_list --langu
 - `typescript`: imports, metrics, code hash, symbol maps, I/O counts, messages, env names, testcase titles
 - `go`: imports, metrics, code hash, symbol maps, I/O counts, messages, env names, testcase titles
 - `dart`: imports, metrics, code hash, symbol maps, I/O counts, messages, env names, testcase titles
+- `python`: Python 3 imports, metrics, code hash, function/method/class maps, I/O counts, messages, env names, testcase names
 
 ## Determinism Guarantees
 
@@ -71,3 +72,30 @@ cat testdata/dart/env/analyse.dart | maat analyse --rules env_names_list --langu
 - Repeated-run byte stability for the same inputs and rule selection
 
 JSON output is the machine contract. Non-JSON output is human-oriented, but remains deterministic for the same command input.
+
+## Python 3
+
+```bash
+maat analyse --in example.py --language python --rules '*' --json
+maat diff --from before.py --to after.py --language python --rules '*' --json
+```
+
+Python analysis is static and uses a bundled Tree-sitter parser through ast-grep;
+it does not execute the source or require a Python interpreter at runtime.
+Functions and classes use dotted enclosing names as map keys. Relative import
+prefixes are preserved. `package_imports_list` includes absolute modules, which
+may be standard-library, third-party, or local modules. Import function/type
+classification and interface rules are unsupported.
+
+Metrics use syntax blocks for nesting and count `for`/`while` loops and
+`if`/`elif`/`case` conditions. Cognitive complexity currently equals cyclomatic
+complexity. Tokens currently count identifier nodes; SLOC counts nonblank lines.
+I/O detection recognizes `input`, `print`, `os.read`/`os.write`, and common
+read/write method names; it does not infer receiver types. Counts include calls
+inside nested declarations. Environment detection recognizes `os.getenv`,
+`os.environ.get`, and literal `os.environ[...]` keys. Messages cover raised
+constructor calls and `logging`/`logger` error, exception, and critical calls.
+Only literal string arguments are extracted; interpolated messages are omitted.
+Tests are functions/methods beginning with `test_`; parameterized test cases are
+not expanded. Python 3 syntax coverage follows the bundled parser; this is not
+a Python version compatibility validator.

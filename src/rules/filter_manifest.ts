@@ -1,13 +1,12 @@
 import { UsageError } from '../core/errors/index.js';
 import type { Language } from '../core/types.js';
-import { RULE_CATALOG, RULE_NAMES, type RuleName } from './catalog.js';
+import { RULE_CATALOG, type RuleName } from './catalog.js';
+import { validateRuleName } from './validate_name.js';
 
 interface FilterManifestInput {
   language: Language;
   match?: string;
 }
-
-const byName = new Map(RULE_CATALOG.map((entry) => [entry.name, entry]));
 
 const baseManifestForLanguage = (language: Language) => {
   return RULE_CATALOG.filter((entry) => entry.languages.includes(language))
@@ -30,20 +29,7 @@ const parseMatchTokens = (match: string, language: Language): RuleName[] => {
 
   const selected = new Set<RuleName>();
   for (const token of tokens) {
-    if (!RULE_NAMES.includes(token as RuleName)) {
-      throw new UsageError(
-        `unknown rule "${token}" for language "${language}"`,
-      );
-    }
-
-    const entry = byName.get(token as RuleName);
-    if (!entry?.languages.includes(language)) {
-      throw new UsageError(
-        `unsupported rule "${token}" for language "${language}"`,
-      );
-    }
-
-    selected.add(token as RuleName);
+    selected.add(validateRuleName(token, language));
   }
 
   return [...selected].sort((left, right) => left.localeCompare(right));

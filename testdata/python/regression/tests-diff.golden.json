@@ -1,0 +1,8 @@
+{
+  "from": {
+    "filename": "testdata/python/regression/v1.py",
+    "language": "python"
+  },
+  "rules": { "testcase_titles_list": { "added": [], "removed": [] } },
+  "to": { "filename": "testdata/python/regression/v2.py", "language": "python" }
+}

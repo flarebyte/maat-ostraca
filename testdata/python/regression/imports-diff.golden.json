@@ -1,0 +1,11 @@
+{
+  "from": {
+    "filename": "testdata/python/regression/v1.py",
+    "language": "python"
+  },
+  "rules": {
+    "import_files_list": { "added": [], "removed": [] },
+    "package_imports_list": { "added": [], "removed": [] }
+  },
+  "to": { "filename": "testdata/python/regression/v2.py", "language": "python" }
+}

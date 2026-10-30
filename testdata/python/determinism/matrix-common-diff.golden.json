@@ -1,0 +1,29 @@
+{
+  "from": {
+    "filename": "testdata/python/determinism/wide-v1.py",
+    "language": "python"
+  },
+  "rules": {
+    "code_hash": {
+      "changed": true,
+      "from": "4954e213be143debf59bfb191b5dd49678aa975f027aea7a4064aaa2d334cffd",
+      "to": "5669dcba4107732e55c31a8557e9661b9945dc1e60ce5273d5a4bcdaa8028631"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": { "delta": 0, "from": 1, "to": 1 },
+      "conditions": { "delta": 0, "from": 0, "to": 0 },
+      "cyclomaticComplexity": { "delta": 0, "from": 1, "to": 1 },
+      "loc": { "delta": 0, "from": 11, "to": 11 },
+      "loops": { "delta": 0, "from": 0, "to": 0 },
+      "maxNestingDepth": { "delta": 0, "from": 2, "to": 2 },
+      "sloc": { "delta": 0, "from": 8, "to": 8 },
+      "tokens": { "delta": 0, "from": 11, "to": 11 }
+    },
+    "import_files_list": { "added": [], "removed": [] },
+    "package_imports_list": { "added": [], "removed": [] }
+  },
+  "to": {
+    "filename": "testdata/python/determinism/wide-v2.py",
+    "language": "python"
+  }
+}

@@ -1,5 +1,9 @@
 import { InternalError } from '../../../core/errors/index.js';
-import { computeMetricSummary, countIdentifierMatches } from '../common.js';
+import {
+  computeMetricSummary,
+  countIdentifierMatches,
+  maskSlashComment,
+} from '../common.js';
 import { sha256OfText } from '../typescript/metrics.js';
 import type { SymbolMetricsIoFields } from '../typescript/symbol_metrics_io.js';
 
@@ -115,30 +119,10 @@ const stripCommentsAndStrings = (source: string): string => {
     const char = source[index];
     const next = source[index + 1];
 
-    if (char === '/' && next === '/') {
-      output += '  ';
-      index += 2;
-      while (index < source.length && source[index] !== '\n') {
-        output += ' ';
-        index += 1;
-      }
-      continue;
-    }
-
-    if (char === '/' && next === '*') {
-      output += '  ';
-      index += 2;
-      while (index < source.length) {
-        const current = source[index];
-        const following = source[index + 1];
-        output += current === '\n' ? '\n' : ' ';
-        index += 1;
-        if (current === '*' && following === '/') {
-          output += ' ';
-          index += 1;
-          break;
-        }
-      }
+    const comment = maskSlashComment(source, index);
+    if (comment) {
+      output += comment.output;
+      index = comment.end;
       continue;
     }
 

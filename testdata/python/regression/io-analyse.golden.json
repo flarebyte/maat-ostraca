@@ -1,0 +1,18 @@
+{
+  "filename": "testdata/python/regression/v1.py",
+  "language": "python",
+  "rules": {
+    "io_calls_count": {
+      "functions": { "test_env": 0 },
+      "methods": { "Service.test_load": 2 }
+    },
+    "io_read_calls_count": {
+      "functions": { "test_env": 0 },
+      "methods": { "Service.test_load": 1 }
+    },
+    "io_write_calls_count": {
+      "functions": { "test_env": 0 },
+      "methods": { "Service.test_load": 1 }
+    }
+  }
+}

@@ -15,6 +15,40 @@ interface RuleModule {
 }
 
 const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
+  ['class_map:python', () => import('./class_map/python.js')],
+  ['env_names_list:python', () => import('./env_names_list/python.js')],
+  [
+    'exception_messages_list:python',
+    () => import('./exception_messages_list/python.js'),
+  ],
+  [
+    'error_messages_list:python',
+    () => import('./error_messages_list/python.js'),
+  ],
+  [
+    'testcase_titles_list:python',
+    () => import('./testcase_titles_list/python.js'),
+  ],
+  ['io_calls_count:python', () => import('./io_calls_count/python.js')],
+  [
+    'io_read_calls_count:python',
+    () => import('./io_read_calls_count/python.js'),
+  ],
+  [
+    'io_write_calls_count:python',
+    () => import('./io_write_calls_count/python.js'),
+  ],
+
+  ['code_hash:python', () => import('./code_hash/python.js')],
+  ['file_metrics:python', () => import('./file_metrics/python.js')],
+  ['import_files_list:python', () => import('./import_files_list/python.js')],
+  [
+    'package_imports_list:python',
+    () => import('./package_imports_list/python.js'),
+  ],
+  ['function_map:python', () => import('./function_map/python.js')],
+  ['method_map:python', () => import('./method_map/python.js')],
+
   ['import_files_list:dart', () => import('./import_files_list/dart.js')],
   ['import_files_list:go', () => import('./import_files_list/go.js')],
   [
@@ -95,7 +129,7 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
 ]);
 
 export const IMPLEMENTED_RULES_BY_LANGUAGE = new Map<Language, RuleName[]>(
-  (['typescript', 'go', 'dart'] as const).map((language) => [
+  (['typescript', 'go', 'dart', 'python'] as const).map((language) => [
     language,
     [...ruleLoaders.keys()]
       .filter((key) => key.endsWith(`:${language}`))

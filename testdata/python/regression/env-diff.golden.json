@@ -1,0 +1,8 @@
+{
+  "from": {
+    "filename": "testdata/python/regression/v1.py",
+    "language": "python"
+  },
+  "rules": { "env_names_list": { "added": ["USER"], "removed": ["HOME"] } },
+  "to": { "filename": "testdata/python/regression/v2.py", "language": "python" }
+}

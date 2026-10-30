@@ -1,0 +1,5 @@
+{
+  "filename": "testdata/python/regression/v1.py",
+  "language": "python",
+  "rules": { "testcase_titles_list": ["Service.test_load", "test_env"] }
+}

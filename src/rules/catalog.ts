@@ -33,7 +33,7 @@ export const RULE_CATALOG: readonly RuleCatalogEntry[] = [
   {
     name: 'import_files_list',
     description: 'List imported files by module path.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
   {
     name: 'import_functions_list',
@@ -48,42 +48,42 @@ export const RULE_CATALOG: readonly RuleCatalogEntry[] = [
   {
     name: 'package_imports_list',
     description: 'List package-level import statements.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
   {
     name: 'exception_messages_list',
     description: 'List thrown exception message literals.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
   {
     name: 'error_messages_list',
     description: 'List returned or logged error message literals.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
   {
     name: 'env_names_list',
     description: 'List environment variable names accessed by code.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
   {
     name: 'testcase_titles_list',
     description: 'List detected test case titles.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
   {
     name: 'function_map',
     description: 'Map function declarations and signatures.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
   {
     name: 'method_map',
     description: 'Map method declarations and receivers/classes.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
   {
     name: 'class_map',
     description: 'Map class declarations and members.',
-    languages: ['typescript', 'dart'],
+    languages: ['typescript', 'dart', 'python'],
   },
   {
     name: 'interface_map',
@@ -98,26 +98,26 @@ export const RULE_CATALOG: readonly RuleCatalogEntry[] = [
   {
     name: 'file_metrics',
     description: 'Collect basic per-file metric counters.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
   {
     name: 'code_hash',
     description: 'Compute deterministic code-level content hash.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
   {
     name: 'io_calls_count',
     description: 'Count all IO-related call sites.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
   {
     name: 'io_read_calls_count',
     description: 'Count IO read call sites.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
   {
     name: 'io_write_calls_count',
     description: 'Count IO write call sites.',
-    languages: ['go', 'typescript', 'dart'],
+    languages: ['go', 'typescript', 'dart', 'python'],
   },
 ] as const;

@@ -1,6 +1,10 @@
 import { InternalError } from '../../../core/errors/index.js';
 import type { RuleRunInput } from '../../dispatch.js';
-import { buildIoCountOutput, countReadWritePatternMatches } from '../common.js';
+import {
+  buildNamedSymbolIoOutput,
+  countReadWritePatternMatches,
+  withIoCountErrors,
+} from '../common.js';
 import { extractDartSymbols } from './symbols.js';
 
 export type IoCountMode = 'all' | 'read' | 'write';
@@ -55,27 +59,11 @@ export const countDartIoBySymbol = (
     );
   }
 
-  try {
+  return withIoCountErrors(() => {
     const symbols = extractDartSymbols(input);
 
-    return buildIoCountOutput(
-      {
-        functions: symbols.functions.map((symbol) => ({
-          key: symbol.name,
-          bodySource: symbol.bodySource,
-        })),
-        methods: symbols.methods.map((symbol) => ({
-          key: symbol.key,
-          bodySource: symbol.bodySource,
-        })),
-      },
-      (bodySource) => countInBody(bodySource, mode),
+    return buildNamedSymbolIoOutput(symbols, (bodySource) =>
+      countInBody(bodySource, mode),
     );
-  } catch (error: unknown) {
-    if (error instanceof InternalError) {
-      throw error;
-    }
-
-    throw new InternalError('io_count_error: failed to compute io counts');
-  }
+  });
 };

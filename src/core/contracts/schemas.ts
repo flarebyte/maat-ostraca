@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { RULE_NAMES } from '../../rules/catalog.js';
 
-export const LanguageSchema = z.enum(['go', 'typescript', 'dart']);
+export const LanguageSchema = z.enum(['go', 'typescript', 'dart', 'python']);
 export const RuleNameSchema = z.enum(RULE_NAMES);
 
 export const AnalyseOutputSchema = z

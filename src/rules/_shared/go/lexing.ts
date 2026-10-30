@@ -1,4 +1,8 @@
-import { scanBalancedWithSkipper, splitTopLevelSegments } from '../common.js';
+import {
+  scanBalancedWithSkipper,
+  skipWhitespaceWithSkipper,
+  splitTopLevelSegments,
+} from '../common.js';
 
 export const isGoIdentifierStart = (char: string | undefined): boolean => {
   return char !== undefined && /[A-Za-z_]/.test(char);
@@ -78,26 +82,7 @@ export const skipGoWhitespaceAndComments = (
   source: string,
   start: number,
 ): number => {
-  let index = start;
-
-  while (index < source.length) {
-    const char = source[index];
-
-    if (char === ' ' || char === '\t' || char === '\n' || char === '\r') {
-      index += 1;
-      continue;
-    }
-
-    const skipped = skipGoCommentOrString(source, index);
-    if (skipped !== undefined && skipped > index) {
-      index = skipped;
-      continue;
-    }
-
-    break;
-  }
-
-  return index;
+  return skipWhitespaceWithSkipper(source, start, skipGoCommentOrString);
 };
 
 export const scanGoIdentifier = (

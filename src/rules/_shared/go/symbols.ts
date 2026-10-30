@@ -30,7 +30,7 @@ interface MethodSymbol {
   bodySource: string;
 }
 
-interface GoSymbols {
+export interface GoSymbols {
   functions: FunctionSymbol[];
   methods: MethodSymbol[];
 }

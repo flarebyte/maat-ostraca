@@ -1,6 +1,6 @@
 {
   "name": "maat-ostraca",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Translate the ghost in the machine into the poetry of human intent",
   "keywords": [
     "language",
@@ -39,13 +39,14 @@
     "clean": "node -e \"import { rmSync } from 'node:fs'; rmSync('dist', { recursive: true, force: true });\""
   },
   "devDependencies": {
-    "c8": "^11.0.0",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "c8": "^12.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@ast-grep/napi": "^0.41.0",
-    "commander": "^14.0.3",
-    "zod": "^4.3.6"
+    "@ast-grep/lang-python": "^0.0.6",
+    "@ast-grep/napi": "^ 0.51.0",
+    "commander": "^15.0.0",
+    "zod": "^4.6.7"
   }
 }

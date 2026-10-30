@@ -1,0 +1,22 @@
+{
+  "filename": "testdata/python/determinism/wide-v1.py",
+  "language": "python",
+  "rules": {
+    "code_hash": {
+      "algorithm": "sha256",
+      "file": "4954e213be143debf59bfb191b5dd49678aa975f027aea7a4064aaa2d334cffd"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": 1,
+      "conditions": 0,
+      "cyclomaticComplexity": 1,
+      "loc": 11,
+      "loops": 0,
+      "maxNestingDepth": 2,
+      "sloc": 8,
+      "tokens": 11
+    },
+    "import_files_list": [".helpers", "os"],
+    "package_imports_list": ["os"]
+  }
+}

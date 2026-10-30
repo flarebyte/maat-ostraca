@@ -1,47 +1,12 @@
 import type { DiffOutput } from '../../contracts/outputs.js';
+import {
+  isHashDiff,
+  isListDiff,
+  isNumericDelta,
+  isStatusEntry,
+} from '../../diff/guards.js';
 import { colorRuleName, colorSection, type HumanFormatStyle } from './color.js';
 import { compareStrings, isPlainObject, sortedEntries } from './shared.js';
-
-const isListDiff = (
-  value: unknown,
-): value is { added: unknown[]; removed: unknown[] } => {
-  const candidate = value as { added?: unknown; removed?: unknown };
-  return (
-    isPlainObject(value) &&
-    Array.isArray(candidate.added) &&
-    Array.isArray(candidate.removed)
-  );
-};
-
-const isHashDiff = (value: unknown): value is { changed: boolean } => {
-  const candidate = value as { changed?: unknown };
-  return isPlainObject(value) && typeof candidate.changed === 'boolean';
-};
-
-const isNumericDelta = (
-  value: unknown,
-): value is { from: number; to: number; delta: number } => {
-  const candidate = value as { from?: unknown; to?: unknown; delta?: unknown };
-  return (
-    isPlainObject(value) &&
-    typeof candidate.from === 'number' &&
-    typeof candidate.to === 'number' &&
-    typeof candidate.delta === 'number'
-  );
-};
-
-const isStatusEntry = (
-  value: unknown,
-): value is { status: 'added' | 'removed' | 'modified' | 'unchanged' } => {
-  const candidate = value as { status?: unknown };
-  return (
-    isPlainObject(value) &&
-    (candidate.status === 'added' ||
-      candidate.status === 'removed' ||
-      candidate.status === 'modified' ||
-      candidate.status === 'unchanged')
-  );
-};
 
 const summarizeMetricsRule = (
   ruleName: string,

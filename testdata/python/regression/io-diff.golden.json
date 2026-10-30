@@ -1,0 +1,21 @@
+{
+  "from": {
+    "filename": "testdata/python/regression/v1.py",
+    "language": "python"
+  },
+  "rules": {
+    "io_calls_count": {
+      "functions": { "status": "unchanged" },
+      "methods": { "status": "unchanged" }
+    },
+    "io_read_calls_count": {
+      "functions": { "status": "unchanged" },
+      "methods": { "status": "unchanged" }
+    },
+    "io_write_calls_count": {
+      "functions": { "status": "unchanged" },
+      "methods": { "status": "unchanged" }
+    }
+  },
+  "to": { "filename": "testdata/python/regression/v2.py", "language": "python" }
+}

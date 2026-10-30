@@ -1,0 +1,20 @@
+{
+  "filename": "testdata/python/regression/v1.py",
+  "language": "python",
+  "rules": {
+    "code_hash": {
+      "algorithm": "sha256",
+      "file": "aa079d19c4a87e8960487d24fe1f524f84dc8e269e787aeac62293207ce3b4fd"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": 2,
+      "conditions": 1,
+      "cyclomaticComplexity": 2,
+      "loc": 19,
+      "loops": 0,
+      "maxNestingDepth": 2,
+      "sloc": 16,
+      "tokens": 31
+    }
+  }
+}

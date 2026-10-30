@@ -4,6 +4,7 @@ import { canonicalStringify } from '../../src/core/format/canonical-json.js';
 import {
   asUtf8,
   equalBytes,
+  expectDeltaOnlyShapes,
   expectSuccess,
   parseAnalyseOutput,
   parseDiffOutput,
@@ -171,27 +172,5 @@ test('diff delta-only output is deterministic and preserves delta-only shape che
   expect(standardParsed.deltaOnly).toBeUndefined();
   expect(firstParsed.deltaOnly).toBeTrue();
 
-  const standardMetrics = standardParsed.rules.file_metrics as Record<
-    string,
-    unknown
-  >;
-  const deltaOnlyMetrics = firstParsed.rules.file_metrics as Record<
-    string,
-    unknown
-  >;
-
-  expect(typeof standardMetrics.loc).toBe('object');
-  expect(typeof deltaOnlyMetrics.loc).toBe('number');
-
-  const standardHash = standardParsed.rules.code_hash as Record<
-    string,
-    unknown
-  >;
-  const deltaOnlyHash = firstParsed.rules.code_hash as Record<string, unknown>;
-
-  expect(Object.hasOwn(standardHash, 'from')).toBeTrue();
-  expect(Object.hasOwn(standardHash, 'to')).toBeTrue();
-  expect(Object.hasOwn(deltaOnlyHash, 'from')).toBeFalse();
-  expect(Object.hasOwn(deltaOnlyHash, 'to')).toBeFalse();
-  expect(Object.hasOwn(deltaOnlyHash, 'changed')).toBeTrue();
+  expectDeltaOnlyShapes(standardParsed, firstParsed);
 });
