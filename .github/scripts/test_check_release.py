@@ -17,10 +17,13 @@ class CheckReleaseTests(unittest.TestCase):
         lock = {**package, 'version': lock_version, 'packages': {'': package}}
         def read(path, *args, **kwargs):
             return json.dumps(lock if path.name == 'package-lock.json' else package)
-        error = HTTPError('https://registry.npmjs.org/example/1.2.3', status, 'test', {}, io.BytesIO())
+        def registry_response(*args, **kwargs):
+            if status == 200:
+                return MagicMock()
+            raise HTTPError('https://registry.npmjs.org/example/1.2.3', status, 'test', {}, io.BytesIO())
         with tempfile.TemporaryDirectory() as folder:
             output = Path(folder) / 'output'
-            with patch.object(Path, 'read_text', read), patch.dict(os.environ, {'GITHUB_OUTPUT': str(output)}), patch('urllib.request.urlopen', side_effect=error), patch('subprocess.run') as git:
+            with patch.object(Path, 'read_text', read), patch.dict(os.environ, {'GITHUB_OUTPUT': str(output)}), patch('urllib.request.urlopen', side_effect=registry_response), patch('subprocess.run') as git:
                 git.return_value.returncode = tag_status
                 runpy.run_path(str(SCRIPT), run_name='__main__')
             return output.read_text()
@@ -42,8 +45,8 @@ class CheckReleaseTests(unittest.TestCase):
             self.run_check(status=503)
 
     def test_existing_registry_version(self):
-        with patch('urllib.request.urlopen', return_value=MagicMock()), self.assertRaisesRegex(SystemExit, 'Already published'):
-            runpy.run_path(str(SCRIPT), run_name='__main__')
+        with self.assertRaisesRegex(SystemExit, 'Already published'):
+            self.run_check(status=200)
 
     def test_existing_or_unreadable_tag(self):
         for status in [0, 128]:
