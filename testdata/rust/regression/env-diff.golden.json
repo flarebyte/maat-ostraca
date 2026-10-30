@@ -1,0 +1,10 @@
+{
+  "from": { "filename": "testdata/rust/regression/v1.rs", "language": "rust" },
+  "rules": {
+    "env_names_list": {
+      "added": ["RELEASE_ID", "USER"],
+      "removed": ["BUILD_ID", "HOME"]
+    }
+  },
+  "to": { "filename": "testdata/rust/regression/v2.rs", "language": "rust" }
+}

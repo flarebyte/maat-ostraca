@@ -1,0 +1,19 @@
+{
+  "filename": "testdata/rust/regression/v1.rs",
+  "language": "rust",
+  "rules": {
+    "interface_map": {
+      "Reader": {
+        "extends": ["Send", "Sync"],
+        "methods": [
+          "fn label(&self) -> &'static str;",
+          "fn read(&self) -> String;"
+        ],
+        "modifiers": ["pub"]
+      }
+    },
+    "interfaces_code_map": {
+      "Reader": "pub trait Reader: Send + Sync {\n    fn read(&self) -> String;\n    fn label(&self) -> &'static str { \"reader\" }\n}"
+    }
+  }
+}

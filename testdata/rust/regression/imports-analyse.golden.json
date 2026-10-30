@@ -1,0 +1,14 @@
+{
+  "filename": "testdata/rust/regression/v1.rs",
+  "language": "rust",
+  "rules": {
+    "import_files_list": [
+      "crate::helpers::prepare",
+      "std::env",
+      "std::fs::read_to_string",
+      "std::fs::write",
+      "std::io::Read"
+    ],
+    "package_imports_list": ["std"]
+  }
+}

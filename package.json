@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@ast-grep/lang-python": "^0.0.6",
+    "@ast-grep/lang-rust": "^0.0.7",
     "@ast-grep/napi": "^ 0.51.0",
     "commander": "^15.0.0",
     "zod": "^4.6.7"

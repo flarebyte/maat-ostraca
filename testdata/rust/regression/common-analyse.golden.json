@@ -1,0 +1,28 @@
+{
+  "filename": "testdata/rust/regression/v1.rs",
+  "language": "rust",
+  "rules": {
+    "code_hash": {
+      "algorithm": "sha256",
+      "file": "a1ae58f62da23f4202e15d58c0a470e9a411ac8f7f38918db4c2ac4c775be253"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": 4,
+      "conditions": 2,
+      "cyclomaticComplexity": 4,
+      "loc": 41,
+      "loops": 1,
+      "maxNestingDepth": 3,
+      "sloc": 34,
+      "tokens": 265
+    },
+    "import_files_list": [
+      "crate::helpers::prepare",
+      "std::env",
+      "std::fs::read_to_string",
+      "std::fs::write",
+      "std::io::Read"
+    ],
+    "package_imports_list": ["std"]
+  }
+}

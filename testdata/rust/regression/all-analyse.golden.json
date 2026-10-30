@@ -1,0 +1,169 @@
+{
+  "filename": "testdata/rust/regression/v1.rs",
+  "language": "rust",
+  "rules": {
+    "code_hash": {
+      "algorithm": "sha256",
+      "file": "a1ae58f62da23f4202e15d58c0a470e9a411ac8f7f38918db4c2ac4c775be253"
+    },
+    "env_names_list": ["BUILD_ID", "HOME"],
+    "error_messages_list": ["empty data"],
+    "exception_messages_list": ["cannot save \"empty\" data"],
+    "file_metrics": {
+      "cognitiveComplexity": 4,
+      "conditions": 2,
+      "cyclomaticComplexity": 4,
+      "loc": 41,
+      "loops": 1,
+      "maxNestingDepth": 3,
+      "sloc": 34,
+      "tokens": 265
+    },
+    "function_map": {
+      "save": {
+        "cognitiveComplexity": 2,
+        "conditions": 1,
+        "cyclomaticComplexity": 2,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 1,
+        "loc": 8,
+        "loops": 0,
+        "maxNestingDepth": 2,
+        "modifiers": ["pub"],
+        "params": ["data: &str", "path: &str"],
+        "returnCount": 0,
+        "returns": [],
+        "sha256": "4e85d9ed92797c91dc4928ca1054acae91df30b922eb1cba414af7407ffa4025",
+        "sloc": 8,
+        "tokens": 53
+      },
+      "test_configuration": {
+        "cognitiveComplexity": 3,
+        "conditions": 1,
+        "cyclomaticComplexity": 3,
+        "ioCallsCount": 1,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 1,
+        "loc": 7,
+        "loops": 1,
+        "maxNestingDepth": 3,
+        "modifiers": [],
+        "params": [],
+        "returnCount": 0,
+        "returns": [],
+        "sha256": "b26a6f2c47c75a9d2374b429cd27d22e15de63780534855bd34505409a4f0adf",
+        "sloc": 7,
+        "tokens": 49
+      }
+    },
+    "import_files_list": [
+      "crate::helpers::prepare",
+      "std::env",
+      "std::fs::read_to_string",
+      "std::fs::write",
+      "std::io::Read"
+    ],
+    "interface_map": {
+      "Reader": {
+        "extends": ["Send", "Sync"],
+        "methods": [
+          "fn label(&self) -> &'static str;",
+          "fn read(&self) -> String;"
+        ],
+        "modifiers": ["pub"]
+      }
+    },
+    "interfaces_code_map": {
+      "Reader": "pub trait Reader: Send + Sync {\n    fn read(&self) -> String;\n    fn label(&self) -> &'static str { \"reader\" }\n}"
+    },
+    "io_calls_count": {
+      "functions": { "save": 1, "test_configuration": 1 },
+      "methods": {
+        "<Cache<T> as Reader>::read": 2,
+        "Cache<T>::new": 0,
+        "Reader::label": 0
+      }
+    },
+    "io_read_calls_count": {
+      "functions": { "save": 0, "test_configuration": 0 },
+      "methods": {
+        "<Cache<T> as Reader>::read": 1,
+        "Cache<T>::new": 0,
+        "Reader::label": 0
+      }
+    },
+    "io_write_calls_count": {
+      "functions": { "save": 1, "test_configuration": 1 },
+      "methods": {
+        "<Cache<T> as Reader>::read": 1,
+        "Cache<T>::new": 0,
+        "Reader::label": 0
+      }
+    },
+    "method_map": {
+      "<Cache<T> as Reader>::read": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 2,
+        "ioReadCallsCount": 1,
+        "ioWriteCallsCount": 1,
+        "loc": 6,
+        "loops": 0,
+        "maxNestingDepth": 1,
+        "modifiers": [],
+        "name": "read",
+        "params": ["&self"],
+        "receiver": "<Cache<T> as Reader>",
+        "returnCount": 0,
+        "returns": ["String"],
+        "sha256": "6f77ed6205b4e420293f6df5465aa35dbb5f89def4677eee7b82063cae162e0f",
+        "sloc": 6,
+        "tokens": 45
+      },
+      "Cache<T>::new": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 1,
+        "loops": 0,
+        "maxNestingDepth": 1,
+        "modifiers": ["pub"],
+        "name": "new",
+        "params": ["value: T"],
+        "receiver": "Cache<T>",
+        "returnCount": 0,
+        "returns": ["Self"],
+        "sha256": "495d570532cbcb5f783daf9291f2b592160ed18bad2e164f1f280c395a302359",
+        "sloc": 1,
+        "tokens": 16
+      },
+      "Reader::label": {
+        "cognitiveComplexity": 1,
+        "conditions": 0,
+        "cyclomaticComplexity": 1,
+        "ioCallsCount": 0,
+        "ioReadCallsCount": 0,
+        "ioWriteCallsCount": 0,
+        "loc": 1,
+        "loops": 0,
+        "maxNestingDepth": 1,
+        "modifiers": [],
+        "name": "label",
+        "params": ["&self"],
+        "receiver": "Reader",
+        "returnCount": 0,
+        "returns": ["&'static str"],
+        "sha256": "f208980ed280ead51775124343dedc60421bf3d243f7361ee8be3e54097e6440",
+        "sloc": 1,
+        "tokens": 14
+      }
+    },
+    "package_imports_list": ["std"],
+    "testcase_titles_list": ["test_configuration"]
+  }
+}
