@@ -1,0 +1,36 @@
+{
+  "from": {
+    "filename": "testdata/swift/regression/v1.swift",
+    "language": "swift"
+  },
+  "rules": {
+    "io_calls_count": {
+      "functions": {
+        "configuration()": { "delta": 0, "from": 1, "to": 1 },
+        "save(_:String,to:String)": { "delta": 0, "from": 1, "to": 1 },
+        "status": "modified"
+      },
+      "methods": { "status": "unchanged" }
+    },
+    "io_read_calls_count": {
+      "functions": {
+        "configuration()": { "delta": 0, "from": 0, "to": 0 },
+        "save(_:String,to:String)": { "delta": 0, "from": 0, "to": 0 },
+        "status": "modified"
+      },
+      "methods": { "status": "unchanged" }
+    },
+    "io_write_calls_count": {
+      "functions": {
+        "configuration()": { "delta": 0, "from": 1, "to": 1 },
+        "save(_:String,to:String)": { "delta": 0, "from": 1, "to": 1 },
+        "status": "modified"
+      },
+      "methods": { "status": "unchanged" }
+    }
+  },
+  "to": {
+    "filename": "testdata/swift/regression/v2.swift",
+    "language": "swift"
+  }
+}

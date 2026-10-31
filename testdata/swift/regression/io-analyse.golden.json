@@ -1,0 +1,36 @@
+{
+  "filename": "testdata/swift/regression/v1.swift",
+  "language": "swift",
+  "rules": {
+    "io_calls_count": {
+      "functions": { "configuration()": 1, "save(_:String,to:String)": 1 },
+      "methods": {
+        "Cache.build()->Cache": 0,
+        "Cache.deinit()": 1,
+        "Cache.init()": 1,
+        "Cache.read(_:String)->String": 1,
+        "CacheTests.testRead()": 1
+      }
+    },
+    "io_read_calls_count": {
+      "functions": { "configuration()": 0, "save(_:String,to:String)": 0 },
+      "methods": {
+        "Cache.build()->Cache": 0,
+        "Cache.deinit()": 0,
+        "Cache.init()": 0,
+        "Cache.read(_:String)->String": 1,
+        "CacheTests.testRead()": 0
+      }
+    },
+    "io_write_calls_count": {
+      "functions": { "configuration()": 1, "save(_:String,to:String)": 1 },
+      "methods": {
+        "Cache.build()->Cache": 0,
+        "Cache.deinit()": 1,
+        "Cache.init()": 1,
+        "Cache.read(_:String)->String": 0,
+        "CacheTests.testRead()": 1
+      }
+    }
+  }
+}

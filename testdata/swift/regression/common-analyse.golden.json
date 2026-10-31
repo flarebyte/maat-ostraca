@@ -1,0 +1,22 @@
+{
+  "filename": "testdata/swift/regression/v1.swift",
+  "language": "swift",
+  "rules": {
+    "code_hash": {
+      "algorithm": "sha256",
+      "file": "006e61807ca5489994a3371a4aa30b40625b50a51b6d6f4c39baa6507408b9d2"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": 3,
+      "conditions": 1,
+      "cyclomaticComplexity": 3,
+      "loc": 39,
+      "loops": 1,
+      "maxNestingDepth": 3,
+      "sloc": 32,
+      "tokens": 207
+    },
+    "import_files_list": ["Foundation", "Testing", "XCTest"],
+    "package_imports_list": ["Foundation", "Testing", "XCTest"]
+  }
+}

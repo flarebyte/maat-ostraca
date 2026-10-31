@@ -7,6 +7,7 @@ export const LanguageSchema = z.enum([
   'dart',
   'python',
   'rust',
+  'swift',
 ]);
 export const RuleNameSchema = z.enum(RULE_NAMES);
 

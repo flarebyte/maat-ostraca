@@ -1,0 +1,8 @@
+{
+  "filename": "testdata/swift/regression/v1.swift",
+  "language": "swift",
+  "rules": {
+    "error_messages_list": ["saving data"],
+    "exception_messages_list": ["missing home"]
+  }
+}

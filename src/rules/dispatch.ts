@@ -15,6 +15,35 @@ interface RuleModule {
 }
 
 const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
+  ['code_hash:swift', () => import('./code_hash/swift.js')],
+  ['file_metrics:swift', () => import('./file_metrics/swift.js')],
+  ['import_files_list:swift', () => import('./import_files_list/swift.js')],
+  [
+    'package_imports_list:swift',
+    () => import('./package_imports_list/swift.js'),
+  ],
+  ['function_map:swift', () => import('./function_map/swift.js')],
+  ['method_map:swift', () => import('./method_map/swift.js')],
+  ['class_map:swift', () => import('./class_map/swift.js')],
+  ['interface_map:swift', () => import('./interface_map/swift.js')],
+  ['interfaces_code_map:swift', () => import('./interfaces_code_map/swift.js')],
+  ['env_names_list:swift', () => import('./env_names_list/swift.js')],
+  [
+    'exception_messages_list:swift',
+    () => import('./exception_messages_list/swift.js'),
+  ],
+  ['error_messages_list:swift', () => import('./error_messages_list/swift.js')],
+  [
+    'testcase_titles_list:swift',
+    () => import('./testcase_titles_list/swift.js'),
+  ],
+  ['io_calls_count:swift', () => import('./io_calls_count/swift.js')],
+  ['io_read_calls_count:swift', () => import('./io_read_calls_count/swift.js')],
+  [
+    'io_write_calls_count:swift',
+    () => import('./io_write_calls_count/swift.js'),
+  ],
+
   ['code_hash:rust', () => import('./code_hash/rust.js')],
   ['file_metrics:rust', () => import('./file_metrics/rust.js')],
   ['import_files_list:rust', () => import('./import_files_list/rust.js')],
@@ -148,13 +177,15 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
 ]);
 
 export const IMPLEMENTED_RULES_BY_LANGUAGE = new Map<Language, RuleName[]>(
-  (['typescript', 'go', 'dart', 'python', 'rust'] as const).map((language) => [
-    language,
-    [...ruleLoaders.keys()]
-      .filter((key) => key.endsWith(`:${language}`))
-      .map((key) => key.slice(0, key.lastIndexOf(':')) as RuleName)
-      .sort((left, right) => left.localeCompare(right)),
-  ]),
+  (['typescript', 'go', 'dart', 'python', 'rust', 'swift'] as const).map(
+    (language) => [
+      language,
+      [...ruleLoaders.keys()]
+        .filter((key) => key.endsWith(`:${language}`))
+        .map((key) => key.slice(0, key.lastIndexOf(':')) as RuleName)
+        .sort((left, right) => left.localeCompare(right)),
+    ],
+  ),
 );
 
 export const dispatchRule = async (

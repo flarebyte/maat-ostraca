@@ -11,6 +11,7 @@ See [the JSON contract](LANGUAGE_JSON_CONTRACT.md) for portable queries.
 | Dart | Import URIs, functions/classes/methods, interface-like declarations, and common Dart I/O patterns |
 | Python | Python 3 syntax, dotted enclosing symbol names, and standard-library patterns |
 | Rust | Module/impl-qualified symbol names, traits as interfaces, and standard-library/macro patterns |
+| Swift | Overload-qualified symbols, classes/protocols, extensions, and Foundation/standard-library patterns |
 
 Extraction is static. Imported names, method receivers and dynamic values are
 not resolved as a compiler would resolve them. Metrics share fields and types,
@@ -96,3 +97,58 @@ is parsed with recovery, so results may be partial rather than compiler errors.
   `#[async_std::test]` attributes, including ignored tests. Parameterized tests
   are not expanded. All syntactic `cfg` branches are inspected; repeated symbol
   keys use the last declaration in source order, as a file-level approximation.
+
+## Swift
+
+```sh
+maat analyse --in Sources/App.swift --language swift --rules '*' --json
+maat diff --from before.swift --to after.swift --language swift --rules '*' --json
+```
+
+Swift uses the bundled Tree-sitter grammar, with no Swift compiler or Xcode
+requirement. Syntax recovery may yield partial results for incomplete input.
+It does not resolve imported declarations, execute code, expand macros, evaluate
+`#if` conditions or provide compiler-level type checking. Supported syntax follows
+the bundled grammar rather than a guarantee of every Swift language feature.
+
+- Imports preserve selective paths such as `Other.Module.Thing`; package imports
+  return distinct module roots. Swift Package Manager dependencies are not loaded.
+- Function/method keys include enclosing types/functions, generic parameters,
+  argument labels/types and explicit return types. Defaults and internal argument
+  names do not distinguish overload keys. Signature arrays preserve parser-level
+  parameter declarations; default values are not separate fields. Visibility,
+  async and throws/rethrows modifiers are retained where represented by the parser.
+- Class maps include classes only. Structs, enums, actors and extensions contribute
+  methods. Initializers and deinitializers are included as methods. Computed
+  property accessors and subscripts are not emitted as methods. Extension methods
+  use the extended type's textual receiver. Class `methodCount` includes matching
+  extension methods, while class source metrics/hash cover the class declaration.
+- Protocol maps include inherited protocols and function requirements; property
+  requirements and associated types remain in source snippets. Class inheritance
+  is classified only against declarations known within the same file; external
+  superclass/protocol distinctions are omitted. No module or generic type resolution
+  is attempted. Repeated keys use the last declaration in source order.
+- Environment patterns cover literal `getenv`/`Darwin.getenv`/`Glibc.getenv` calls
+  and `ProcessInfo.processInfo.environment` subscripts. Messages recognize
+  `fatalError`, `preconditionFailure`, thrown call arguments with no label or a
+  `message`/`description`/`reason` label, and `logger`/`log`/`Logger`
+  `error`/`fault`/`critical` calls. Raw/multiline strings and escape sequences are
+  decoded; interpolation and computed expressions are omitted. NSError domain
+  metadata is not interpreted as a message.
+- I/O patterns cover `readLine`, `String`/`Data` contents initializers, common
+  read/write methods, `print`, `debugPrint` and `dump`. Receiver matching is a
+  heuristic. Nested functions/closures contribute to enclosing counts, and macro
+  expansion is not performed.
+- XCTest detection recognizes parameterless instance `test`-prefixed methods
+  directly within types whose
+  inheritance list includes `XCTestCase` or `XCTest.XCTestCase`. Indirect inheritance
+  is not resolved. Nested helpers, static/class methods, and methods with arguments
+  are excluded from XCTest discovery. Swift Testing recognizes `@Test`/`@Testing.Test`: a literal
+  display title is used when present, otherwise the qualified function key.
+  Parameterized tests are not expanded into runtime cases.
+- Metrics count `for`/`while`/`repeat-while` loops, `if`/`guard`/ternary conditions,
+  and non-default switch entries. Complexity is `1 + loops + conditions` for
+  nonempty input, with the shared cognitive-complexity approximation. Nesting
+  counts type/function/control-flow bodies. Tokens count syntax leaves, treating
+  each string as one token and excluding comments. SLOC counts nonblank lines,
+  including comments. `returnCount` counts explicit returns.
