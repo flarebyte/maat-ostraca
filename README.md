@@ -65,6 +65,9 @@ cat testdata/dart/env/analyse.dart | maat analyse --rules env_names_list --langu
 - `python`: Python 3 imports, metrics, code hash, function/method/class maps, I/O counts, messages, env names, testcase names
 - `rust`: imports, metrics, code hash, function/method maps, trait maps, I/O counts, messages, env names, testcase names
 
+The [cross-language JSON contract](doc/LANGUAGE_JSON_CONTRACT.md) describes portable
+queries, shared result shapes, and language-specific capability differences.
+
 ## Determinism Guarantees
 
 - Canonical JSON output with stable key ordering
