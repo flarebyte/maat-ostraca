@@ -19,3 +19,19 @@ npm publication and GitHub Release creation are separate operations. If npm
 publication succeeds but GitHub Release creation fails, recover by creating the
 release for that same commit; rerunning publication will intentionally reject
 an already published version.
+
+## Bump both version files together
+
+Use npm rather than editing `package.json` alone:
+
+```sh
+npm version patch --no-git-tag-version
+# Or choose an explicit version:
+# npm version 0.8.0 --no-git-tag-version
+```
+
+Commit both `package.json` and `package-lock.json`, push to the default branch,
+then start a new workflow run. The workflow creates the Git tag after npm
+publication. If `package.json` was already edited manually, synchronize the
+lockfile with `npm version <same-version> --no-git-tag-version --allow-same-version`
+and commit both files. Rerunning an old workflow run uses its original commit.

@@ -20,7 +20,13 @@ if not isinstance(version, str) or not re.fullmatch(
 lock = json.loads(Path("package-lock.json").read_text())
 root = lock.get("packages", {}).get("", {})
 if any(item.get("name") != name or item.get("version") != version for item in (lock, root)):
-    raise SystemExit("package.json and package-lock.json name/version must match")
+    raise SystemExit(
+        "package.json and package-lock.json name/version must match: "
+        f"package.json={name}@{version}, "
+        f"lockfile={lock.get('name')}@{lock.get('version')}, "
+        f"lockfile root={root.get('name')}@{root.get('version')}. "
+        "Use npm version <version> --no-git-tag-version to update both files."
+    )
 tag = f"v{version}"
 
 # Check the exact version in the public npm registry
