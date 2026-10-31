@@ -50,16 +50,18 @@ maat analyse --in "$SOURCE_FILE" --language "$LANGUAGE" \
 
 Use the same commands with any supported language:
 
-| `--language` | Example source file | Class maps | Interface maps   |
-| ------------ | ------------------- | ---------- | ---------------- |
-| `typescript` | `src/index.ts`      | Yes        | Yes              |
-| `go`         | `main.go`           | No         | Yes              |
-| `dart`       | `lib/main.dart`     | Yes        | Yes              |
-| `python`     | `app.py`            | Yes        | No               |
-| `rust`       | `src/lib.rs`        | No         | Yes, from traits |
+| `--language` | Example source file | Implemented rules | Class maps | Interface maps      |
+| ------------ | ------------------- | ----------------: | ---------- | ------------------- |
+| `typescript` | `src/index.ts`      |                16 | Yes        | Yes                 |
+| `go`         | `main.go`           |                15 | No         | Yes                 |
+| `dart`       | `lib/main.dart`     |                16 | Yes        | Yes                 |
+| `python`     | `app.py`            |                14 | Yes        | No                  |
+| `rust`       | `src/lib.rs`        |                15 | No         | Yes, from traits    |
+| `swift`      | `Sources/App.swift` |                16 | Yes        | Yes, from protocols |
 
-The CLI does not infer the language from the filename. Python, Rust, and Swift analysis
-requires no Python interpreter, Cargo/rustc, Swift compiler, or Xcode at runtime.
+The CLI does not infer the language from the filename. Python, Rust, and Swift
+analysis requires no Python interpreter, Cargo/rustc, Swift compiler, or Xcode
+at runtime.
 
 ## Commands
 
@@ -123,6 +125,17 @@ returns:
 { "language": "typescript", "rules": { "env_names_list": ["API_TOKEN"] } }
 ```
 
+The equivalent Swift environment query uses the same rule and JSON shape:
+
+```sh
+printf '%s\n' 'import Foundation' 'let home = ProcessInfo.processInfo.environment["HOME"]' \
+  | maat analyse --language swift --rules env_names_list --json
+```
+
+```json
+{ "language": "swift", "rules": { "env_names_list": ["HOME"] } }
+```
+
 ### Query JSON
 
 JSON is the machine contract: stable key ordering, predictable maps, and sorted,
@@ -182,6 +195,13 @@ macro-generated code may not be discoverable. Rust does not evaluate `cfg`
 branches, and Python/Rust/Swift parser recovery may return partial results for
 incomplete code.
 
+Swift maps classes to `class_map` and protocols to the interface maps. Methods
+include extension methods, initializers, and methods on structs, enums, and actors.
+Overload keys preserve argument labels and types; treat them as opaque identifiers.
+Test discovery covers Swift Testing `@Test` declarations and parameterless XCTest
+instance methods, excluding nested helpers and static or parameterized methods.
+Swift conditional-compilation branches are inspected without selecting a platform.
+
 See [language analysis notes](doc/LANGUAGE_NOTES.md) for extraction conventions
 and language-specific limitations.
 
@@ -222,6 +242,8 @@ shared extraction helpers under `src/rules/_shared/<language>/`, and entries in
 the capability and contract-test matrices. Add expected-value tests and CLI
 goldens alongside the implementation.
 
-Coverage details: [Python](doc/PYTHON_TEST_COVERAGE.md) and
-[Rust](doc/RUST_TEST_COVERAGE.md), and [Swift](doc/SWIFT_TEST_COVERAGE.md). Release setup and recovery:
-[releasing](.github/RELEASING.md).
+Coverage details: [Python](doc/PYTHON_TEST_COVERAGE.md),
+[Rust](doc/RUST_TEST_COVERAGE.md), and [Swift](doc/SWIFT_TEST_COVERAGE.md).
+The Swift audit includes 68 unit cases and 42 dedicated e2e cases, with additional
+shared language/query checks. See its coverage record for measured percentages
+and regression scenarios. Release setup and recovery: [releasing](.github/RELEASING.md).
