@@ -324,3 +324,69 @@ test('Rust cfg branches are inspected without evaluating attributes', () => {
     'windows_only',
   ]);
 });
+
+test('Rust grouped imports ignore comments between paths', () => {
+  assert.deepEqual(
+    run(
+      'import_files_list',
+      'use std::{/* module */ env, fs::{self, // reader\n read}};',
+    ),
+    ['std::env', 'std::fs', 'std::fs::read'],
+  );
+});
+test('Rust Error::new ignores comments when selecting its second argument', () => {
+  assert.deepEqual(
+    run(
+      'error_messages_list',
+      'fn f(){ std::io::Error::new(/* kind */ kind, /* message */ "failed"); }',
+    ),
+    ['failed'],
+  );
+});
+test('Rust empty, computed and byte-string messages are not confused with text literals', () => {
+  assert.deepEqual(
+    run(
+      'exception_messages_list',
+      'fn f(){ panic!(); panic!(b"bytes"); panic!(format!("computed")); panic!(""); }',
+    ),
+    [''],
+  );
+});
+test('Rust nested IO is counted in the enclosing declaration and nested function', () => {
+  const source =
+    'fn outer(){ fn inner(){ println!("nested"); } let f = || std::fs::read("x"); }';
+  assert.deepEqual(run('io_calls_count', source), {
+    functions: { outer: 2, 'outer::inner': 1 },
+    methods: {},
+  });
+});
+test('Rust conditional duplicate keys keep the final declaration', () => {
+  const result = run(
+    'function_map',
+    '#[cfg(unix)] fn f() -> u8 {1}\n#[cfg(windows)] fn f() -> u16 {2}',
+  ) as Record<string, Record<string, unknown>>;
+  assert.deepEqual(Object.keys(result), ['f']);
+  assert.deepEqual(result.f.returns, ['u16']);
+});
+test('Rust associated types and constants do not become interface methods', () => {
+  assert.deepEqual(
+    run('interface_map', 'trait Storage { type Item; const SIZE: usize; }'),
+    { Storage: { modifiers: [], extends: [], methods: [] } },
+  );
+});
+test('Rust raw identifiers and nested modules retain qualified names', () => {
+  assert.deepEqual(
+    Object.keys(
+      run('function_map', 'mod a { mod b { fn r#type() {} } }') as object,
+    ),
+    ['a::b::r#type'],
+  );
+});
+test('Rust macro bodies and attributes do not invent executed IO calls', () => {
+  const source =
+    'macro_rules! output { () => { println!("expanded"); } }\n#[doc = "println!(fake)"] fn f(){ output!(); let s = "std::fs::read(fake)"; }';
+  assert.deepEqual(run('io_calls_count', source), {
+    functions: { f: 0 },
+    methods: {},
+  });
+});

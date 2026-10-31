@@ -184,3 +184,115 @@ test('Rust packaged entrypoint matches source CLI', () => {
     ),
   ).toBeTrue();
 });
+
+test('Rust comments inside imports and constructor arguments survive the CLI correctly', () => {
+  const source =
+    'use std::{/* module */ env}; fn f(){ std::io::Error::new(/* kind */ kind, /* message */ "failed"); }';
+  const result = cli.parseAnalyseOutput(
+    cli.expectSuccess(
+      cli.runCli(
+        [
+          'analyse',
+          '--language',
+          'rust',
+          '--rules',
+          'import_files_list,error_messages_list',
+          '--json',
+        ],
+        source,
+      ),
+    ),
+  );
+  expect(result.rules).toEqual({
+    import_files_list: ['std::env'],
+    error_messages_list: ['failed'],
+  });
+});
+test('Rust diff accepts the to snapshot from stdin', () => {
+  const input = readFileSync(`${fixture}/v2.rs`);
+  const base = [
+    'diff',
+    '--language',
+    'rust',
+    '--from',
+    `${fixture}/v1.rs`,
+    '--rules',
+    '*',
+    '--json',
+  ];
+  const stdin = cli.parseDiffOutput(cli.expectSuccess(cli.runCli(base, input)));
+  const file = cli.parseDiffOutput(
+    cli.expectSuccess(cli.runCli([...base, '--to', `${fixture}/v2.rs`])),
+  );
+  expect(stdin.rules).toEqual(file.rules);
+  expect(stdin.to.filename).toBeUndefined();
+});
+test('Rust empty files produce zero metrics and empty maps', () => {
+  const result = cli.parseAnalyseOutput(
+    cli.expectSuccess(
+      cli.runCli([...analyseArgs, '--in', `${fixture}/empty.rs`]),
+    ),
+  );
+  expect(Object.keys(result.rules)).toHaveLength(15);
+  expect(result.rules.function_map).toEqual({});
+  expect(result.rules.interface_map).toEqual({});
+  expect(result.rules.env_names_list).toEqual([]);
+  const metrics = result.rules.file_metrics as Record<string, number>;
+  expect(Object.values(metrics).every((value) => value === 0)).toBeTrue();
+});
+test('Rust rules --match filters and sorts the manifest', () => {
+  const args = [
+    'rules',
+    '--language',
+    'rust',
+    '--match',
+    'method_map,interface_map',
+    '--json',
+  ];
+  const pair = cli.runTwice(args);
+  const parsed = cli.parseRulesListOutput(cli.expectSuccess(pair.first));
+  expect(parsed.rules.map((rule) => rule.name)).toEqual([
+    'interface_map',
+    'method_map',
+  ]);
+  expect(
+    cli.equalBytes(pair.first.stdout, cli.expectSuccess(pair.second)),
+  ).toBeTrue();
+});
+test('Rust non-JSON usage failures use stderr with exit 2', () => {
+  const result = cli.runCli(
+    ['analyse', '--language', 'rust', '--rules', 'class_map'],
+    'fn f() {}',
+  );
+  expect(result.exitCode).toBe(2);
+  expect(result.stdout.length).toBe(0);
+  expect(result.stderr.toString()).toContain(
+    'unsupported rule "class_map" for language "rust"',
+  );
+});
+test('Rust syntax recovery remains deterministic through the CLI', () => {
+  const pair = cli.runTwice(analyseArgs, 'fn complete() {}\nfn incomplete(');
+  const parsed = cli.parseAnalyseOutput(cli.expectSuccess(pair.first));
+  expect(parsed.rules.function_map).toHaveProperty('complete');
+  expect(
+    cli.equalBytes(pair.first.stdout, cli.expectSuccess(pair.second)),
+  ).toBeTrue();
+});
+test('Rust absent input files use the structured source error contract', () => {
+  const result = cli.runCli([
+    ...analyseArgs,
+    '--in',
+    'testdata/rust/does-not-exist.rs',
+  ]);
+  expect(result.exitCode).toBe(2);
+  expect(result.stderr.length).toBe(0);
+  const error = cli.parseJsonErrorOutput(result.stdout);
+  expect(error.error.code).toBe('E_IO');
+});
+
+test('Rust empty stdin is rejected with the shared IO envelope', () => {
+  const result = cli.runCli(analyseArgs, '');
+  expect(result.exitCode).toBe(2);
+  expect(result.stderr.length).toBe(0);
+  expect(cli.parseJsonErrorOutput(result.stdout).error.code).toBe('E_IO');
+});

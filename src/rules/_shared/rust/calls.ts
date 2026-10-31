@@ -104,7 +104,11 @@ export const rustMessages = (root: RustNode, exceptions: boolean): string[] =>
                 call.node
                   .field('arguments')
                   ?.children()
-                  .filter((child) => child.isNamed())[1] ?? null,
+                  .filter(
+                    (child) =>
+                      child.isNamed() &&
+                      !String(child.kind()).endsWith('_comment'),
+                  )[1] ?? null,
               )
             : call.literal;
         return value === undefined ? [] : [value];

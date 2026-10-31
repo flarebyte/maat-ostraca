@@ -17,7 +17,11 @@ export const parseRust = (input: RuleRunInput): RustNode => {
   }
 };
 export const named = (node: RustNode): RustNode[] =>
-  node.children().filter((child) => child.isNamed());
+  node
+    .children()
+    .filter(
+      (child) => child.isNamed() && !String(child.kind()).endsWith('_comment'),
+    );
 export const descendants = (node: RustNode, kind: string): RustNode[] =>
   node.findAll({ rule: { kind } });
 export const sorted = (values: string[]): string[] =>
