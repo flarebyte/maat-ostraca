@@ -139,9 +139,11 @@ the bundled grammar rather than a guarantee of every Swift language feature.
   read/write methods, `print`, `debugPrint` and `dump`. Receiver matching is a
   heuristic. Nested functions/closures contribute to enclosing counts, and macro
   expansion is not performed.
-- XCTest detection recognizes `test`-prefixed methods directly within types whose
+- XCTest detection recognizes parameterless instance `test`-prefixed methods
+  directly within types whose
   inheritance list includes `XCTestCase` or `XCTest.XCTestCase`. Indirect inheritance
-  is not resolved. Swift Testing recognizes `@Test`/`@Testing.Test`: a literal
+  is not resolved. Nested helpers, static/class methods, and methods with arguments
+  are excluded from XCTest discovery. Swift Testing recognizes `@Test`/`@Testing.Test`: a literal
   display title is used when present, otherwise the qualified function key.
   Parameterized tests are not expanded into runtime cases.
 - Metrics count `for`/`while`/`repeat-while` loops, `if`/`guard`/ternary conditions,

@@ -242,3 +242,151 @@ test('Swift text usage errors are sent to stderr', () => {
     'unsupported rule "import_types_list" for language "swift"',
   );
 });
+
+test('Swift XCTest filtering preserves Swift Testing parameterized declarations', () => {
+  const source =
+    'class Case: XCTestCase { func testReal(){ func testHelper() {} }; static func testStatic() {}; func testParameter(_ n: Int) {} }\n@Test(arguments: [1,2]) func dataTest(_ n: Int) {}';
+  const result = cli.parseAnalyseOutput(
+    cli.expectSuccess(
+      cli.runCli(
+        [
+          'analyse',
+          '--language',
+          'swift',
+          '--rules',
+          'testcase_titles_list',
+          '--json',
+        ],
+        source,
+      ),
+    ),
+  );
+  expect(result.rules.testcase_titles_list).toEqual([
+    'Case.testReal()',
+    'dataTest(_:Int)',
+  ]);
+});
+test('Swift function-local class keys agree with method receivers through JSON output', () => {
+  const result = cli.parseAnalyseOutput(
+    cli.expectSuccess(
+      cli.runCli(
+        [
+          'analyse',
+          '--language',
+          'swift',
+          '--rules',
+          'class_map,method_map,io_calls_count',
+          '--json',
+        ],
+        'func outer(){ class Local { func work(){ print("hello") } } }',
+      ),
+    ),
+  );
+  const classes = result.rules.class_map as Record<
+    string,
+    { methodCount: number }
+  >;
+  const methods = result.rules.method_map as Record<
+    string,
+    { receiver: string; ioCallsCount: number }
+  >;
+  expect(classes['outer().Local'].methodCount).toBe(1);
+  expect(methods['outer().Local.work()'].receiver).toBe('outer().Local');
+  expect(methods['outer().Local.work()'].ioCallsCount).toBe(1);
+});
+test('Swift overloads are separate added symbols in diff output', () => {
+  const source =
+    'func load(_ x: Int) -> String { "integer" }\nfunc load(_ x: String) -> String { x }';
+  const diff = cli.parseDiffOutput(
+    cli.expectSuccess(
+      cli.runCli(
+        [
+          'diff',
+          '--from',
+          `${root}/v1.swift`,
+          '--language',
+          'swift',
+          '--rules',
+          'function_map',
+          '--json',
+        ],
+        source,
+      ),
+    ),
+  );
+  const entries = diff.rules.function_map as Record<string, { status: string }>;
+  expect(entries['load(_:Int)->String'].status).toBe('added');
+  expect(entries['load(_:String)->String'].status).toBe('added');
+});
+test('Swift wildcard and reordered explicit selectors return identical bytes', () => {
+  const manifest = cli.parseRulesListOutput(
+    cli.expectSuccess(cli.runCli(['rules', '--language', 'swift', '--json'])),
+  );
+  const names = manifest.rules
+    .map((rule) => rule.name)
+    .toReversed()
+    .join(',');
+  const base = [
+    'analyse',
+    '--language',
+    'swift',
+    '--in',
+    `${root}/v1.swift`,
+    '--json',
+    '--rules',
+  ];
+  expect(
+    cli.equalBytes(
+      cli.expectSuccess(cli.runCli([...base, '*'])),
+      cli.expectSuccess(cli.runCli([...base, names])),
+    ),
+  ).toBeTrue();
+});
+test('Swift IO prefix expansion selects exactly the three numeric count maps', () => {
+  const parsed = cli.parseAnalyseOutput(
+    cli.expectSuccess(
+      cli.runCli([
+        'analyse',
+        '--language',
+        'swift',
+        '--in',
+        `${root}/v1.swift`,
+        '--rules',
+        'io_*',
+        '--json',
+      ]),
+    ),
+  );
+  expect(Object.keys(parsed.rules)).toEqual([
+    'io_calls_count',
+    'io_read_calls_count',
+    'io_write_calls_count',
+  ]);
+  for (const counts of Object.values(parsed.rules) as {
+    functions: Record<string, number>;
+    methods: Record<string, number>;
+  }[])
+    expect(
+      Object.values(counts.functions)
+        .concat(Object.values(counts.methods))
+        .every((value) => typeof value === 'number'),
+    ).toBeTrue();
+});
+test('Swift unmatched selector errors preserve stdout JSON and repeated bytes', () => {
+  const pair = cli.runTwice([
+    'analyse',
+    '--language',
+    'swift',
+    '--in',
+    `${root}/v1.swift`,
+    '--rules',
+    'missing_*',
+    '--json',
+  ]);
+  expect(pair.first.exitCode).toBe(2);
+  expect(pair.first.stderr.length).toBe(0);
+  expect(cli.equalBytes(pair.first.stdout, pair.second.stdout)).toBeTrue();
+  expect(cli.parseJsonErrorOutput(pair.first.stdout).error.code).toBe(
+    'E_USAGE',
+  );
+});

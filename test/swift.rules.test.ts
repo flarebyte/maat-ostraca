@@ -390,3 +390,66 @@ test('Swift computed properties and subscripts are omitted from method maps', ()
     'struct S { var value: String { "value" }; subscript(index: Int) -> String { "subscript" } }';
   assert.deepEqual(run('method_map', source), {});
 });
+
+test('Swift XCTest discovery excludes nested helpers, static methods and parameterized helpers', () => {
+  const source =
+    'class Spec: XCTestCase { func testReal(){ func testNested() {} }; static func testStatic() {}; func testWithArgument(_ value: Int) {} }';
+  assert.deepEqual(run('testcase_titles_list', source), ['Spec.testReal()']);
+});
+test('Swift classes declared inside functions share the receiver scope and method count', () => {
+  const source = 'func outer(){ class Local { func work() {} } }';
+  const classes = run('class_map', source) as Record<
+    string,
+    Record<string, unknown>
+  >;
+  assert.deepEqual(Object.keys(classes), ['outer().Local']);
+  assert.equal(classes['outer().Local'].methodCount, 1);
+  const methods = run('method_map', source) as Record<
+    string,
+    Record<string, unknown>
+  >;
+  assert.equal(methods['outer().Local.work()'].receiver, 'outer().Local');
+});
+test('Swift Testing arguments do not become display titles or runtime-expanded cases', () => {
+  const source =
+    '@Test(arguments: ["first", "second"]) func parameterized(_ value: String) {}';
+  assert.deepEqual(run('testcase_titles_list', source), [
+    'parameterized(_:String)',
+  ]);
+});
+test('Swift method modifiers distinguish rethrows and mutating without changing JSON fields', () => {
+  const value = run(
+    'method_map',
+    'struct S { mutating func update() {}; func execute(_ fn: () throws -> Void) rethrows { try fn() } }',
+  ) as Record<string, Record<string, unknown>>;
+  assert.deepEqual(value['S.update()'].modifiers, ['mutating']);
+  assert.deepEqual(value['S.execute(_:() throws -> Void)'].modifiers, [
+    'rethrows',
+  ]);
+});
+test('Swift condition metrics include ternaries and default-only switches add no condition', () => {
+  const metrics = run(
+    'file_metrics',
+    'func f(){ let value = ok ? 1 : 2; switch value { default: break } }',
+  ) as Record<string, number>;
+  assert.equal(metrics.conditions, 1);
+  assert.equal(metrics.cyclomaticComplexity, 2);
+});
+test('Swift unmatched test prefixes and non-test attributes do not invent testcases', () => {
+  assert.deepEqual(
+    run(
+      'testcase_titles_list',
+      '@TestFactory func helper() {}\nclass Other { func testNotXCTest() {} }',
+    ),
+    [],
+  );
+});
+test('Swift qualified standard IO and empty calls are classified without literal arguments', () => {
+  assert.deepEqual(
+    run(
+      'io_calls_count',
+      'func io(){ Swift.print(); Swift.debugPrint("x"); dump(value); FileHandle.standardInput.readDataToEndOfFile(); file.writeData(data) }',
+    ),
+    { functions: { 'io()': 5 }, methods: {} },
+  );
+});

@@ -1,5 +1,17 @@
-import { children, literal, nodes, type SwiftNode, unique } from './ast.js';
-import { inheritedNames, swiftFunctions, swiftKey } from './symbols.js';
+import {
+  children,
+  literal,
+  nodes,
+  type SwiftNode,
+  swiftModifiers,
+  unique,
+} from './ast.js';
+import {
+  inheritedNames,
+  receiver,
+  swiftFunctions,
+  swiftKey,
+} from './symbols.js';
 
 const argumentLiteral = (
   argument: SwiftNode | undefined,
@@ -116,6 +128,11 @@ export const swiftTests = (root: SwiftNode): string[] =>
         .ancestors()
         .find((parent) => parent.kind() === 'class_declaration');
       return type &&
+        receiver(node) &&
+        !children(node).some((child) => child.kind() === 'parameter') &&
+        !swiftModifiers(node).some((modifier) =>
+          ['static', 'class'].includes(modifier),
+        ) &&
         inheritedNames(type).some((name) =>
           ['XCTestCase', 'XCTest.XCTestCase'].includes(name),
         ) &&

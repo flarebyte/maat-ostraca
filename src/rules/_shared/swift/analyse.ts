@@ -29,6 +29,7 @@ import {
   swiftName,
   swiftProtocols,
   swiftSignature,
+  swiftTypeKey,
 } from './symbols.js';
 
 export const runSwift = (input: RuleRunInput, rule: RuleName): unknown => {
@@ -89,14 +90,7 @@ export const runSwift = (input: RuleRunInput, rule: RuleName): unknown => {
     );
     return Object.fromEntries(
       declarations.map((node) => {
-        const name = [
-          ...node
-            .ancestors()
-            .filter((parent) => parent.kind() === 'class_declaration')
-            .reverse()
-            .map((parent) => textField(parent, 'name')),
-          textField(node, 'name'),
-        ].join('.');
+        const name = swiftTypeKey(node);
         const inherited = inheritedNames(node);
         const parent = inherited.find((type) =>
           knownClasses.has(type.split('<')[0] ?? type),

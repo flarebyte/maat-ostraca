@@ -54,7 +54,7 @@ export const receiver = (node: SwiftNode): string => {
   }
   return parts.join('.');
 };
-export const swiftKey = (node: SwiftNode): string => {
+const qualify = (node: SwiftNode, own: string): string => {
   const enclosing: string[] = [];
   let parent = node.parent();
   while (parent) {
@@ -68,8 +68,12 @@ export const swiftKey = (node: SwiftNode): string => {
       enclosing.unshift(textField(parent, 'name'));
     parent = parent.parent();
   }
-  return [...enclosing, ownKey(node)].filter(Boolean).join('.');
+  return [...enclosing, own].filter(Boolean).join('.');
 };
+export const swiftKey = (node: SwiftNode): string =>
+  qualify(node, ownKey(node));
+export const swiftTypeKey = (node: SwiftNode): string =>
+  qualify(node, textField(node, 'name'));
 export const swiftSignature = (node: SwiftNode) => ({
   modifiers: swiftModifiers(node),
   params: children(node)
