@@ -1,0 +1,16 @@
+{
+  "filename": "testdata/swift/regression/v1.swift",
+  "language": "swift",
+  "rules": {
+    "interface_map": {
+      "Reader": {
+        "extends": ["Sendable"],
+        "methods": ["func read(_ path: String) throws -> String"],
+        "modifiers": ["public"]
+      }
+    },
+    "interfaces_code_map": {
+      "Reader": "public protocol Reader: Sendable {\n    func read(_ path: String) throws -> String\n}"
+    }
+  }
+}

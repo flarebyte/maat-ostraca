@@ -1,0 +1,14 @@
+{
+  "from": {
+    "filename": "testdata/swift/regression/v1.swift",
+    "language": "swift"
+  },
+  "rules": {
+    "import_files_list": { "added": [], "removed": [] },
+    "package_imports_list": { "added": [], "removed": [] }
+  },
+  "to": {
+    "filename": "testdata/swift/regression/v2.swift",
+    "language": "swift"
+  }
+}

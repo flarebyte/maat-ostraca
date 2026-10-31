@@ -1,0 +1,7 @@
+{
+  "filename": "testdata/swift/regression/v1.swift",
+  "language": "swift",
+  "rules": {
+    "testcase_titles_list": ["CacheTests.testRead()", "loads configuration"]
+  }
+}

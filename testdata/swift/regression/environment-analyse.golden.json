@@ -1,0 +1,5 @@
+{
+  "filename": "testdata/swift/regression/v1.swift",
+  "language": "swift",
+  "rules": { "env_names_list": ["BUILD_ID", "HOME"] }
+}

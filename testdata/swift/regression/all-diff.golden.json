@@ -1,0 +1,136 @@
+{
+  "from": {
+    "filename": "testdata/swift/regression/v1.swift",
+    "language": "swift"
+  },
+  "rules": {
+    "class_map": {
+      "Base": { "status": "unchanged" },
+      "Cache": {
+        "cognitiveComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "cyclomaticComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "loc": { "delta": 0, "from": 9, "to": 9 },
+        "maxNestingDepth": { "delta": 0, "from": 3, "to": 3 },
+        "methodCount": { "delta": 0, "from": 4, "to": 4 },
+        "sloc": { "delta": 0, "from": 9, "to": 9 },
+        "status": "modified",
+        "tokens": { "delta": 0, "from": 67, "to": 67 }
+      },
+      "CacheTests": { "status": "unchanged" }
+    },
+    "code_hash": {
+      "changed": true,
+      "from": "006e61807ca5489994a3371a4aa30b40625b50a51b6d6f4c39baa6507408b9d2",
+      "to": "5de6cd804d4505c96893e83926adb79ab84a045bbc8fe8534f00d7755e0c7e20"
+    },
+    "env_names_list": {
+      "added": ["RELEASE_ID", "USER"],
+      "removed": ["BUILD_ID", "HOME"]
+    },
+    "error_messages_list": {
+      "added": ["writing data"],
+      "removed": ["saving data"]
+    },
+    "exception_messages_list": {
+      "added": ["missing user"],
+      "removed": ["missing home"]
+    },
+    "file_metrics": {
+      "cognitiveComplexity": { "delta": 0, "from": 3, "to": 3 },
+      "conditions": { "delta": 0, "from": 1, "to": 1 },
+      "cyclomaticComplexity": { "delta": 0, "from": 3, "to": 3 },
+      "loc": { "delta": 2, "from": 39, "to": 41 },
+      "loops": { "delta": 0, "from": 1, "to": 1 },
+      "maxNestingDepth": { "delta": 0, "from": 3, "to": 3 },
+      "sloc": { "delta": 1, "from": 32, "to": 33 },
+      "tokens": { "delta": 26, "from": 207, "to": 233 }
+    },
+    "function_map": {
+      "cleanup(_:String)": { "status": "added" },
+      "configuration()": {
+        "cognitiveComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "conditions": { "delta": 0, "from": 0, "to": 0 },
+        "cyclomaticComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "ioCallsCount": { "delta": 0, "from": 1, "to": 1 },
+        "ioReadCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "ioWriteCallsCount": { "delta": 0, "from": 1, "to": 1 },
+        "loc": { "delta": 0, "from": 6, "to": 6 },
+        "loops": { "delta": 0, "from": 1, "to": 1 },
+        "maxNestingDepth": { "delta": 0, "from": 2, "to": 2 },
+        "returnCount": { "delta": 0, "from": 0, "to": 0 },
+        "sloc": { "delta": 0, "from": 6, "to": 6 },
+        "status": "modified",
+        "tokens": { "delta": 0, "from": 39, "to": 39 }
+      },
+      "save(_:String,to:String)": {
+        "cognitiveComplexity": { "delta": 0, "from": 1, "to": 1 },
+        "conditions": { "delta": 0, "from": 0, "to": 0 },
+        "cyclomaticComplexity": { "delta": 0, "from": 1, "to": 1 },
+        "ioCallsCount": { "delta": 0, "from": 1, "to": 1 },
+        "ioReadCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "ioWriteCallsCount": { "delta": 0, "from": 1, "to": 1 },
+        "loc": { "delta": 0, "from": 4, "to": 4 },
+        "loops": { "delta": 0, "from": 0, "to": 0 },
+        "maxNestingDepth": { "delta": 0, "from": 1, "to": 1 },
+        "returnCount": { "delta": 0, "from": 0, "to": 0 },
+        "sloc": { "delta": 0, "from": 4, "to": 4 },
+        "status": "modified",
+        "tokens": { "delta": 0, "from": 40, "to": 40 }
+      }
+    },
+    "import_files_list": { "added": [], "removed": [] },
+    "interface_map": { "Reader": { "status": "unchanged" } },
+    "interfaces_code_map": { "Reader": { "status": "unchanged" } },
+    "io_calls_count": {
+      "functions": {
+        "configuration()": { "delta": 0, "from": 1, "to": 1 },
+        "save(_:String,to:String)": { "delta": 0, "from": 1, "to": 1 },
+        "status": "modified"
+      },
+      "methods": { "status": "unchanged" }
+    },
+    "io_read_calls_count": {
+      "functions": {
+        "configuration()": { "delta": 0, "from": 0, "to": 0 },
+        "save(_:String,to:String)": { "delta": 0, "from": 0, "to": 0 },
+        "status": "modified"
+      },
+      "methods": { "status": "unchanged" }
+    },
+    "io_write_calls_count": {
+      "functions": {
+        "configuration()": { "delta": 0, "from": 1, "to": 1 },
+        "save(_:String,to:String)": { "delta": 0, "from": 1, "to": 1 },
+        "status": "modified"
+      },
+      "methods": { "status": "unchanged" }
+    },
+    "method_map": {
+      "Cache.build()->Cache": { "status": "unchanged" },
+      "Cache.deinit()": { "status": "unchanged" },
+      "Cache.init()": { "status": "unchanged" },
+      "Cache.read(_:String)->String": {
+        "cognitiveComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "conditions": { "delta": 0, "from": 1, "to": 1 },
+        "cyclomaticComplexity": { "delta": 0, "from": 2, "to": 2 },
+        "ioCallsCount": { "delta": 0, "from": 1, "to": 1 },
+        "ioReadCallsCount": { "delta": 0, "from": 1, "to": 1 },
+        "ioWriteCallsCount": { "delta": 0, "from": 0, "to": 0 },
+        "loc": { "delta": 0, "from": 5, "to": 5 },
+        "loops": { "delta": 0, "from": 0, "to": 0 },
+        "maxNestingDepth": { "delta": 0, "from": 2, "to": 2 },
+        "returnCount": { "delta": 0, "from": 1, "to": 1 },
+        "sloc": { "delta": 0, "from": 5, "to": 5 },
+        "status": "modified",
+        "tokens": { "delta": 0, "from": 42, "to": 42 }
+      },
+      "CacheTests.testRead()": { "status": "unchanged" }
+    },
+    "package_imports_list": { "added": [], "removed": [] },
+    "testcase_titles_list": { "added": [], "removed": [] }
+  },
+  "to": {
+    "filename": "testdata/swift/regression/v2.swift",
+    "language": "swift"
+  }
+}

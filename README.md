@@ -1,7 +1,7 @@
 # maat-ostraca
 
 Analyze source files and compare code snapshots with one CLI and consistent JSON
-across **TypeScript, Go, Dart, Python 3, and Rust**.
+across **TypeScript, Go, Dart, Python 3, Rust, and Swift**.
 
 ![Maat Ostraca](./maat-ostraca-hero.jpeg)
 
@@ -58,8 +58,8 @@ Use the same commands with any supported language:
 | `python`     | `app.py`            | Yes        | No               |
 | `rust`       | `src/lib.rs`        | No         | Yes, from traits |
 
-The CLI does not infer the language from the filename. Python and Rust parsing
-require neither a Python interpreter nor Cargo/rustc at runtime.
+The CLI does not infer the language from the filename. Python, Rust, and Swift analysis
+requires no Python interpreter, Cargo/rustc, Swift compiler, or Xcode at runtime.
 
 ## Commands
 
@@ -75,7 +75,7 @@ options. Sources are limited to 5 MiB each; empty stdin is rejected.
 
 ### Select rules
 
-All five languages implement these 13 rules:
+All six languages implement these 13 rules:
 
 | Group       | Rule names                                                      |
 | ----------- | --------------------------------------------------------------- |
@@ -126,7 +126,7 @@ returns:
 ### Query JSON
 
 JSON is the machine contract: stable key ordering, predictable maps, and sorted,
-deduplicated lists where applicable. These `jq` queries work across all five
+deduplicated lists where applicable. These `jq` queries work across all six
 languages:
 
 ```sh
@@ -179,11 +179,11 @@ Successful human output is also deterministic, but scripts should use JSON.
 Analysis extracts syntax and documented patterns; it does not execute source
 code. Dynamic messages, runtime dependency resolution, receiver types, and
 macro-generated code may not be discoverable. Rust does not evaluate `cfg`
-branches, and Python/Rust parser recovery may return partial results for
+branches, and Python/Rust/Swift parser recovery may return partial results for
 incomplete code.
 
 See [language analysis notes](doc/LANGUAGE_NOTES.md) for extraction conventions
-and Python/Rust-specific limitations.
+and language-specific limitations.
 
 ## Develop locally
 
@@ -223,5 +223,5 @@ the capability and contract-test matrices. Add expected-value tests and CLI
 goldens alongside the implementation.
 
 Coverage details: [Python](doc/PYTHON_TEST_COVERAGE.md) and
-[Rust](doc/RUST_TEST_COVERAGE.md). Release setup and recovery:
+[Rust](doc/RUST_TEST_COVERAGE.md), and [Swift](doc/SWIFT_TEST_COVERAGE.md). Release setup and recovery:
 [releasing](.github/RELEASING.md).

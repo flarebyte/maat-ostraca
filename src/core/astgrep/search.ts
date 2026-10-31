@@ -39,7 +39,7 @@ const toAstGrepLanguage = (
   astGrep: typeof import('@ast-grep/napi'),
 ): unknown => {
   const { Lang } = astGrep;
-  if (language === 'python' || language === 'rust') {
+  if (language === 'python' || language === 'rust' || language === 'swift') {
     ensureDynamicLanguages();
     return language;
   }

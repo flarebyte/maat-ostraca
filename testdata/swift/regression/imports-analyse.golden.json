@@ -1,0 +1,8 @@
+{
+  "filename": "testdata/swift/regression/v1.swift",
+  "language": "swift",
+  "rules": {
+    "import_files_list": ["Foundation", "Testing", "XCTest"],
+    "package_imports_list": ["Foundation", "Testing", "XCTest"]
+  }
+}

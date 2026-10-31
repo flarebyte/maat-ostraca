@@ -5,6 +5,11 @@ export const languageContractMatrix: readonly {
   to: string;
 }[] = [
   {
+    language: 'swift',
+    from: 'testdata/swift/regression/v1.swift',
+    to: 'testdata/swift/regression/v2.swift',
+  },
+  {
     language: 'typescript',
     from: 'testdata/determinism/wide-v1.ts',
     to: 'testdata/determinism/wide-v2.ts',

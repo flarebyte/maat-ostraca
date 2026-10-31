@@ -1,0 +1,29 @@
+{
+  "from": {
+    "filename": "testdata/swift/regression/v1.swift",
+    "language": "swift"
+  },
+  "rules": {
+    "code_hash": {
+      "changed": true,
+      "from": "006e61807ca5489994a3371a4aa30b40625b50a51b6d6f4c39baa6507408b9d2",
+      "to": "5de6cd804d4505c96893e83926adb79ab84a045bbc8fe8534f00d7755e0c7e20"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": { "delta": 0, "from": 3, "to": 3 },
+      "conditions": { "delta": 0, "from": 1, "to": 1 },
+      "cyclomaticComplexity": { "delta": 0, "from": 3, "to": 3 },
+      "loc": { "delta": 2, "from": 39, "to": 41 },
+      "loops": { "delta": 0, "from": 1, "to": 1 },
+      "maxNestingDepth": { "delta": 0, "from": 3, "to": 3 },
+      "sloc": { "delta": 1, "from": 32, "to": 33 },
+      "tokens": { "delta": 26, "from": 207, "to": 233 }
+    },
+    "import_files_list": { "added": [], "removed": [] },
+    "package_imports_list": { "added": [], "removed": [] }
+  },
+  "to": {
+    "filename": "testdata/swift/regression/v2.swift",
+    "language": "swift"
+  }
+}

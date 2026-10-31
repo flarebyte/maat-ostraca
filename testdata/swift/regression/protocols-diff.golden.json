@@ -1,0 +1,14 @@
+{
+  "from": {
+    "filename": "testdata/swift/regression/v1.swift",
+    "language": "swift"
+  },
+  "rules": {
+    "interface_map": { "Reader": { "status": "unchanged" } },
+    "interfaces_code_map": { "Reader": { "status": "unchanged" } }
+  },
+  "to": {
+    "filename": "testdata/swift/regression/v2.swift",
+    "language": "swift"
+  }
+}
