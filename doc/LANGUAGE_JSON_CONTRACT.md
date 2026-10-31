@@ -1,7 +1,8 @@
 # JSON queries across languages
 
-Rust and Dart share 15 implemented rules with the same result shapes. The same
-selectors and JSON projections work for both:
+TypeScript, Go, Dart, Python and Rust share 13 implemented core rules with the
+same result shapes. Additional rules share the same contracts wherever supported.
+The same selectors and JSON projections work across languages:
 
 ```sh
 maat analyse --in "$SOURCE_FILE" --language "$LANGUAGE" \
@@ -13,7 +14,9 @@ maat analyse --in "$SOURCE_FILE" --language "$LANGUAGE" \
   jq '.rules.interface_map | to_entries | map({key, methods: .value.methods})'
 ```
 
-Set `LANGUAGE` to `rust` or `dart` and provide a corresponding source file.
+Set `LANGUAGE` to `typescript`, `go`, `dart`, `python`, or `rust` and provide
+a corresponding source file. The interface query requires an interface-capable
+language (all except Python).
 
 | Rule results | Common JSON shape |
 | --- | --- |
@@ -26,12 +29,29 @@ Set `LANGUAGE` to `rust` or `dart` and provide a corresponding source file.
 | Interface source map | Identifier keys to source strings |
 | I/O counts | `{functions: {identifier: number}, methods: {identifier: number}}` |
 
-Rust traits occupy the interface maps. Rust class maps are unsupported; Dart's
-class maps remain available. `--rules '*'` expands to each language's implemented
-rules, so wildcard outputs need not have identical sets of rule names. Use
-`maat rules --language "$LANGUAGE" --json` to discover capabilities. Neither
-language implements imported function/type classification despite the older
-catalog entries for Dart.
+The 13 universal rules are imports/packages, environment/messages/test lists,
+file metrics/hash, function/method maps, and the three I/O counters.
+
+| Language | Implemented rules | Class maps | Interface maps/source |
+| --- | ---: | --- | --- |
+| TypeScript | 16 | Yes | Yes |
+| Go | 15 | No | Yes |
+| Dart | 16 | Yes | Yes |
+| Python | 14 | Yes | No |
+| Rust | 15 | No | Yes (traits) |
+
+Class entries share `modifiers`, optional `extends`/`implements`, `methodCount`,
+`sha256`, and six numeric fields: `loc`, `sloc`, `tokens`, `cyclomaticComplexity`,
+`cognitiveComplexity`, `maxNestingDepth`. They do not include function-only fields.
+Python's previous extra class-level `loops`/`conditions` fields were removed to
+match this contract. TypeScript I/O now includes typed arrows/variables and generic
+function declarations, matching the function map's declaration coverage.
+
+`--rules '*'` expands to each language's implemented rules, so wildcard outputs
+need not have identical sets of rule names. Use
+`maat rules --language "$LANGUAGE" --json` to discover capabilities. Imported
+function/type classification is unimplemented in all languages, despite older
+catalog entries for TypeScript, Go and Dart.
 
 Treat symbol keys as opaque: Rust uses module/impl paths; Dart uses its own
 qualified symbol names. Parameter/return strings and modifier values retain
@@ -45,9 +65,14 @@ Diff results use the same language-independent engine: lists have `added` and
 and hashes have `from`/`to`/`changed`. `--delta-only` makes numeric changes numbers
 and omits the original hash strings consistently for both languages.
 
-`test/rule-result-contracts.ts` defines strict, shared schemas for the 15 common
-rule results. Unit checks require populated function, method and interface maps
-from both snapshots of both languages. `script/e2e/language_query_contract.test.ts`
-executes identical selectors and projections through the actual CLI for analyse,
-standard diff and delta-only diff. These checks complement each language's
-golden tests and reject missing fields, extra fields and incompatible field types.
+`test/rule-result-contracts.ts` defines strict, shared schemas for every implemented
+rule. `test/language-contract-matrix.ts` supplies both snapshots for all supported
+languages; unit tests enforce that no language or implemented rule lacks a
+contract. The tests require populated supported function/method/interface/class
+maps and check that symbol keys align with their I/O counters.
+
+`script/e2e/language_query_contract.test.ts` executes portable projections through
+the actual CLI for analyse, standard diff and delta-only diff, plus the exact same
+13-rule selector across all five languages. Capability-specific rules are tested
+where implemented. These checks complement each language's golden tests and
+reject missing fields, extra fields and incompatible field types.

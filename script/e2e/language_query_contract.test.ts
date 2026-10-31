@@ -1,24 +1,15 @@
 import { expect, test } from 'bun:test';
+import { languageContractMatrix } from '../../test/language-contract-matrix.js';
 import {
   commonRuleContracts,
+  contractsForLanguage,
   numericFields,
 } from '../../test/rule-result-contracts.js';
 import * as cli from './helpers.js';
 
-const commonRules = Object.keys(commonRuleContracts).sort();
-const matrix = [
-  {
-    language: 'dart',
-    from: 'testdata/dart/determinism/wide-v1.dart',
-    to: 'testdata/dart/determinism/wide-v2.dart',
-  },
-  {
-    language: 'rust',
-    from: 'testdata/rust/regression/v1.rs',
-    to: 'testdata/rust/regression/v2.rs',
-  },
-];
-for (const row of matrix) {
+for (const row of languageContractMatrix) {
+  const contracts = contractsForLanguage(row.language);
+  const commonRules = Object.keys(contracts).sort();
   test(`${row.language}: the same analyse selectors and JSON projections work`, () => {
     const output = cli.parseAnalyseOutput(
       cli.expectSuccess(
@@ -35,7 +26,7 @@ for (const row of matrix) {
       ),
     );
     expect(Object.keys(output.rules).sort()).toEqual(commonRules);
-    for (const [name, schema] of Object.entries(commonRuleContracts))
+    for (const [name, schema] of Object.entries(contracts))
       expect(schema.safeParse(output.rules[name]).success).toBeTrue();
     const functions = commonRuleContracts.function_map.parse(
       output.rules.function_map,
@@ -63,20 +54,22 @@ for (const row of matrix) {
         value.ioReadCallsCount + value.ioWriteCallsCount,
       );
     }
-    const interfaces = commonRuleContracts.interface_map.parse(
-      output.rules.interface_map,
-    );
-    const snippets = commonRuleContracts.interfaces_code_map.parse(
-      output.rules.interfaces_code_map,
-    );
-    expect(Object.keys(interfaces).sort()).toEqual(
-      Object.keys(snippets).sort(),
-    );
-    expect(
-      Object.values(interfaces)
-        .flatMap((value) => value.methods)
-        .every((value) => typeof value === 'string'),
-    ).toBeTrue();
+    if ('interface_map' in contracts) {
+      const interfaces = commonRuleContracts.interface_map.parse(
+        output.rules.interface_map,
+      );
+      const snippets = commonRuleContracts.interfaces_code_map.parse(
+        output.rules.interfaces_code_map,
+      );
+      expect(Object.keys(interfaces).sort()).toEqual(
+        Object.keys(snippets).sort(),
+      );
+      expect(
+        Object.values(interfaces)
+          .flatMap((value) => value.methods)
+          .every((value) => typeof value === 'string'),
+      ).toBeTrue();
+    }
   });
   for (const deltaOnly of [false, true])
     test(`${row.language}: identical diff queries work with deltaOnly=${deltaOnly}`, () => {
@@ -121,7 +114,8 @@ for (const row of matrix) {
         'method_map',
         'interface_map',
         'interfaces_code_map',
-      ]) {
+        'class_map',
+      ].filter((name) => name in contracts)) {
         const entries = Object.values(
           output.rules[name] as Record<string, { status: string }>,
         );
@@ -138,3 +132,37 @@ for (const row of matrix) {
       );
     });
 }
+
+const universalRules = Object.keys(commonRuleContracts)
+  .filter((name) => !['interface_map', 'interfaces_code_map'].includes(name))
+  .sort();
+for (const row of languageContractMatrix)
+  test(`${row.language}: identical core selector supports the portable query`, () => {
+    const value = cli.parseAnalyseOutput(
+      cli.expectSuccess(
+        cli.runCli([
+          'analyse',
+          '--in',
+          row.from,
+          '--language',
+          row.language,
+          '--rules',
+          universalRules.join(','),
+          '--json',
+        ]),
+      ),
+    );
+    expect(Object.keys(value.rules).sort()).toEqual(universalRules);
+    const functions = commonRuleContracts.function_map.parse(
+      value.rules.function_map,
+    );
+    const rows = Object.values(functions).map((fn) => ({
+      lines: fn.loc,
+      reads: fn.ioReadCallsCount,
+      writes: fn.ioWriteCallsCount,
+    }));
+    expect(rows.length).toBeGreaterThan(0);
+    expect(
+      rows.every((fn) => Object.values(fn).every((n) => typeof n === 'number')),
+    ).toBeTrue();
+  });

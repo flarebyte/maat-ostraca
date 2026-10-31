@@ -5,11 +5,9 @@
     "class_map": {
       "Service": {
         "cognitiveComplexity": 1,
-        "conditions": 0,
         "cyclomaticComplexity": 1,
         "extends": "Base",
         "loc": 6,
-        "loops": 0,
         "maxNestingDepth": 2,
         "methodCount": 1,
         "modifiers": [],

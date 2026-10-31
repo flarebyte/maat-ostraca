@@ -5,11 +5,9 @@
     "class_map": {
       "Service": {
         "cognitiveComplexity": 1,
-        "conditions": 0,
         "cyclomaticComplexity": 1,
         "extends": "Base",
         "loc": 6,
-        "loops": 0,
         "maxNestingDepth": 2,
         "methodCount": 1,
         "modifiers": [],
@@ -57,16 +55,28 @@
     },
     "import_files_list": [".helpers", "logging", "os"],
     "io_calls_count": {
-      "functions": { "test_env": 0 },
-      "methods": { "Service.test_load": 2 }
+      "functions": {
+        "test_env": 0
+      },
+      "methods": {
+        "Service.test_load": 2
+      }
     },
     "io_read_calls_count": {
-      "functions": { "test_env": 0 },
-      "methods": { "Service.test_load": 1 }
+      "functions": {
+        "test_env": 0
+      },
+      "methods": {
+        "Service.test_load": 1
+      }
     },
     "io_write_calls_count": {
-      "functions": { "test_env": 0 },
-      "methods": { "Service.test_load": 1 }
+      "functions": {
+        "test_env": 0
+      },
+      "methods": {
+        "Service.test_load": 1
+      }
     },
     "method_map": {
       "Service.test_load": {

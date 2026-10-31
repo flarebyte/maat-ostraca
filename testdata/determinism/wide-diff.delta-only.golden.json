@@ -17,7 +17,9 @@
         "tokens": 36
       }
     },
-    "code_hash": { "changed": true },
+    "code_hash": {
+      "changed": true
+    },
     "env_names_list": {
       "added": ["DATA_SOURCE_MODE", "SECONDARY_TOKEN"],
       "removed": ["DATA_SOURCE"]
@@ -57,7 +59,9 @@
       "tokens": 110
     },
     "function_map": {
-      "cleanupCache": { "status": "added" },
+      "cleanupCache": {
+        "status": "added"
+      },
       "loadConfig": {
         "cognitiveComplexity": 0,
         "conditions": 0,
@@ -77,9 +81,9 @@
         "cognitiveComplexity": 0,
         "conditions": 0,
         "cyclomaticComplexity": 0,
-        "ioCallsCount": 0,
+        "ioCallsCount": 1,
         "ioReadCallsCount": 0,
-        "ioWriteCallsCount": 0,
+        "ioWriteCallsCount": 1,
         "loc": 1,
         "loops": 0,
         "maxNestingDepth": 0,
@@ -89,17 +93,32 @@
         "tokens": 14
       }
     },
-    "import_files_list": { "added": [], "removed": [] },
+    "import_files_list": {
+      "added": [],
+      "removed": []
+    },
     "interface_map": {
-      "PaymentGateway": { "status": "modified" },
-      "PaymentRequest": { "status": "unchanged" }
+      "PaymentGateway": {
+        "status": "modified"
+      },
+      "PaymentRequest": {
+        "status": "unchanged"
+      }
     },
     "interfaces_code_map": {
-      "PaymentGateway": { "status": "modified" },
-      "PaymentRequest": { "status": "unchanged" }
+      "PaymentGateway": {
+        "status": "modified"
+      },
+      "PaymentRequest": {
+        "status": "unchanged"
+      }
     },
     "io_calls_count": {
-      "functions": { "loadConfig": 0, "status": "modified" },
+      "functions": {
+        "loadConfig": 0,
+        "saveReport": 1,
+        "status": "modified"
+      },
       "methods": {
         "billingServicecharge": 0,
         "billingServiceloadStats": 0,
@@ -108,7 +127,11 @@
       }
     },
     "io_read_calls_count": {
-      "functions": { "loadConfig": 0, "status": "modified" },
+      "functions": {
+        "loadConfig": 0,
+        "saveReport": 0,
+        "status": "modified"
+      },
       "methods": {
         "billingServicecharge": 0,
         "billingServiceloadStats": 0,
@@ -117,7 +140,11 @@
       }
     },
     "io_write_calls_count": {
-      "functions": { "loadConfig": 0, "status": "modified" },
+      "functions": {
+        "loadConfig": 0,
+        "saveReport": 1,
+        "status": "modified"
+      },
       "methods": {
         "billingServicecharge": 0,
         "billingServiceloadStats": 0,
@@ -171,9 +198,14 @@
         "status": "modified",
         "tokens": 2
       },
-      "billingServicerefund": { "status": "added" }
+      "billingServicerefund": {
+        "status": "added"
+      }
     },
-    "package_imports_list": { "added": [], "removed": [] },
+    "package_imports_list": {
+      "added": [],
+      "removed": []
+    },
     "testcase_titles_list": {
       "added": ["returns timeout for local source"],
       "removed": ["returns zero for local source"]
