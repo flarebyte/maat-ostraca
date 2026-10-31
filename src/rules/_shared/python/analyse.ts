@@ -198,6 +198,17 @@ export const runPython = (input: RuleRunInput, rule: string): unknown => {
       );
     return { functions: counts(false), methods: counts(true) };
   }
+  const classMetrics = (node: Node) => {
+    const value = metrics(node);
+    return {
+      loc: value.loc,
+      sloc: value.sloc,
+      cyclomaticComplexity: value.cyclomaticComplexity,
+      cognitiveComplexity: value.cognitiveComplexity,
+      maxNestingDepth: value.maxNestingDepth,
+      tokens: value.tokens,
+    };
+  };
   if (rule === 'class_map')
     return Object.fromEntries(
       nodes(root, 'class_definition').map((n) => [
@@ -207,7 +218,7 @@ export const runPython = (input: RuleRunInput, rule: string): unknown => {
           ...(n.field('superclasses')
             ? { extends: (n.field('superclasses')?.text() ?? '').slice(1, -1) }
             : {}),
-          ...metrics(n),
+          ...classMetrics(n),
           sha256: hash(n.text()),
           methodCount: functions.filter(
             (f) =>

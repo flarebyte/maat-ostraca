@@ -18,6 +18,14 @@ const COMMON_RULES = [
 
 const MATRIX = [
   {
+    language: 'rust',
+    analyseIn: 'testdata/rust/regression/v1.rs',
+    diffFrom: 'testdata/rust/regression/v1.rs',
+    diffTo: 'testdata/rust/regression/v2.rs',
+    analyseGolden: 'testdata/rust/regression/common-analyse.golden.json',
+    diffGolden: 'testdata/rust/regression/common-diff.golden.json',
+  },
+  {
     language: 'python',
     analyseIn: 'testdata/python/determinism/wide-v1.py',
     diffFrom: 'testdata/python/determinism/wide-v1.py',

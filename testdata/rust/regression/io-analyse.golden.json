@@ -1,0 +1,30 @@
+{
+  "filename": "testdata/rust/regression/v1.rs",
+  "language": "rust",
+  "rules": {
+    "io_calls_count": {
+      "functions": { "save": 1, "test_configuration": 1 },
+      "methods": {
+        "<Cache<T> as Reader>::read": 2,
+        "Cache<T>::new": 0,
+        "Reader::label": 0
+      }
+    },
+    "io_read_calls_count": {
+      "functions": { "save": 0, "test_configuration": 0 },
+      "methods": {
+        "<Cache<T> as Reader>::read": 1,
+        "Cache<T>::new": 0,
+        "Reader::label": 0
+      }
+    },
+    "io_write_calls_count": {
+      "functions": { "save": 1, "test_configuration": 1 },
+      "methods": {
+        "<Cache<T> as Reader>::read": 1,
+        "Cache<T>::new": 0,
+        "Reader::label": 0
+      }
+    }
+  }
+}

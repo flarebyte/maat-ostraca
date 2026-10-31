@@ -1,0 +1,11 @@
+{
+  "from": { "filename": "testdata/rust/regression/v1.rs", "language": "rust" },
+  "rules": {
+    "error_messages_list": {
+      "added": ["missing data"],
+      "removed": ["empty data"]
+    },
+    "exception_messages_list": { "added": [], "removed": [] }
+  },
+  "to": { "filename": "testdata/rust/regression/v2.rs", "language": "rust" }
+}

@@ -1,0 +1,30 @@
+{
+  "from": { "filename": "testdata/rust/regression/v1.rs", "language": "rust" },
+  "rules": {
+    "io_calls_count": {
+      "functions": {
+        "save": { "delta": 0, "from": 1, "to": 1 },
+        "status": "modified",
+        "test_configuration": { "delta": 0, "from": 1, "to": 1 }
+      },
+      "methods": { "status": "unchanged" }
+    },
+    "io_read_calls_count": {
+      "functions": {
+        "save": { "delta": 0, "from": 0, "to": 0 },
+        "status": "modified",
+        "test_configuration": { "delta": 0, "from": 0, "to": 0 }
+      },
+      "methods": { "status": "unchanged" }
+    },
+    "io_write_calls_count": {
+      "functions": {
+        "save": { "delta": 0, "from": 1, "to": 1 },
+        "status": "modified",
+        "test_configuration": { "delta": 0, "from": 1, "to": 1 }
+      },
+      "methods": { "status": "unchanged" }
+    }
+  },
+  "to": { "filename": "testdata/rust/regression/v2.rs", "language": "rust" }
+}

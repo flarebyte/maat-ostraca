@@ -17,10 +17,6 @@ interface SymbolBody {
   bodySource: string;
 }
 
-const FUNCTION_NAME_RE = /\bfunction\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*\(/;
-const DECLARATOR_NAME_RE = /^([A-Za-z_$][A-Za-z0-9_$]*)\s*=\s*/;
-const FUNCTION_ASSIGNMENT_RE =
-  /^[A-Za-z_$][A-Za-z0-9_$]*\s*=\s*(?:async\s*)?(?:function\b|(?:\([^)]*\)|[A-Za-z_$][A-Za-z0-9_$]*)\s*=>)/s;
 const METHOD_NAME_RE =
   /^(?:public|private|protected|static|readonly|abstract|override|async|\s)*([A-Za-z_$][A-Za-z0-9_$]*)\s*\(/;
 const CLASS_NAME_RE = /\bclass\s+([A-Za-z_$][A-Za-z0-9_$]*)\b/;
@@ -66,7 +62,7 @@ const findFunctionSymbols = (root: SgNode): SymbolBody[] => {
   );
   for (const node of functionNodes) {
     const text = node.text();
-    const name = text.match(FUNCTION_NAME_RE)?.[1];
+    const name = node.field('name')?.text();
     if (!name) {
       continue;
     }
@@ -78,11 +74,19 @@ const findFunctionSymbols = (root: SgNode): SymbolBody[] => {
   );
   for (const node of declaratorNodes) {
     const text = node.text().trim();
-    if (!FUNCTION_ASSIGNMENT_RE.test(text)) {
+    const expression = node.field('value');
+    if (
+      !expression ||
+      !['arrow_function', 'function_expression'].includes(
+        String(expression.kind()),
+      )
+    ) {
       continue;
     }
 
-    const name = text.match(DECLARATOR_NAME_RE)?.[1];
+    const nameNode = node.field('name');
+    const name =
+      nameNode?.kind() === 'identifier' ? nameNode.text() : undefined;
     if (!name) {
       continue;
     }

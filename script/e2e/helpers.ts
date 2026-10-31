@@ -32,7 +32,6 @@ export const runCli = (args: string[], input?: string | Buffer): CliResult => {
     ['--import', 'tsx', 'src/cmd/maat/index.ts', ...args],
     {
       cwd: process.cwd(),
-      encoding: 'buffer',
       ...(input !== undefined ? { input } : {}),
     },
   );
@@ -50,7 +49,6 @@ export const runBuiltCli = (
 ): CliResult => {
   const result = spawnSync('node', [packagedBinPath ?? '', ...args], {
     cwd: process.cwd(),
-    encoding: 'buffer',
     ...(input !== undefined ? { input } : {}),
   });
 

@@ -15,6 +15,25 @@ interface RuleModule {
 }
 
 const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
+  ['code_hash:rust', () => import('./code_hash/rust.js')],
+  ['file_metrics:rust', () => import('./file_metrics/rust.js')],
+  ['import_files_list:rust', () => import('./import_files_list/rust.js')],
+  ['package_imports_list:rust', () => import('./package_imports_list/rust.js')],
+  ['function_map:rust', () => import('./function_map/rust.js')],
+  ['method_map:rust', () => import('./method_map/rust.js')],
+  ['interface_map:rust', () => import('./interface_map/rust.js')],
+  ['interfaces_code_map:rust', () => import('./interfaces_code_map/rust.js')],
+  ['env_names_list:rust', () => import('./env_names_list/rust.js')],
+  [
+    'exception_messages_list:rust',
+    () => import('./exception_messages_list/rust.js'),
+  ],
+  ['error_messages_list:rust', () => import('./error_messages_list/rust.js')],
+  ['testcase_titles_list:rust', () => import('./testcase_titles_list/rust.js')],
+  ['io_calls_count:rust', () => import('./io_calls_count/rust.js')],
+  ['io_read_calls_count:rust', () => import('./io_read_calls_count/rust.js')],
+  ['io_write_calls_count:rust', () => import('./io_write_calls_count/rust.js')],
+
   ['class_map:python', () => import('./class_map/python.js')],
   ['env_names_list:python', () => import('./env_names_list/python.js')],
   [
@@ -129,7 +148,7 @@ const ruleLoaders = new Map<string, () => Promise<RuleModule>>([
 ]);
 
 export const IMPLEMENTED_RULES_BY_LANGUAGE = new Map<Language, RuleName[]>(
-  (['typescript', 'go', 'dart', 'python'] as const).map((language) => [
+  (['typescript', 'go', 'dart', 'python', 'rust'] as const).map((language) => [
     language,
     [...ruleLoaders.keys()]
       .filter((key) => key.endsWith(`:${language}`))

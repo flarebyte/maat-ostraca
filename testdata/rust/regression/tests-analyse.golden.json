@@ -1,0 +1,5 @@
+{
+  "filename": "testdata/rust/regression/v1.rs",
+  "language": "rust",
+  "rules": { "testcase_titles_list": ["test_configuration"] }
+}

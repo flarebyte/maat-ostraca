@@ -1,0 +1,23 @@
+{
+  "from": { "filename": "testdata/rust/regression/v1.rs", "language": "rust" },
+  "rules": {
+    "code_hash": {
+      "changed": true,
+      "from": "a1ae58f62da23f4202e15d58c0a470e9a411ac8f7f38918db4c2ac4c775be253",
+      "to": "e15e3a5de67e7e09d7b60a6cea63b5b18de46080f50f4be710ef1bb896c4a49a"
+    },
+    "file_metrics": {
+      "cognitiveComplexity": { "delta": 0, "from": 4, "to": 4 },
+      "conditions": { "delta": 0, "from": 2, "to": 2 },
+      "cyclomaticComplexity": { "delta": 0, "from": 4, "to": 4 },
+      "loc": { "delta": 2, "from": 41, "to": 43 },
+      "loops": { "delta": 0, "from": 1, "to": 1 },
+      "maxNestingDepth": { "delta": 0, "from": 3, "to": 3 },
+      "sloc": { "delta": 1, "from": 34, "to": 35 },
+      "tokens": { "delta": 22, "from": 265, "to": 287 }
+    },
+    "import_files_list": { "added": [], "removed": [] },
+    "package_imports_list": { "added": [], "removed": [] }
+  },
+  "to": { "filename": "testdata/rust/regression/v2.rs", "language": "rust" }
+}

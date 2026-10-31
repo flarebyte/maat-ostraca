@@ -1,0 +1,5 @@
+{
+  "filename": "testdata/rust/regression/v1.rs",
+  "language": "rust",
+  "rules": { "env_names_list": ["BUILD_ID", "HOME"] }
+}

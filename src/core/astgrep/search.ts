@@ -1,6 +1,6 @@
 import type { Language } from '../contracts/language.js';
 import { InternalError } from '../errors/index.js';
-import { ensurePython } from './python.js';
+import { ensureDynamicLanguages } from './languages.js';
 import {
   type AstGrepTimeoutOptions,
   runAstGrepWithTimeout,
@@ -39,9 +39,9 @@ const toAstGrepLanguage = (
   astGrep: typeof import('@ast-grep/napi'),
 ): unknown => {
   const { Lang } = astGrep;
-  if (language === 'python') {
-    ensurePython();
-    return 'python';
+  if (language === 'python' || language === 'rust') {
+    ensureDynamicLanguages();
+    return language;
   }
 
   if (language === 'typescript') {

@@ -1,0 +1,8 @@
+{
+  "from": { "filename": "testdata/rust/regression/v1.rs", "language": "rust" },
+  "rules": {
+    "interface_map": { "Reader": { "status": "unchanged" } },
+    "interfaces_code_map": { "Reader": { "status": "unchanged" } }
+  },
+  "to": { "filename": "testdata/rust/regression/v2.rs", "language": "rust" }
+}

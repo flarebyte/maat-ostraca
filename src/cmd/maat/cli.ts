@@ -58,7 +58,7 @@ const parseLanguage = (value: string): Language => {
   }
 
   throw new InvalidArgumentError(
-    'language must be one of: go, typescript, dart, python',
+    'language must be one of: go, typescript, dart, python, rust',
   );
 };
 
@@ -142,8 +142,8 @@ export const createProgram = (
     )
     .addOption(
       new Option(
-        '--language <typescript|go|dart|python>',
-        'Required. Source language: typescript, go, dart, python',
+        '--language <typescript|go|dart|python|rust>',
+        'Required. Source language: typescript, go, dart, python, rust',
       )
         .argParser(parseLanguage)
         .makeOptionMandatory(true),
@@ -198,8 +198,8 @@ export const createProgram = (
     )
     .addOption(
       new Option(
-        '--language <typescript|go|dart|python>',
-        'Required. Source language: typescript, go, dart, python',
+        '--language <typescript|go|dart|python|rust>',
+        'Required. Source language: typescript, go, dart, python, rust',
       )
         .argParser(parseLanguage)
         .makeOptionMandatory(true),
@@ -272,8 +272,8 @@ export const createProgram = (
     .description('List available rules for one supported language')
     .addOption(
       new Option(
-        '--language <typescript|go|dart|python>',
-        'Required. Source language: typescript, go, dart, python',
+        '--language <typescript|go|dart|python|rust>',
+        'Required. Source language: typescript, go, dart, python, rust',
       )
         .argParser(parseLanguage)
         .makeOptionMandatory(true),

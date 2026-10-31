@@ -1,0 +1,5 @@
+{
+  "from": { "filename": "testdata/rust/regression/v1.rs", "language": "rust" },
+  "rules": { "testcase_titles_list": { "added": [], "removed": [] } },
+  "to": { "filename": "testdata/rust/regression/v2.rs", "language": "rust" }
+}

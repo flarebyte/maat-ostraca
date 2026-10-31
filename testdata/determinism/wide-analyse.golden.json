@@ -64,9 +64,9 @@
         "cognitiveComplexity": 1,
         "conditions": 0,
         "cyclomaticComplexity": 1,
-        "ioCallsCount": 0,
+        "ioCallsCount": 1,
         "ioReadCallsCount": 0,
-        "ioWriteCallsCount": 0,
+        "ioWriteCallsCount": 1,
         "loc": 5,
         "loops": 0,
         "maxNestingDepth": 1,
@@ -97,7 +97,10 @@
       "PaymentRequest": "interface PaymentRequest {\n  id: string;\n  amount: number;\n}"
     },
     "io_calls_count": {
-      "functions": { "loadConfig": 3 },
+      "functions": {
+        "loadConfig": 3,
+        "saveReport": 1
+      },
       "methods": {
         "billingServicecharge": 2,
         "billingServiceloadStats": 0,
@@ -105,7 +108,10 @@
       }
     },
     "io_read_calls_count": {
-      "functions": { "loadConfig": 2 },
+      "functions": {
+        "loadConfig": 2,
+        "saveReport": 0
+      },
       "methods": {
         "billingServicecharge": 1,
         "billingServiceloadStats": 0,
@@ -113,7 +119,10 @@
       }
     },
     "io_write_calls_count": {
-      "functions": { "loadConfig": 1 },
+      "functions": {
+        "loadConfig": 1,
+        "saveReport": 1
+      },
       "methods": {
         "billingServicecharge": 1,
         "billingServiceloadStats": 0,

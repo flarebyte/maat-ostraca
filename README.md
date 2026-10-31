@@ -1,101 +1,227 @@
 # maat-ostraca
 
-`maat-ostraca` is a CLI that analyzes source files and returns structured,
-machine-friendly insights.
+Analyze source files and compare code snapshots with one CLI and consistent JSON
+across **TypeScript, Go, Dart, Python 3, and Rust**.
 
 ![Maat Ostraca](./maat-ostraca-hero.jpeg)
 
-At a high level, the CLI is designed to:
+`maat` extracts imports, symbols, metrics, I/O counts, messages, environment keys,
+and test names. Use it in scripts, code reviews, or reports without building a
+separate query for each language. Analysis is static and operates on one source
+file at a time.
 
-- Parse code from a file path or stdin
-- Run selected analysis rules on one source snapshot or a diff between two snapshots
-- Return predictable JSON output focused on maps and stable ordering
-- Help track code structure and evolution across time or across projects
+## Install
 
-The output model emphasizes direct key access (for example, function/method/class/interface maps),
-compact metrics, and optional delta-focused diff views for low-noise reporting.
+Requires **Node.js 24 or newer**.
 
-## Quick Start
-
-Install and run locally:
-
-```bash
-npm install
-npm run build
-npm link
-maat rules --language typescript --json
+```sh
+npm install --global maat-ostraca
+maat --help
 ```
 
-Or run without linking:
+Or run the published package without a global installation:
 
-```bash
+```sh
 npx maat-ostraca rules --language typescript --json
 ```
 
-Basic commands:
+The examples below use `maat`. When working from a checkout, use
+`npm run cli --` in its place; checkout capabilities may be newer than the
+published package.
 
-```bash
-# Analyse one file
-maat analyse --in testdata/determinism/wide-v1.ts --rules import_files_list,file_metrics,code_hash --language typescript --json
+## Quick start
 
-# Analyse all rules for one language
-maat analyse --in testdata/go/determinism/wide-v1.go --rules '*' --language go --json
+Choose a source file and its language explicitly:
 
-# Diff two snapshots
-maat diff --from testdata/go/hash/v1.go --to testdata/go/hash/v2.go --rules code_hash --language go --json
+```sh
+SOURCE_FILE=src/lib.rs
+LANGUAGE=rust
 
-# List rules for one language
-maat rules --language dart --json
+# Discover this language's rules.
+maat rules --language "$LANGUAGE" --json
 
-# Analyse from stdin when --in is omitted
-cat testdata/dart/env/analyse.dart | maat analyse --rules env_names_list --language dart --json
+# Analyze every implemented rule for this language.
+maat analyse --in "$SOURCE_FILE" --language "$LANGUAGE" --rules '*' --json
+
+# Select portable rules for a smaller report.
+maat analyse --in "$SOURCE_FILE" --language "$LANGUAGE" \
+  --rules function_map,method_map,file_metrics --json
 ```
 
-## Supported Commands
+Use the same commands with any supported language:
 
-- `analyse`
-- `diff`
-- `rules`
+| `--language` | Example source file | Class maps | Interface maps   |
+| ------------ | ------------------- | ---------- | ---------------- |
+| `typescript` | `src/index.ts`      | Yes        | Yes              |
+| `go`         | `main.go`           | No         | Yes              |
+| `dart`       | `lib/main.dart`     | Yes        | Yes              |
+| `python`     | `app.py`            | Yes        | No               |
+| `rust`       | `src/lib.rs`        | No         | Yes, from traits |
 
-## Language Support Matrix
+The CLI does not infer the language from the filename. Python and Rust parsing
+require neither a Python interpreter nor Cargo/rustc at runtime.
 
-- `typescript`: imports, metrics, code hash, symbol maps, I/O counts, messages, env names, testcase titles
-- `go`: imports, metrics, code hash, symbol maps, I/O counts, messages, env names, testcase titles
-- `dart`: imports, metrics, code hash, symbol maps, I/O counts, messages, env names, testcase titles
-- `python`: Python 3 imports, metrics, code hash, function/method/class maps, I/O counts, messages, env names, testcase names
+## Commands
 
-## Determinism Guarantees
+| Command   | Inputs                                                     | Purpose                                    |
+| --------- | ---------------------------------------------------------- | ------------------------------------------ |
+| `analyse` | `--in <file>`, or stdin                                    | Analyze one snapshot                       |
+| `diff`    | `--from <file>` and `--to <file>`, or stdin for the target | Compare two snapshots of the same language |
+| `rules`   | `--language`; optional `--match <names>`                   | List rule names and descriptions           |
 
-- Canonical JSON output with stable key ordering
-- Sorted and deduped list outputs where applicable
-- Golden-test coverage across analyse and diff flows
-- Repeated-run byte stability for the same inputs and rule selection
+`analyse` and `diff` require `--language` and `--rules`. Add `--json` for machine
+output; omit it for a human-readable report. Run `maat <command> --help` for all
+options. Sources are limited to 5 MiB each; empty stdin is rejected.
 
-JSON output is the machine contract. Non-JSON output is human-oriented, but remains deterministic for the same command input.
+### Select rules
 
-## Python 3
+All five languages implement these 13 rules:
 
-```bash
-maat analyse --in example.py --language python --rules '*' --json
-maat diff --from before.py --to after.py --language python --rules '*' --json
+| Group       | Rule names                                                      |
+| ----------- | --------------------------------------------------------------- |
+| Imports     | `import_files_list`, `package_imports_list`                     |
+| Symbols     | `function_map`, `method_map`                                    |
+| Metrics     | `file_metrics`, `code_hash`                                     |
+| I/O         | `io_calls_count`, `io_read_calls_count`, `io_write_calls_count` |
+| Messages    | `exception_messages_list`, `error_messages_list`                |
+| Environment | `env_names_list`                                                |
+| Tests       | `testcase_titles_list`                                          |
+
+Class-capable languages also implement `class_map`. Interface-capable languages
+implement `interface_map` and `interfaces_code_map`.
+
+```sh
+# Explicit names, a prefix wildcard, or all implemented rules.
+maat analyse --in "$SOURCE_FILE" --language "$LANGUAGE" --rules 'io_*,file_metrics' --json
+maat analyse --in "$SOURCE_FILE" --language "$LANGUAGE" --rules '*' --json
+
+# Manifest filtering accepts exact names, not wildcard selectors.
+maat rules --language "$LANGUAGE" --match function_map,code_hash --json
 ```
 
-Python analysis is static and uses a bundled Tree-sitter parser through ast-grep;
-it does not execute the source or require a Python interpreter at runtime.
-Functions and classes use dotted enclosing names as map keys. Relative import
-prefixes are preserved. `package_imports_list` includes absolute modules, which
-may be standard-library, third-party, or local modules. Import function/type
-classification and interface rules are unsupported.
+Quote wildcard selectors to prevent shell expansion. `'*'` expands to the
+implemented rules for the selected language, so its output keys vary by
+capability. Imported function/type classification is not implemented; older
+catalog entries may still list `import_functions_list` and `import_types_list`
+for TypeScript, Go, and Dart.
 
-Metrics use syntax blocks for nesting and count `for`/`while` loops and
-`if`/`elif`/`case` conditions. Cognitive complexity currently equals cyclomatic
-complexity. Tokens currently count identifier nodes; SLOC counts nonblank lines.
-I/O detection recognizes `input`, `print`, `os.read`/`os.write`, and common
-read/write method names; it does not infer receiver types. Counts include calls
-inside nested declarations. Environment detection recognizes `os.getenv`,
-`os.environ.get`, and literal `os.environ[...]` keys. Messages cover raised
-constructor calls and `logging`/`logger` error, exception, and critical calls.
-Only literal string arguments are extracted; interpolated messages are omitted.
-Tests are functions/methods beginning with `test_`; parameterized test cases are
-not expanded. Python 3 syntax coverage follows the bundled parser; this is not
-a Python version compatibility validator.
+### Read from stdin
+
+```sh
+cat "$SOURCE_FILE" | maat analyse --language "$LANGUAGE" --rules env_names_list --json
+```
+
+For example, this self-contained command:
+
+```sh
+printf 'process.env.API_TOKEN;\n' | maat analyse --language typescript --rules env_names_list --json
+```
+
+returns:
+
+```json
+{ "language": "typescript", "rules": { "env_names_list": ["API_TOKEN"] } }
+```
+
+### Query JSON
+
+JSON is the machine contract: stable key ordering, predictable maps, and sorted,
+deduplicated lists where applicable. These `jq` queries work across all five
+languages:
+
+```sh
+maat analyse --in "$SOURCE_FILE" --language "$LANGUAGE" --rules function_map --json \
+  | jq '.rules.function_map | to_entries | map({symbol: .key, lines: .value.loc})'
+
+maat analyse --in "$SOURCE_FILE" --language "$LANGUAGE" --rules method_map --json \
+  | jq '.rules.method_map[] | {name, receiver, ioCallsCount}'
+```
+
+Treat symbol keys as opaque identifiers. Signatures, import paths, and metric
+approximations reflect each language's syntax. Shared field names and types do
+not imply equal metric values for translated programs.
+
+See the [cross-language JSON contract](doc/LANGUAGE_JSON_CONTRACT.md) for result
+shapes, capability differences, and the tests that enforce portability.
+
+### Compare snapshots
+
+```sh
+maat diff --from before.rs --to after.rs --language rust \
+  --rules function_map,file_metrics,code_hash --json
+
+# Emit numeric deltas directly and omit the original hash strings.
+maat diff --from before.rs --to after.rs --language rust \
+  --rules function_map,file_metrics,code_hash --delta-only --json
+
+# Read the target snapshot from stdin.
+cat after.rs | maat diff --from before.rs --language rust --rules code_hash --json
+```
+
+The same flags work for every supported language. List diffs have `added` and
+`removed` arrays; symbol-map entries have a `status`; standard numeric diffs
+have `from`, `to`, and `delta` fields.
+
+Add `--exit-code-on-change` to `diff` to signal changes to a script:
+
+| Exit code | Meaning                                                |
+| --------- | ------------------------------------------------------ |
+| `0`       | Success; without the flag, a changed diff also exits 0 |
+| `1`       | Internal analysis failure                              |
+| `2`       | Invalid usage or input, including unreadable files     |
+| `3`       | Changes detected with `--exit-code-on-change`          |
+
+With `--json`, errors use an `error` object containing `code` and `message`.
+Successful human output is also deterministic, but scripts should use JSON.
+
+## Analysis scope
+
+Analysis extracts syntax and documented patterns; it does not execute source
+code. Dynamic messages, runtime dependency resolution, receiver types, and
+macro-generated code may not be discoverable. Rust does not evaluate `cfg`
+branches, and Python/Rust parser recovery may return partial results for
+incomplete code.
+
+See [language analysis notes](doc/LANGUAGE_NOTES.md) for extraction conventions
+and Python/Rust-specific limitations.
+
+## Develop locally
+
+Requires Node.js 24+ and npm. Install **Bun** to run the e2e suite; the release
+workflow uses Bun 1.3.6. `jq` is optional for the query examples above.
+
+```sh
+git clone https://github.com/flarebyte/maat-ostraca.git
+cd maat-ostraca
+npm ci
+npm run build
+npm run cli -- rules --language rust --json
+```
+
+To expose the checkout's compiled CLI as `maat`, run `npm link` after building.
+Rebuild after source changes when using the linked executable.
+
+| Task                                  | Command                             |
+| ------------------------------------- | ----------------------------------- |
+| Typecheck                             | `npm run typecheck`                 |
+| Unit tests                            | `npm test`                          |
+| Build CLI into `dist/`                | `npm run build`                     |
+| E2e tests, including the compiled CLI | `npm run build && npm run test:e2e` |
+| Unit coverage                         | `npm run test:cov`                  |
+| Lint                                  | `make lint`                         |
+| Format and apply lint fixes           | `make format`                       |
+| Duplication check                     | `make dup`                          |
+
+The implementation lives under `src/`, unit tests under `test/`, CLI integration
+tests under `script/e2e/`, and source fixtures/golden JSON under `testdata/`.
+Golden tests check analyse/diff output and repeated-run byte stability.
+Shared contract tests exercise portable queries across every supported language.
+
+For a language extension, add rule adapters under `src/rules/<rule>/<language>.ts`,
+shared extraction helpers under `src/rules/_shared/<language>/`, and entries in
+the capability and contract-test matrices. Add expected-value tests and CLI
+goldens alongside the implementation.
+
+Coverage details: [Python](doc/PYTHON_TEST_COVERAGE.md) and
+[Rust](doc/RUST_TEST_COVERAGE.md). Release setup and recovery:
+[releasing](.github/RELEASING.md).

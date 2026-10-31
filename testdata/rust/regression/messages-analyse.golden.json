@@ -1,0 +1,8 @@
+{
+  "filename": "testdata/rust/regression/v1.rs",
+  "language": "rust",
+  "rules": {
+    "error_messages_list": ["empty data"],
+    "exception_messages_list": ["cannot save \"empty\" data"]
+  }
+}
