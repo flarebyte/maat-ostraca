@@ -247,3 +247,42 @@ Coverage details: [Python](doc/PYTHON_TEST_COVERAGE.md),
 The Swift audit includes 68 unit cases and 42 dedicated e2e cases, with additional
 shared language/query checks. See its coverage record for measured percentages
 and regression scenarios. Release setup and recovery: [releasing](.github/RELEASING.md).
+
+## Repository management
+
+Repository settings, topics, and labels are declared in
+[.gh-flarebyte.cue](.gh-flarebyte.cue). Use **gh-flarebyte 0.23.0 or newer**:
+
+```sh
+# Install once, or upgrade an existing installation.
+gh extension install flarebyte/gh-flarebyte
+# Existing installation: gh extension upgrade flarebyte/gh-flarebyte
+
+gh flarebyte config validate
+gh flarebyte repo audit --repo flarebyte/maat-ostraca
+```
+
+After reviewing config edits and the audit, apply them explicitly:
+
+```sh
+gh flarebyte repo update --repo flarebyte/maat-ostraca
+gh flarebyte repo audit --repo flarebyte/maat-ostraca
+```
+
+The initial config preserves the description, visibility, all nine labels, and
+merge settings. It adds project topics and sets the homepage to the README
+(as already declared in `package.json`); gh-flarebyte requires a nonempty homepage. Updates require repository admin
+permissions. Review the full label list before applying: the config describes
+the desired labels, so removing entries can schedule deletions. The current
+`repo audit` reports settings and topic drift; it does not compare labels.
+
+This first stage manages repository settings only. Continue using the npm and
+Make commands above for tests, coverage, formatting, and compilation. The required
+TypeScript library build block is metadata for configuration validation;
+`gh flarebyte build` does not produce the npm package's `dist/` output, and its
+development commands require a Bun lockfile and additional tooling.
+
+Use the existing **Publish npm release** workflow for releases. It owns npm
+publication, tags, and GitHub Releases; do not run `gh flarebyte release` alongside
+it. The config reads version metadata from `package.json` without replacing that
+workflow.
