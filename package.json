@@ -1,6 +1,6 @@
 {
   "name": "maat-ostraca",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Translate the ghost in the machine into the poetry of human intent",
   "keywords": [
     "language",
@@ -39,6 +39,7 @@
     "clean": "node -e \"import { rmSync } from 'node:fs'; rmSync('dist', { recursive: true, force: true });\""
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.6.4",
     "c8": "^12.0.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"

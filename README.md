@@ -224,12 +224,12 @@ Rebuild after source changes when using the linked executable.
 | Task                                  | Command                             |
 | ------------------------------------- | ----------------------------------- |
 | Typecheck                             | `npm run typecheck`                 |
-| Unit tests                            | `npm test`                          |
-| Build CLI into `dist/`                | `npm run build`                     |
+| Unit tests                            | `make test`                          |
+| Build CLI into `dist/`                | `make build`                        |
 | E2e tests, including the compiled CLI | `npm run build && npm run test:e2e` |
-| Unit coverage                         | `npm run test:cov`                  |
+| Unit coverage                         | `make cov`                  |
 | Lint                                  | `make lint`                         |
-| Format and apply lint fixes           | `make format`                       |
+| Format           | `make format`                       |
 | Duplication check                     | `make dup`                          |
 
 The implementation lives under `src/`, unit tests under `test/`, CLI integration
@@ -247,3 +247,52 @@ Coverage details: [Python](doc/PYTHON_TEST_COVERAGE.md),
 The Swift audit includes 68 unit cases and 42 dedicated e2e cases, with additional
 shared language/query checks. See its coverage record for measured percentages
 and regression scenarios. Release setup and recovery: [releasing](.github/RELEASING.md).
+
+## Repository management
+
+Repository settings, topics, and labels are declared in
+[.gh-flarebyte.cue](.gh-flarebyte.cue). Use **gh-flarebyte 0.24.0 or newer**:
+
+```sh
+# Install once, or upgrade an existing installation.
+gh extension install flarebyte/gh-flarebyte
+# Existing installation: gh extension upgrade flarebyte/gh-flarebyte
+
+gh flarebyte config validate
+gh flarebyte repo audit --repo flarebyte/maat-ostraca
+```
+
+After reviewing config edits and the audit, apply them explicitly:
+
+```sh
+gh flarebyte repo update --repo flarebyte/maat-ostraca
+gh flarebyte repo audit --repo flarebyte/maat-ostraca
+```
+
+The initial config preserves the description, visibility, all nine labels, and
+merge settings. It adds project topics and sets the homepage to the README
+(as already declared in `package.json`); gh-flarebyte requires a nonempty homepage. Updates require repository admin
+permissions. Review the full label list before applying: the config describes
+the desired labels, so removing entries can schedule deletions. The current
+`repo audit` reports settings and topic drift; it does not compare labels.
+
+Local checks also use this config (gh-flarebyte 0.24.0+ uses npm and Node):
+
+```sh
+gh flarebyte test
+gh flarebyte lint
+gh flarebyte format
+gh flarebyte cov
+gh flarebyte build
+```
+
+These commands install locked dependencies with `npm ci --ignore-scripts`.
+The Make targets wrap the same commands. `make build` also runs `npm run build`
+to emit the CLI and declarations in `dist/`: the gh-flarebyte library build
+checks types and runs unit tests without emitting files. Formatting does not
+apply lint fixes. E2e tests remain available through `make e2e` with Bun.
+
+Use the existing **Publish npm release** workflow for releases. It owns npm
+publication, tags, and GitHub Releases; do not run `gh flarebyte release` alongside
+it. The config reads version metadata from `package.json` without replacing that
+workflow.
