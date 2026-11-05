@@ -71,13 +71,12 @@ repository: {
     }
 }
 
-// Required config metadata only during stage one. Continue using npm/Make
-// for development: gh-flarebyte TypeScript commands require a Bun migration.
+// Verify the npm/Node project; npm run build emits the publishable dist/ files.
 build: {
     language: "typescript"
     mode: "library"
     packages: ["./..."]
-    runTests: false
+    runTests: true
 }
 
 // Version metadata only. The npm publishing workflow owns tags and releases.

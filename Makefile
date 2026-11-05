@@ -5,23 +5,22 @@
 
 .PHONY: lint format test cov build typecheck e2e release clean complexity sec dup help
 
-BIOME := npx @biomejs/biome
-BUN := bun
+GH_FLAREBYTE := gh flarebyte
 
 lint:
-	$(BIOME) check
+	$(GH_FLAREBYTE) lint
 
 format:
-	$(BIOME) format --write .
-	$(BIOME) check --unsafe --write
+	$(GH_FLAREBYTE) format
 
 test:
-	npm run test
+	$(GH_FLAREBYTE) test
 
 cov:
-	npm run test:cov
+	$(GH_FLAREBYTE) cov
 
 build:
+	$(GH_FLAREBYTE) build
 	npm run build
 
 typecheck:
@@ -33,7 +32,7 @@ e2e:
 review: format test e2e lint
 
 release: build
-	@printf "Artifacts in ./build (checksums.txt included)\n"
+	@printf "Compiled npm package in ./dist\n"
 
 clean:
 	npm run clean
@@ -49,10 +48,10 @@ dup:
 help:
 	@printf "Targets:\n"
 	@printf "  lint       Run Biome checks.\n"
-	@printf "  format     Format code with Biome and apply safe fixes.\n"
+	@printf "  format     Format code with Biome via gh-flarebyte.\n"
 	@printf "  test       Run unit tests (Node test runner via tsx).\n"
-	@printf "  cov        Run unit tests with coverage report (text-summary + lcov).\n"
-	@printf "  build      Compile TypeScript to dist/.\n"
+	@printf "  cov        Run unit coverage via gh-flarebyte.\n"
+	@printf "  build      Verify with gh-flarebyte and compile TypeScript to dist/.\n"
 	@printf "  typecheck  Run TypeScript type-check only.\n"
 	@printf "  e2e        Run Bun-powered end-to-end tests.\n"
 	@printf "  release    Prepare release artifacts (depends on build).\n"

@@ -224,12 +224,12 @@ Rebuild after source changes when using the linked executable.
 | Task                                  | Command                             |
 | ------------------------------------- | ----------------------------------- |
 | Typecheck                             | `npm run typecheck`                 |
-| Unit tests                            | `npm test`                          |
-| Build CLI into `dist/`                | `npm run build`                     |
+| Unit tests                            | `make test`                          |
+| Build CLI into `dist/`                | `make build`                        |
 | E2e tests, including the compiled CLI | `npm run build && npm run test:e2e` |
-| Unit coverage                         | `npm run test:cov`                  |
+| Unit coverage                         | `make cov`                  |
 | Lint                                  | `make lint`                         |
-| Format and apply lint fixes           | `make format`                       |
+| Format           | `make format`                       |
 | Duplication check                     | `make dup`                          |
 
 The implementation lives under `src/`, unit tests under `test/`, CLI integration
@@ -251,7 +251,7 @@ and regression scenarios. Release setup and recovery: [releasing](.github/RELEAS
 ## Repository management
 
 Repository settings, topics, and labels are declared in
-[.gh-flarebyte.cue](.gh-flarebyte.cue). Use **gh-flarebyte 0.23.0 or newer**:
+[.gh-flarebyte.cue](.gh-flarebyte.cue). Use **gh-flarebyte 0.24.0 or newer**:
 
 ```sh
 # Install once, or upgrade an existing installation.
@@ -276,11 +276,21 @@ permissions. Review the full label list before applying: the config describes
 the desired labels, so removing entries can schedule deletions. The current
 `repo audit` reports settings and topic drift; it does not compare labels.
 
-This first stage manages repository settings only. Continue using the npm and
-Make commands above for tests, coverage, formatting, and compilation. The required
-TypeScript library build block is metadata for configuration validation;
-`gh flarebyte build` does not produce the npm package's `dist/` output, and its
-development commands require a Bun lockfile and additional tooling.
+Local checks also use this config (gh-flarebyte 0.24.0+ uses npm and Node):
+
+```sh
+gh flarebyte test
+gh flarebyte lint
+gh flarebyte format
+gh flarebyte cov
+gh flarebyte build
+```
+
+These commands install locked dependencies with `npm ci --ignore-scripts`.
+The Make targets wrap the same commands. `make build` also runs `npm run build`
+to emit the CLI and declarations in `dist/`: the gh-flarebyte library build
+checks types and runs unit tests without emitting files. Formatting does not
+apply lint fixes. E2e tests remain available through `make e2e` with Bun.
 
 Use the existing **Publish npm release** workflow for releases. It owns npm
 publication, tags, and GitHub Releases; do not run `gh flarebyte release` alongside
